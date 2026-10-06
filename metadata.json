@@ -1,0 +1,6 @@
+{
+  "name": "NeuroScan AI - Brain Tumor Detection & Diagnostic Workstation",
+  "description": "Deep learning-based clinical brain tumor detection, classification, and automated radiology reporting workstation for MRI neuroimaging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,7926 @@
+@import "tailwindcss";
+
+/* =========================================================
+   NEUROSCAN AI — Editorial Clinical UI
+   Warm paper / magazine-inspired visual system
+   ========================================================= */
+
+@layer base {
+  :root {
+    --paper: #f0f4f9;
+    --paper-deep: #ffffff;
+    --card: #ffffff;
+    --ink: #111827;
+    --muted: #6b7280;
+    --line: #f1f5f9;
+    --olive: #abafd3;
+    --olive-dark: #4f5fdf;
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --card-bg: rgba(255, 255, 255, 0.92);
+    --slate-100-bg: #e0f2fe;
+    --slate-800-hover: #dbeafe;
+    --text-800: #1e293b;
+    --text-700: #334155;
+    --text-600: #475569;
+    --text-400: #94a3b8;
+    --text-300: #cbd5e1;
+
+    --status-rose-bg: #f4e7e4;
+    --status-rose-border: #dfc2bd;
+    --status-rose-text: #985858;
+    
+    --status-emerald-bg: #e6eee3;
+    --status-emerald-border: #c7d7c2;
+    --status-emerald-text: #557052;
+
+    --status-amber-bg: #fef3c7;
+    --status-amber-border: #fde68a;
+    --status-amber-text: #92400e;
+  }
+
+  .dark {
+    --paper: #0f172a;
+    --paper-deep: #020617;
+    --card: #1e293b;
+    --ink: #f8fafc;
+    --muted: #94a3b8;
+    --line: #334155;
+    --olive: #3b82f6;
+    --olive-dark: #60a5fa;
+    --header-bg: rgba(30, 41, 59, 0.92);
+    --card-bg: rgba(30, 41, 59, 0.92);
+    --slate-100-bg: #1e293b;
+    --slate-800-hover: #334155;
+    --text-800: #f1f5f9;
+    --text-700: #e2e8f0;
+    --text-600: #cbd5e1;
+    --text-400: #475569;
+    --text-300: #334155;
+
+    --status-rose-bg: #4c1d9500;
+    --status-rose-border: #9f1239;
+    --status-rose-text: #fda4af;
+    
+    --status-emerald-bg: #14532d00;
+    --status-emerald-border: #166534;
+    --status-emerald-text: #86efac;
+
+    --status-amber-bg: #78350f00;
+    --status-amber-border: #92400e;
+    --status-amber-text: #fcd34d;
+  }
+
+  html {
+    background: var(--paper);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+      Consolas, monospace;
+  }
+
+  h1, h2, h3, .editorial-heading {
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: -0.035em;
+  }
+
+  ::selection {
+    background: var(--olive);
+    color: #fff;
+  }
+}
+
+.editorial-ui {
+  background: var(--paper) !important;
+  color: var(--ink);
+}
+
+.editorial-ui main {
+  background:
+    radial-gradient(circle at 86% 4%, rgba(255,255,255,.05), transparent 26rem),
+    var(--paper);
+}
+
+/* Sidebar */
+.editorial-ui aside {
+  background: var(--paper-deep) !important;
+  border-right: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
+
+.editorial-ui aside * {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+.editorial-ui aside .text-white {
+  color: var(--ink) !important;
+}
+
+.editorial-ui aside .text-slate-100,
+.editorial-ui aside .text-slate-200,
+.editorial-ui aside .text-slate-300,
+.editorial-ui aside .text-slate-400 {
+  color: var(--muted) !important;
+}
+
+.editorial-ui aside .bg-slate-900,
+.editorial-ui aside .bg-slate-950,
+.editorial-ui aside .bg-black {
+  background: var(--paper-deep) !important;
+}
+
+.editorial-ui aside .bg-indigo-600,
+.editorial-ui aside .bg-indigo-500 {
+  background: var(--olive) !important;
+}
+
+.editorial-ui aside .text-indigo-400,
+.editorial-ui aside .text-indigo-500,
+.editorial-ui aside .text-indigo-600 {
+  color: var(--olive-dark) !important;
+}
+
+.editorial-ui aside .hover\:bg-slate-800:hover,
+.editorial-ui aside .hover\:bg-slate-700:hover {
+  background: var(--slate-800-hover) !important;
+}
+
+/* Header */
+.editorial-ui header {
+  background: var(--header-bg) !important;
+  border-color: var(--line) !important;
+}
+
+.editorial-ui header .text-slate-300 { color: var(--muted) !important; }
+.editorial-ui header .text-slate-500 { color: var(--muted) !important; }
+.editorial-ui header .text-slate-900 { color: var(--ink) !important; }
+
+/* Cards */
+.editorial-ui .bg-white,
+.editorial-ui .bg-white\/80,
+.editorial-ui .bg-white\/90 {
+  background: var(--card-bg) !important;
+}
+
+.editorial-ui .bg-slate-50,
+.editorial-ui .bg-slate-50\/90 {
+  background: var(--paper-deep) !important;
+}
+
+.editorial-ui .bg-slate-100 {
+  background: var(--slate-100-bg) !important;
+}
+
+.editorial-ui .border-slate-100,
+.editorial-ui .border-slate-200,
+.editorial-ui .border-slate-200\/80,
+.editorial-ui .border-slate-200\/60 {
+  border-color: var(--line) !important;
+}
+
+.editorial-ui .shadow-sm {
+  box-shadow: 0 8px 30px rgba(148, 163, 184, 0.045) !important;
+}
+
+.editorial-ui .shadow-md {
+  box-shadow: 0 12px 30px rgba(148, 163, 184, 0.09) !important;
+}
+
+.editorial-ui .rounded-2xl { border-radius: 24px !important; }
+.editorial-ui .rounded-xl { border-radius: 16px !important; }
+.editorial-ui .rounded-lg { border-radius: 12px !important; }
+
+/* Typography */
+.editorial-ui .text-slate-900 { color: var(--ink) !important; }
+.editorial-ui .text-slate-800 { color: var(--text-800) !important; }
+.editorial-ui .text-slate-700 { color: var(--text-700) !important; }
+.editorial-ui .text-slate-600 { color: var(--text-600) !important; }
+.editorial-ui .text-slate-500 { color: var(--muted) !important; }
+.editorial-ui .text-slate-400 { color: var(--text-400) !important; }
+.editorial-ui .text-slate-300 { color: var(--text-300) !important; }
+
+.editorial-ui h1 {
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  line-height: .98;
+  font-weight: 500;
+}
+
+.editorial-ui h2 { font-weight: 500; }
+.editorial-ui h3 { font-weight: 600; }
+
+/* Indigo -> mapped to --olive (Vibrant Blue/Purple) */
+.editorial-ui .bg-indigo-600,
+.editorial-ui .bg-indigo-600\/90,
+.editorial-ui .bg-indigo-600\/80,
+.editorial-ui .bg-indigo-600\/20,
+.editorial-ui .bg-indigo-500 {
+  background: var(--olive) !important;
+  color: #ffffff !important;
+}
+
+.editorial-ui .hover\:bg-indigo-500:hover,
+.editorial-ui .hover\:bg-indigo-600:hover {
+  background: var(--olive-dark) !important;
+  color: #ffffff !important;
+}
+
+.editorial-ui .bg-indigo-50,
+.editorial-ui .bg-indigo-50\/60 {
+  background: var(--paper-deep) !important;
+}
+
+.editorial-ui .text-indigo-700,
+.editorial-ui .text-indigo-600,
+.editorial-ui .text-indigo-500,
+.editorial-ui .text-indigo-400 {
+  color: var(--olive-dark) !important;
+}
+
+.editorial-ui .border-indigo-200,
+.editorial-ui .border-indigo-200\/60,
+.editorial-ui .border-indigo-100,
+.editorial-ui .border-indigo-500\/40,
+.editorial-ui .border-indigo-600 {
+  border-color: var(--olive) !important;
+}
+
+/* Clinical status colors */
+.editorial-ui .bg-rose-50, .editorial-ui .bg-rose-100 { background: var(--status-rose-bg) !important; }
+.editorial-ui .text-rose-700,
+.editorial-ui .text-rose-800,
+.editorial-ui .text-rose-600 { color: var(--status-rose-text) !important; }
+.editorial-ui .border-rose-200,
+.editorial-ui .border-rose-300 { border-color: var(--status-rose-border) !important; }
+.editorial-ui .bg-rose-500 { background: #be123c !important; }
+
+.editorial-ui .bg-emerald-50, .editorial-ui .bg-emerald-100 { background: var(--status-emerald-bg) !important; }
+.editorial-ui .text-emerald-700,
+.editorial-ui .text-emerald-800,
+.editorial-ui .text-emerald-600 { color: var(--status-emerald-text) !important; }
+.editorial-ui .border-emerald-200,
+.editorial-ui .border-emerald-300 { border-color: var(--status-emerald-border) !important; }
+.editorial-ui .bg-emerald-500 { background: #15803d !important; }
+
+.editorial-ui .bg-amber-50, .editorial-ui .bg-amber-100 { background: var(--status-amber-bg) !important; }
+.editorial-ui .text-amber-700,
+.editorial-ui .text-amber-800,
+.editorial-ui .text-amber-900,
+.editorial-ui .text-amber-600 { color: var(--status-amber-text) !important; }
+.editorial-ui .border-amber-200,
+.editorial-ui .border-amber-300 { border-color: var(--status-amber-border) !important; }
+
+/* Buttons */
+.editorial-ui button {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.editorial-ui button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.editorial-ui button.bg-indigo-600 {
+  box-shadow: 0 8px 18px rgba(100, 116, 139, 0.16) !important;
+}
+
+/* Dividers */
+.editorial-ui .border-t,
+.editorial-ui .border-b {
+  border-color: var(--line) !important;
+}
+
+.editorial-ui hr {
+  border-color: var(--line);
+}
+
+/* Form fields */
+.editorial-ui input,
+.editorial-ui textarea,
+.editorial-ui select {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.editorial-ui input::placeholder,
+.editorial-ui textarea::placeholder {
+  color: var(--muted);
+}
+
+.editorial-ui input:focus,
+.editorial-ui textarea:focus,
+.editorial-ui select:focus {
+  outline: none;
+  border-color: var(--olive);
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.12);
+}
+
+/* Preserve strong contrast for the MRI image viewport */
+.editorial-ui .mri-viewport,
+.editorial-ui [data-mri-viewport] {
+  background: #12110f !important;
+}
+
+/* Toast animation */
+.editorial-ui .animate-fade-in {
+  animation: editorialFade .25s ease-out both;
+}
+
+@keyframes editorialFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+* {
+  scrollbar-color: #94a3b8 var(--paper-deep);
+  scrollbar-width: thin;
+}
+
+/* =========================================================
+   Clinical report printing
+   ========================================================= */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 12mm 12mm;
+  }
+
+  html, body, #root {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  aside,
+  header,
+  nav,
+  .no-print,
+  button,
+  .no-print-area {
+    display: none !important;
+  }
+
+  main,
+  .min-h-screen,
+  .h-screen,
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .overflow-hidden,
+  .flex-1 {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .print-only { display: block !important; }
+
+  .report-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 9.5pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .report-sheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-avoid-break,
+  .report-section {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .editorial-ui main {
+    padding: 1.25rem !important;
+  }
+
+  .editorial-ui h1 {
+    font-size: 2.25rem;
+  }
+
+  .editorial-ui header {
+    height: 4.5rem;
+    padding-inline: 1rem;
+  }
+}
+
+
+/* =========================================================
+   NeuroScan Login Screen
+   ========================================================= */
+
+.login-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255,255,255,.72), transparent 24rem),
+    var(--paper);
+}
+
+.login-page button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.login-role-button {
+  min-height: 44px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.login-role-button:hover {
+  color: var(--ink);
+  background: rgba(255,255,255,.38);
+}
+
+.login-role-button.active {
+  color: #fff;
+  background: var(--olive-dark);
+  border-color: var(--olive-dark);
+  box-shadow: 0 6px 18px rgba(71, 85, 105, .13);
+}
+
+.login-label {
+  display: block;
+  margin-bottom: .55rem;
+  color: var(--ink);
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .13em;
+}
+
+.login-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  min-height: 56px;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(255,255,255,.78);
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.login-input-wrap:focus-within {
+  border-color: var(--olive);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, .10);
+}
+
+.login-input-wrap input {
+  min-width: 0;
+  flex: 1;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--ink);
+  font-size: .88rem;
+}
+
+.login-input-wrap input::placeholder {
+  color: var(--muted);
+}
+
+.login-eye {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: var(--muted);
+  border-radius: 50%;
+}
+
+.login-eye:hover {
+  background: var(--paper-deep);
+  color: var(--olive-dark);
+}
+
+.login-submit {
+  width: 100%;
+  min-height: 58px;
+  margin-top: .4rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .7rem;
+  border: 1px solid var(--olive-dark);
+  border-radius: 16px;
+  background: var(--olive-dark);
+  color: #fff;
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 25px rgba(71, 85, 105, .13);
+}
+
+.login-submit:hover:not(:disabled) {
+  background: var(--olive);
+  transform: translateY(-1px);
+}
+
+.login-submit:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
+.login-error {
+  padding: .8rem .9rem;
+  border: 1px solid #dfc2bd;
+  border-radius: 12px;
+  background: #f4e7e4;
+  color: #985858;
+  font-size: .75rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .login-page section:last-child {
+    padding: 1.35rem;
+  }
+
+  .login-role-button {
+    font-size: .66rem;
+  }
+}
+/* =========================================================
+   NEUROSCAN AI — CINEMATIC LANDING PAGE
+   ========================================================= */
+
+.neuro-landing {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.neuro-landing h1,
+.neuro-landing h2,
+.neuro-landing h3 {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+
+/* ---------------- NAV ---------------- */
+
+.neuro-nav {
+  height: 64px;
+  padding: 0 14px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 2px;
+  background: rgba(4,16,20,.62);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 12px 50px rgba(0,0,0,.15);
+}
+
+.neuro-logo {
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8df4ff;
+  background: rgba(52,211,235,.08);
+  border: 1px solid rgba(52,211,235,.25);
+  box-shadow:
+    0 0 25px rgba(34,211,238,.08),
+    inset 0 0 15px rgba(34,211,238,.04);
+}
+
+.neuro-logo.small {
+  width: 34px;
+  height: 34px;
+}
+
+.neuro-nav-link {
+  color: rgba(255,255,255,.48);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  transition: color .25s ease;
+}
+
+.neuro-nav-link:hover {
+  color: #9beef7;
+}
+
+.neuro-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 15px;
+  background: #d8fbff;
+  color: #062026;
+  border-radius: 2px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  transition: all .25s ease;
+}
+
+.neuro-nav-button:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+
+/* ---------------- HERO ---------------- */
+
+.neuro-hero-title {
+  font-size: clamp(3.5rem, 8vw, 7.8rem);
+  line-height: .91;
+  letter-spacing: -.075em;
+  font-weight: 500;
+}
+
+.neuro-gradient-text {
+  background: linear-gradient(
+    100deg,
+    #ffffff 10%,
+    #9cecf3 55%,
+    #38d8e7 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.neuro-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 13px;
+  border: 1px solid rgba(121,229,239,.22);
+  background: rgba(13,47,54,.45);
+  color: rgba(177,245,251,.8);
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.neuro-pulse-dot {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #67e8f9;
+  box-shadow: 0 0 12px rgba(103,232,249,.9);
+  animation: neuroPulse 1.8s infinite;
+}
+
+@keyframes neuroPulse {
+  0%,100% {
+    opacity: .5;
+    transform: scale(.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.neuro-primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 23px;
+  background: #d9fbff;
+  color: #062027;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  box-shadow: 0 15px 45px rgba(34,211,238,.12);
+  transition: all .3s ease;
+}
+
+.neuro-primary-button:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(34,211,238,.2);
+}
+
+.neuro-secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 52px;
+  padding: 0 22px;
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(255,255,255,.75);
+  background: rgba(255,255,255,.03);
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  transition: all .3s ease;
+}
+
+.neuro-secondary-button:hover {
+  border-color: rgba(120,230,240,.4);
+  color: #b5f5fa;
+  background: rgba(120,230,240,.05);
+}
+
+.neuro-grid {
+  background-image:
+    linear-gradient(rgba(100,220,230,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100,220,230,.07) 1px, transparent 1px);
+  background-size: 55px 55px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.neuro-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+.neuro-glow-one {
+  width: 300px;
+  height: 300px;
+  background: rgba(0,190,220,.11);
+  left: -100px;
+  top: 25%;
+}
+
+.neuro-glow-two {
+  width: 400px;
+  height: 400px;
+  background: rgba(0,100,150,.10);
+  right: -150px;
+  bottom: 0;
+}
+
+
+/* ---------------- IMAGE TAG ---------------- */
+
+.neuro-image-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(4,15,18,.75);
+  border: 1px solid rgba(100,230,240,.25);
+  backdrop-filter: blur(12px);
+  color: #9eeef4;
+  font-size: 8px;
+  letter-spacing: .15em;
+}
+
+
+/* ---------------- SECTIONS ---------------- */
+
+.neuro-section-title {
+  font-size: clamp(3rem, 5vw, 5.8rem);
+  line-height: .95;
+  letter-spacing: -.065em;
+  font-weight: 500;
+}
+
+.neuro-light-title {
+  font-size: clamp(3rem, 5vw, 5.8rem);
+  line-height: .95;
+  letter-spacing: -.065em;
+  font-weight: 500;
+}
+
+.neuro-section-description {
+  margin-top: 25px;
+  color: rgba(255,255,255,.48);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.neuro-feature-card {
+  display: flex;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.025);
+  transition:
+    border-color .3s ease,
+    background .3s ease,
+    transform .3s ease;
+}
+
+.neuro-feature-card:hover {
+  border-color: rgba(103,232,249,.25);
+  background: rgba(103,232,249,.035);
+  transform: translateY(-2px);
+}
+
+.neuro-feature-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67e8f9;
+  background: rgba(103,232,249,.06);
+  border: 1px solid rgba(103,232,249,.12);
+}
+
+
+/* ---------------- TUMOR CARDS ---------------- */
+
+.neuro-tumor-card {
+  min-height: 280px;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.015)
+    );
+  transition: all .35s ease;
+}
+
+.neuro-tumor-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(103,232,249,.32);
+  box-shadow: 0 25px 60px rgba(0,0,0,.25);
+}
+
+.neuro-tumor-card:hover svg {
+  color: #67e8f9;
+}
+
+
+/* ---------------- XAI ---------------- */
+
+.neuro-xai-card {
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: #071419;
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.18),
+    inset 0 0 60px rgba(34,211,238,.025);
+}
+
+
+/* ---------------- CTA ---------------- */
+
+.neuro-cta-title {
+  font-size: clamp(3.5rem, 7vw, 7rem);
+  line-height: .92;
+  letter-spacing: -.07em;
+  font-weight: 500;
+}
+
+
+/* ---------------- MOBILE ---------------- */
+
+@media (max-width: 768px) {
+
+  .neuro-nav {
+    height: 58px;
+    padding: 0 9px;
+  }
+
+  .neuro-nav-button {
+    padding: 0 11px;
+    font-size: 8px;
+  }
+
+  .neuro-hero-title {
+    font-size: clamp(3.3rem, 16vw, 5rem);
+  }
+
+  .neuro-section-title,
+  .neuro-light-title {
+    font-size: clamp(3rem, 14vw, 4.8rem);
+  }
+
+  .neuro-cta-title {
+    font-size: clamp(3.3rem, 15vw, 5rem);
+  }
+
+  .neuro-tumor-card {
+    min-height: 220px;
+  }
+
+}
+/* =========================================================
+   NEUROSCAN — PREMIUM LIGHT LANDING PAGE
+   ========================================================= */
+
+.neuro-landing {
+  --n-bg: #f6f5f1;
+  --n-paper: #fbfaf7;
+  --n-white: #ffffff;
+  --n-ink: #171816;
+  --n-muted: #74756f;
+  --n-soft: #a5a59d;
+  --n-line: #deded7;
+  --n-dark: #20221f;
+
+  min-height: 100vh;
+  background: var(--n-bg);
+  color: var(--n-ink);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   NAV
+   ========================================================= */
+
+.neuro-nav {
+  height: 82px;
+  padding: 0 clamp(24px, 5vw, 76px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--n-line);
+
+  background: rgba(246, 245, 241, 0.94);
+
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  backdrop-filter: blur(12px);
+}
+
+.neuro-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  background: none;
+  border: 0;
+  padding: 0;
+
+  cursor: pointer;
+
+  color: var(--n-ink);
+}
+
+.neuro-brand-mark {
+  width: 35px;
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #cfcfc7;
+  border-radius: 50%;
+
+  background: var(--n-paper);
+}
+
+.neuro-brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+.neuro-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+
+  margin-left: 80px;
+}
+
+.neuro-nav-links a {
+  color: #656660;
+  text-decoration: none;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.neuro-nav-links a:hover {
+  color: var(--n-ink);
+  transform: translateY(-1px);
+}
+
+.neuro-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid #c9c9c1;
+  background: transparent;
+
+  padding: 11px 17px;
+
+  color: var(--n-ink);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.neuro-nav-button:hover {
+  background: var(--n-dark);
+  color: white;
+  border-color: var(--n-dark);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.neuro-hero {
+  min-height: calc(100vh - 82px);
+
+  display: grid;
+  grid-template-columns: 1fr 0.92fr;
+
+  align-items: center;
+
+  gap: clamp(50px, 8vw, 120px);
+
+  padding:
+    clamp(65px, 9vw, 125px)
+    clamp(24px, 7vw, 110px)
+    clamp(75px, 9vw, 125px);
+
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.neuro-hero-left {
+  max-width: 680px;
+}
+
+.neuro-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 30px;
+
+  color: #777870;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.neuro-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #75786d;
+
+  box-shadow:
+    0 0 0 4px rgba(117, 120, 109, 0.08);
+}
+
+.neuro-hero h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(4rem, 7vw, 7.8rem);
+  line-height: 0.88;
+
+  font-weight: 400;
+
+  letter-spacing: -0.065em;
+
+  color: #171816;
+}
+
+.neuro-hero h1 span {
+  color: #767770;
+}
+
+.neuro-hero-description {
+  max-width: 530px;
+
+  margin:
+    37px
+    0
+    0;
+
+  color: #6d6e68;
+
+  font-size: 15px;
+  line-height: 1.8;
+
+  letter-spacing: -0.01em;
+}
+
+.neuro-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  margin-top: 38px;
+}
+
+.neuro-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  border: 0;
+
+  background: var(--n-dark);
+  color: white;
+
+  padding: 15px 22px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.neuro-primary-button:hover {
+  background: #363832;
+  transform: translateY(-2px);
+}
+
+.neuro-secondary-button {
+  color: #565750;
+
+  text-decoration: none;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  border-bottom: 1px solid #a9aaa2;
+
+  padding-bottom: 4px;
+
+  transition:
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.neuro-secondary-button:hover {
+  color: #111;
+  border-color: #111;
+}
+
+/* =========================================================
+   TRUST ROW
+   ========================================================= */
+
+.neuro-trust-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 25px;
+
+  margin-top: 58px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--n-line);
+}
+
+.neuro-trust-row > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #898a82;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+.neuro-trust-row svg {
+  color: #65675f;
+}
+
+/* =========================================================
+   HERO IMAGE
+   ========================================================= */
+
+.neuro-hero-right {
+  width: 100%;
+  max-width: 620px;
+
+  justify-self: end;
+}
+
+.neuro-image-wrap {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 0.88 / 1;
+
+  overflow: hidden;
+
+  background: #d8d8d1;
+}
+
+.neuro-hero-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  filter:
+    saturate(0.45)
+    contrast(0.93)
+    brightness(1.08);
+
+  transform: scale(1.015);
+
+  transition:
+    transform 900ms cubic-bezier(.2,.65,.25,1),
+    filter 600ms ease;
+}
+
+.neuro-image-wrap:hover .neuro-hero-image {
+  transform: scale(1.035);
+
+  filter:
+    saturate(0.55)
+    contrast(0.97)
+    brightness(1.05);
+}
+
+.neuro-image-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246, 245, 241, 0.04),
+      rgba(246, 245, 241, 0.08)
+    );
+
+  pointer-events: none;
+}
+
+.neuro-floating-label {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 12px;
+
+  background: rgba(248, 247, 242, 0.88);
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+
+  backdrop-filter: blur(8px);
+
+  color: #383934;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+.neuro-label-top {
+  top: 22px;
+  left: 22px;
+}
+
+.neuro-label-bottom {
+  right: 22px;
+  bottom: 22px;
+}
+
+.neuro-label-bottom span {
+  color: #8a8b83;
+}
+
+.neuro-label-bottom strong {
+  font-weight: 700;
+}
+
+.label-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #77796e;
+}
+
+.neuro-scan-line {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  top: 48%;
+
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.45);
+
+  opacity: 0;
+
+  transition: opacity 250ms ease;
+}
+
+.neuro-image-wrap:hover .neuro-scan-line {
+  opacity: 1;
+}
+
+.neuro-image-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 12px;
+
+  color: #85867f;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.neuro-intro {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+
+  gap: 40px;
+
+  max-width: 1220px;
+
+  margin: 0 auto;
+
+  padding:
+    145px
+    40px;
+
+  border-top: 1px solid var(--n-line);
+}
+
+.neuro-intro-number {
+  color: #999a92;
+
+  font-family: Georgia, serif;
+
+  font-size: 22px;
+}
+
+.neuro-intro-content {
+  max-width: 800px;
+}
+
+.neuro-section-kicker {
+  margin: 0 0 27px;
+
+  color: #85867f;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.neuro-intro h2,
+.neuro-feature-heading h2,
+.neuro-workflow h2,
+.neuro-final h2 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(3rem, 5vw, 5.5rem);
+
+  line-height: 0.94;
+
+  font-weight: 400;
+
+  letter-spacing: -0.06em;
+}
+
+.neuro-intro-content > p:last-child {
+  max-width: 560px;
+
+  margin-top: 36px;
+
+  color: #73746d;
+
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.neuro-feature-section {
+  max-width: 1220px;
+
+  margin: 0 auto;
+
+  padding:
+    40px
+    40px
+    145px;
+}
+
+.neuro-feature-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 50px;
+
+  padding-bottom: 65px;
+}
+
+.neuro-feature-heading .neuro-section-kicker {
+  margin-bottom: 10px;
+}
+
+.neuro-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-top: 1px solid var(--n-line);
+  border-bottom: 1px solid var(--n-line);
+}
+
+.neuro-feature {
+  min-height: 360px;
+
+  padding: 31px;
+
+  position: relative;
+
+  border-right: 1px solid var(--n-line);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.neuro-feature:last-child {
+  border-right: 0;
+}
+
+.neuro-feature-number {
+  color: #9a9b94;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.neuro-feature-icon {
+  margin-top: 65px;
+
+  color: #565850;
+}
+
+.neuro-feature h3 {
+  margin:
+    22px
+    0
+    10px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 30px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.045em;
+}
+
+.neuro-feature p {
+  max-width: 270px;
+
+  color: #777870;
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+.neuro-feature-arrow {
+  position: absolute;
+
+  right: 31px;
+  bottom: 29px;
+
+  color: #8b8c85;
+
+  font-size: 19px;
+}
+
+/* =========================================================
+   WORKFLOW
+   ========================================================= */
+
+.neuro-workflow {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+
+  gap: 120px;
+
+  padding:
+    145px
+    max(40px, calc((100vw - 1220px) / 2));
+
+  background: #e9e8e2;
+}
+
+.neuro-workflow-left > p:not(.neuro-section-kicker) {
+  max-width: 440px;
+
+  margin-top: 35px;
+
+  color: #6f7069;
+
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.neuro-dark-button {
+  margin-top: 35px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 20px;
+
+  background: var(--n-dark);
+  color: white;
+
+  border: 0;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.neuro-workflow-steps {
+  border-top: 1px solid rgba(32, 34, 31, 0.16);
+}
+
+.neuro-step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+
+  gap: 20px;
+
+  padding: 25px 0;
+
+  border-bottom: 1px solid rgba(32, 34, 31, 0.16);
+}
+
+.neuro-step > span {
+  color: #898a83;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.neuro-step strong {
+  display: block;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 26px;
+  font-weight: 400;
+
+  letter-spacing: -0.035em;
+}
+
+.neuro-step p {
+  margin: 7px 0 0;
+
+  color: #777870;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+.neuro-final {
+  padding: 160px 30px;
+
+  text-align: center;
+
+  background: var(--n-bg);
+}
+
+.neuro-final-inner {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.neuro-final .neuro-section-kicker {
+  margin-bottom: 28px;
+}
+
+.neuro-final-button {
+  margin-top: 45px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.neuro-footer {
+  min-height: 80px;
+
+  padding:
+    0
+    clamp(24px, 5vw, 76px);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  align-items: center;
+
+  border-top: 1px solid var(--n-line);
+
+  color: #85867f;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.neuro-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #3e403b;
+}
+
+.neuro-footer-brand .neuro-brand-mark {
+  width: 27px;
+  height: 27px;
+}
+
+.neuro-footer-center {
+  text-align: center;
+}
+
+.neuro-footer-right {
+  text-align: right;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .neuro-nav-links {
+    display: none;
+  }
+
+  .neuro-hero {
+    grid-template-columns: 1fr;
+
+    gap: 70px;
+  }
+
+  .neuro-hero-right {
+    justify-self: start;
+    max-width: 650px;
+  }
+
+  .neuro-feature-heading {
+    display: block;
+  }
+
+  .neuro-feature-heading h2 {
+    margin-top: 20px;
+  }
+
+  .neuro-workflow {
+    grid-template-columns: 1fr;
+
+    gap: 70px;
+  }
+}
+
+@media (max-width: 720px) {
+  .neuro-nav {
+    height: 70px;
+    padding: 0 20px;
+  }
+
+  .neuro-nav-button {
+    padding: 9px 12px;
+    font-size: 8px;
+  }
+
+  .neuro-hero {
+    min-height: auto;
+
+    padding:
+      65px
+      22px
+      80px;
+  }
+
+  .neuro-hero h1 {
+    font-size: clamp(3.5rem, 15vw, 5.5rem);
+  }
+
+  .neuro-hero-description {
+    font-size: 14px;
+  }
+
+  .neuro-hero-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .neuro-trust-row {
+    gap: 16px;
+  }
+
+  .neuro-trust-row > div {
+    font-size: 7px;
+  }
+
+  .neuro-image-wrap {
+    aspect-ratio: 0.9 / 1;
+  }
+
+  .neuro-intro {
+    grid-template-columns: 1fr;
+
+    padding:
+      90px
+      24px;
+  }
+
+  .neuro-feature-section {
+    padding:
+      20px
+      24px
+      90px;
+  }
+
+  .neuro-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .neuro-feature {
+    min-height: 300px;
+
+    border-right: 0;
+    border-bottom: 1px solid var(--n-line);
+  }
+
+  .neuro-feature:last-child {
+    border-bottom: 0;
+  }
+
+  .neuro-workflow {
+    padding:
+      90px
+      24px;
+  }
+
+  .neuro-final {
+    padding:
+      110px
+      24px;
+  }
+
+  .neuro-footer {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    padding:
+      28px
+      24px;
+
+    text-align: center;
+  }
+
+  .neuro-footer-center,
+  .neuro-footer-right {
+    text-align: center;
+  }
+}
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .neuro-landing *,
+  .neuro-landing *::before,
+  .neuro-landing *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+/* ============================================================
+   NEUROSCAN — EDITORIAL AI LANDING PAGE
+   ============================================================ */
+
+.ns-page {
+  --ns-bg: #f4f3ee;
+  --ns-paper: #faf9f5;
+  --ns-ink: #161715;
+  --ns-muted: #777871;
+  --ns-soft: #a3a39c;
+  --ns-line: #d9d9d1;
+  --ns-dark: #1b1d1a;
+
+  min-height: 100vh;
+
+  background: var(--ns-bg);
+  color: var(--ns-ink);
+
+  overflow-x: hidden;
+
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+.ns-nav {
+  height: 76px;
+
+  padding: 0 42px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+
+  border-bottom: 1px solid var(--ns-line);
+
+  position: relative;
+  z-index: 20;
+}
+
+.ns-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 0;
+  background: transparent;
+
+  padding: 0;
+
+  color: var(--ns-ink);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  cursor: pointer;
+
+  justify-self: start;
+}
+
+.ns-logo-icon {
+  width: 30px;
+  height: 30px;
+
+  border: 1px solid #bdbdb5;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--ns-paper);
+}
+
+.ns-nav-center {
+  display: flex;
+  gap: 25px;
+
+  color: #85867e;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+.ns-workspace {
+  justify-self: end;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 10px 15px;
+
+  border: 1px solid #c7c7bf;
+
+  background: transparent;
+
+  color: var(--ns-ink);
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.ns-workspace:hover {
+  background: var(--ns-dark);
+  color: white;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.ns-hero {
+  min-height: calc(100vh - 76px);
+
+  position: relative;
+
+  padding:
+    65px
+    42px
+    80px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  isolation: isolate;
+}
+
+
+/* subtle grid */
+
+.ns-hero::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: -2;
+
+  opacity: 0.35;
+
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(30, 31, 28, 0.055) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(30, 31, 28, 0.045) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    90px 90px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 92%
+    );
+}
+
+
+/* ============================================================
+   COORDINATES
+   ============================================================ */
+
+.ns-coordinate {
+  position: absolute;
+
+  top: 37px;
+
+  color: #92938b;
+
+  font-size: 7px;
+
+  font-weight: 600;
+
+  line-height: 1.7;
+
+  letter-spacing: 0.13em;
+}
+
+.ns-coordinate-left {
+  left: 42px;
+}
+
+.ns-coordinate-right {
+  right: 42px;
+
+  text-align: right;
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+.ns-title {
+  position: relative;
+
+  z-index: 3;
+
+  width: min(100%, 1100px);
+
+  margin: 35px auto 0;
+
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.ns-title-small {
+  margin-bottom: 7px;
+
+  color: #85867e;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.27em;
+}
+
+.ns-title h1 {
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      7rem,
+      17vw,
+      15rem
+    );
+
+  line-height: 0.72;
+
+  font-weight: 800;
+
+  letter-spacing: -0.095em;
+
+  color: var(--ns-ink);
+}
+
+.ns-title-second {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 24px;
+
+  margin-top: 6px;
+}
+
+.ns-title-second > span:first-child {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      5rem,
+      11vw,
+      10rem
+    );
+
+  line-height: 0.8;
+
+  font-weight: 400;
+
+  font-style: italic;
+
+  letter-spacing: -0.08em;
+
+  color: #75766f;
+}
+
+.ns-title-index {
+  align-self: flex-end;
+
+  margin-bottom: 11px;
+
+  color: #999a92;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+
+/* ============================================================
+   MRI
+   ============================================================ */
+
+.ns-mri {
+  width: min(430px, 34vw);
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  z-index: 2;
+
+  transform:
+    translate(
+      -50%,
+      -37%
+    );
+}
+
+.ns-mri-frame {
+  width: 100%;
+
+  aspect-ratio: 0.82;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #c9c9c2;
+
+  box-shadow:
+    0 25px 80px
+    rgba(30, 31, 27, 0.13);
+}
+
+.ns-mri-frame img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  filter:
+    grayscale(100%)
+    contrast(0.92)
+    brightness(1.13);
+
+  transition:
+    transform 700ms ease,
+    filter 700ms ease;
+}
+
+.ns-mri-frame:hover img {
+  transform: scale(1.025);
+
+  filter:
+    grayscale(100%)
+    contrast(1)
+    brightness(1.07);
+}
+
+.ns-mri-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.06),
+      rgba(20,20,20,0.08)
+    );
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   CROSSHAIR
+   ============================================================ */
+
+.ns-crosshair {
+  position: absolute;
+
+  inset: 50% auto auto 50%;
+
+  width: 90px;
+  height: 90px;
+
+  transform:
+    translate(-50%, -50%);
+
+  opacity: 0.7;
+}
+
+.ns-crosshair::before,
+.ns-crosshair::after {
+  content: "";
+
+  position: absolute;
+
+  background: rgba(255,255,255,0.55);
+}
+
+.ns-crosshair::before {
+  width: 1px;
+
+  height: 100%;
+
+  left: 50%;
+}
+
+.ns-crosshair::after {
+  height: 1px;
+
+  width: 100%;
+
+  top: 50%;
+}
+
+.ns-crosshair span {
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  border: 1px solid rgba(255,255,255,0.7);
+}
+
+.ns-crosshair span:first-child {
+  left: 0;
+  top: 0;
+}
+
+.ns-crosshair span:last-child {
+  right: 0;
+  bottom: 0;
+}
+
+
+/* ============================================================
+   MRI METADATA
+   ============================================================ */
+
+.ns-mri-meta {
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color: rgba(255,255,255,0.85);
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+.ns-meta-top {
+  top: 15px;
+}
+
+.ns-meta-bottom {
+  bottom: 15px;
+}
+
+.ns-image-number {
+  padding-top: 9px;
+
+  color: #888980;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  text-align: right;
+}
+
+
+/* ============================================================
+   STATEMENT
+   ============================================================ */
+
+.ns-statement {
+  position: absolute;
+
+  left: 42px;
+
+  bottom: 76px;
+
+  z-index: 5;
+}
+
+.ns-statement p {
+  margin: 0;
+}
+
+.ns-statement p:first-child {
+  margin-bottom: 9px;
+
+  color: #85867e;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+}
+
+.ns-statement p:last-child {
+  color: #676861;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 17px;
+
+  line-height: 1.3;
+
+  letter-spacing: -0.025em;
+}
+
+
+/* ============================================================
+   MAIN BUTTON
+   ============================================================ */
+
+.ns-main-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  position: relative;
+
+  z-index: 8;
+
+  width: fit-content;
+
+  padding: 5px 5px 5px 18px;
+
+  border: 1px solid #272925;
+
+  background: var(--ns-dark);
+
+  color: white;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.ns-main-button:hover {
+  transform: translateY(-2px);
+
+  background: #30322d;
+}
+
+.ns-button-arrow {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #f1f0eb;
+
+  color: #1d1e1b;
+}
+
+.ns-hero > .ns-main-button {
+  position: absolute;
+
+  right: 42px;
+
+  bottom: 74px;
+}
+
+
+/* ============================================================
+   SCROLL
+   ============================================================ */
+
+.ns-scroll {
+  position: absolute;
+
+  right: 42px;
+
+  bottom: 24px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #969790;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+.ns-scroll-line {
+  width: 32px;
+  height: 1px;
+
+  background: #aaa9a1;
+}
+
+
+/* ============================================================
+   TECHNICAL STRIP
+   ============================================================ */
+
+.ns-strip {
+  min-height: 90px;
+
+  padding: 0 42px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  border-top: 1px solid var(--ns-line);
+
+  border-bottom: 1px solid var(--ns-line);
+
+  background: #ecebe5;
+}
+
+.ns-strip div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 0 22px;
+
+  border-right: 1px solid var(--ns-line);
+
+  color: #666760;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+.ns-strip div:first-child {
+  padding-left: 0;
+}
+
+.ns-strip div:last-child {
+  border-right: 0;
+}
+
+.ns-strip span {
+  color: #9b9c94;
+}
+
+
+/* ============================================================
+   INTELLIGENCE
+   ============================================================ */
+
+.ns-intelligence {
+  min-height: 680px;
+
+  max-width: 1180px;
+
+  margin: auto;
+
+  padding:
+    150px 40px;
+
+  display: grid;
+
+  grid-template-columns: 100px 1fr;
+
+  gap: 80px;
+}
+
+.ns-section-number {
+  color: #999a92;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+.ns-intelligence-main {
+  max-width: 800px;
+}
+
+.ns-section-label {
+  color: #85867e;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+}
+
+.ns-intelligence h2 {
+  margin:
+    28px 0 35px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7.5rem
+    );
+
+  font-weight: 400;
+
+  line-height: 0.88;
+
+  letter-spacing: -0.07em;
+}
+
+.ns-intelligence-main > p {
+  max-width: 480px;
+
+  color: #777870;
+
+  font-size: 14px;
+
+  line-height: 1.85;
+}
+
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+
+.ns-features {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border-top: 1px solid var(--ns-line);
+
+  border-bottom: 1px solid var(--ns-line);
+}
+
+.ns-feature {
+  min-height: 420px;
+
+  padding: 30px;
+
+  position: relative;
+
+  border-right: 1px solid var(--ns-line);
+}
+
+.ns-feature:last-child {
+  border-right: 0;
+}
+
+.ns-feature-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color: #85867e;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+.ns-feature-top svg {
+  color: #62645d;
+}
+
+.ns-feature-content {
+  position: absolute;
+
+  left: 30px;
+
+  bottom: 35px;
+
+  right: 30px;
+}
+
+.ns-feature h3 {
+  margin: 0 0 15px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 48px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.06em;
+}
+
+.ns-feature p {
+  max-width: 290px;
+
+  margin: 0;
+
+  color: #777870;
+
+  font-size: 12px;
+
+  line-height: 1.8;
+}
+
+.ns-feature-arrow {
+  position: absolute;
+
+  right: 30px;
+
+  bottom: 37px;
+
+  color: #8d8e86;
+
+  font-size: 20px;
+}
+
+
+/* ============================================================
+   LARGE STATEMENT
+   ============================================================ */
+
+.ns-large-statement {
+  min-height: 650px;
+
+  max-width: 1180px;
+
+  margin: auto;
+
+  padding:
+    150px 40px;
+
+  display: grid;
+
+  grid-template-columns: 100px 1fr;
+
+  gap: 80px;
+
+  align-items: start;
+}
+
+.ns-large-statement h2 {
+  margin: 30px 0 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      8vw,
+      8rem
+    );
+
+  line-height: 0.86;
+
+  font-weight: 400;
+
+  letter-spacing: -0.075em;
+}
+
+
+/* ============================================================
+   FINAL
+   ============================================================ */
+
+.ns-final {
+  min-height: 650px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  background: var(--ns-dark);
+
+  color: white;
+}
+
+.ns-final-background {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  white-space: nowrap;
+
+  font-size:
+    clamp(
+      9rem,
+      23vw,
+      24rem
+    );
+
+  font-weight: 800;
+
+  letter-spacing: -0.1em;
+
+  color: rgba(255,255,255,0.025);
+
+  pointer-events: none;
+}
+
+.ns-final-content {
+  position: relative;
+
+  z-index: 2;
+}
+
+.ns-final .ns-section-label {
+  color: #8c8d86;
+}
+
+.ns-final h2 {
+  margin:
+    30px 0 45px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7rem
+    );
+
+  font-weight: 400;
+
+  line-height: 0.88;
+
+  letter-spacing: -0.07em;
+}
+
+.ns-final .ns-main-button {
+  margin: auto;
+
+  background: white;
+
+  color: #191a17;
+
+  border-color: white;
+}
+
+.ns-final .ns-button-arrow {
+  background: var(--ns-dark);
+
+  color: white;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.ns-footer {
+  min-height: 76px;
+
+  padding: 0 42px;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr 1fr;
+
+  align-items: center;
+
+  background: var(--ns-dark);
+
+  border-top: 1px solid #373934;
+
+  color: #777970;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.ns-footer-logo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color: #b0b1aa;
+}
+
+.ns-footer-logo .ns-logo-icon {
+  width: 26px;
+  height: 26px;
+
+  border-color: #4a4c46;
+
+  background: transparent;
+}
+
+.ns-footer > div:nth-child(2) {
+  text-align: center;
+}
+
+.ns-footer > div:last-child {
+  text-align: right;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  .ns-nav {
+    padding: 0 22px;
+  }
+
+  .ns-nav-center {
+    display: none;
+  }
+
+  .ns-hero {
+    min-height: 850px;
+
+    padding:
+      80px 22px;
+  }
+
+  .ns-title {
+    margin-top: 70px;
+  }
+
+  .ns-title h1 {
+    font-size: 23vw;
+  }
+
+  .ns-title-second > span:first-child {
+    font-size: 17vw;
+  }
+
+  .ns-mri {
+    width: 42vw;
+
+    min-width: 280px;
+
+    top: 49%;
+  }
+
+  .ns-statement {
+    left: 22px;
+    bottom: 45px;
+  }
+
+  .ns-hero > .ns-main-button {
+    right: 22px;
+    bottom: 45px;
+  }
+
+  .ns-scroll {
+    display: none;
+  }
+
+  .ns-strip {
+    padding: 0 22px;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .ns-strip div {
+    min-height: 70px;
+  }
+
+  .ns-strip div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .ns-intelligence,
+  .ns-large-statement {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+
+    padding:
+      100px 24px;
+  }
+
+  .ns-features {
+    grid-template-columns: 1fr;
+  }
+
+  .ns-feature {
+    min-height: 320px;
+
+    border-right: 0;
+
+    border-bottom: 1px solid var(--ns-line);
+  }
+
+  .ns-feature:last-child {
+    border-bottom: 0;
+  }
+
+  .ns-footer {
+    padding: 20px 22px;
+
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+
+    text-align: center;
+  }
+
+  .ns-footer > div:nth-child(2),
+  .ns-footer > div:last-child {
+    text-align: center;
+  }
+
+  .ns-footer-logo {
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .ns-nav {
+    height: 68px;
+  }
+
+  .ns-workspace {
+    padding: 8px 10px;
+
+    font-size: 7px;
+  }
+
+  .ns-hero {
+    min-height: 790px;
+  }
+
+  .ns-coordinate {
+    display: none;
+  }
+
+  .ns-title {
+    margin-top: 40px;
+  }
+
+  .ns-title h1 {
+    font-size: 22vw;
+  }
+
+  .ns-title-second {
+    gap: 10px;
+  }
+
+  .ns-title-second > span:first-child {
+    font-size: 16vw;
+  }
+
+  .ns-mri {
+    width: 55vw;
+
+    min-width: 230px;
+
+    transform:
+      translate(-50%, -35%);
+  }
+
+  .ns-statement {
+    left: 22px;
+
+    bottom: 35px;
+  }
+
+  .ns-statement p:last-child {
+    font-size: 13px;
+  }
+
+  .ns-hero > .ns-main-button {
+    right: 22px;
+
+    bottom: 35px;
+
+    padding-left: 12px;
+
+    font-size: 7px;
+  }
+
+  .ns-button-arrow {
+    width: 29px;
+    height: 29px;
+  }
+
+  .ns-strip {
+    grid-template-columns: 1fr;
+
+    padding: 0;
+  }
+
+  .ns-strip div {
+    padding: 18px 22px;
+
+    border-right: 0;
+
+    border-bottom: 1px solid var(--ns-line);
+  }
+
+  .ns-strip div:last-child {
+    border-bottom: 0;
+  }
+
+  .ns-intelligence h2,
+  .ns-large-statement h2 {
+    font-size: 18vw;
+  }
+
+  .ns-final {
+    min-height: 560px;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ns-page *,
+  .ns-page *::before,
+  .ns-page *::after {
+    animation: none !important;
+
+    transition: none !important;
+
+    scroll-behavior: auto !important;
+  }
+}
+/* ============================================================
+   NEUROSCAN — CLINICAL INTELLIGENCE LANDING PAGE
+   ============================================================ */
+
+.clinical-page {
+  --clinical-bg: #f7f8f7;
+  --clinical-white: #ffffff;
+  --clinical-ink: #151918;
+  --clinical-muted: #727875;
+  --clinical-soft: #9ca39f;
+  --clinical-line: #dfe3e0;
+  --clinical-blue: #4c7180;
+  --clinical-blue-soft: #e7eff1;
+  --clinical-dark: #172023;
+
+  min-height: 100vh;
+
+  background: var(--clinical-bg);
+  color: var(--clinical-ink);
+
+  overflow-x: hidden;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+.clinical-nav {
+  height: 78px;
+
+  padding: 0 clamp(22px, 4vw, 64px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--clinical-line);
+
+  background: rgba(247, 248, 247, 0.92);
+
+  backdrop-filter: blur(14px);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 50;
+}
+
+.clinical-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(--clinical-ink);
+
+  cursor: pointer;
+}
+
+.clinical-logo-mark {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #cdd4d0;
+
+  border-radius: 9px;
+
+  background: white;
+
+  color: var(--clinical-blue);
+}
+
+.clinical-logo-text {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  letter-spacing: -0.04em;
+}
+
+.clinical-logo-text small {
+  color: var(--clinical-blue);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.clinical-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+}
+
+.clinical-nav-links a {
+  color: #777d79;
+
+  text-decoration: none;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  transition: color 180ms ease;
+}
+
+.clinical-nav-links a:hover {
+  color: var(--clinical-ink);
+}
+
+.clinical-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 16px;
+
+  border: 1px solid #c9cfcc;
+
+  background: transparent;
+
+  color: var(--clinical-ink);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.clinical-login:hover {
+  background: var(--clinical-dark);
+  color: white;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.clinical-hero {
+  max-width: 1450px;
+
+  margin: 0 auto;
+
+  min-height: calc(100vh - 78px);
+
+  padding:
+    clamp(55px, 8vw, 105px)
+    clamp(24px, 5vw, 75px);
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.92fr)
+    minmax(420px, 1fr);
+
+  align-items: center;
+
+  gap: clamp(45px, 8vw, 125px);
+
+  position: relative;
+}
+
+.clinical-hero::before {
+  content: "";
+
+  position: absolute;
+
+  width: 430px;
+  height: 430px;
+
+  right: 7%;
+  top: 20%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(103, 145, 158, 0.10),
+      transparent 67%
+    );
+
+  pointer-events: none;
+}
+
+.clinical-hero-content {
+  max-width: 620px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.clinical-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 28px;
+
+  color: var(--clinical-blue);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.clinical-status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #658b98;
+
+  box-shadow:
+    0 0 0 5px rgba(101, 139, 152, 0.10);
+}
+
+.clinical-hero h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4.5rem,
+      7.8vw,
+      8.8rem
+    );
+
+  line-height: 0.86;
+
+  font-weight: 400;
+
+  letter-spacing: -0.075em;
+}
+
+.clinical-hero h1 span {
+  color: #78817e;
+
+  font-style: italic;
+}
+
+.clinical-hero-text {
+  max-width: 500px;
+
+  margin:
+    34px
+    0
+    0;
+
+  color: var(--clinical-muted);
+
+  font-size: 15px;
+
+  line-height: 1.8;
+}
+
+.clinical-actions {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  margin-top: 35px;
+}
+
+.clinical-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+
+  padding: 14px 19px;
+
+  border: 1px solid var(--clinical-dark);
+
+  background: var(--clinical-dark);
+
+  color: white;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.clinical-primary:hover {
+  transform: translateY(-2px);
+
+  background: #263135;
+}
+
+.clinical-learn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #68706c;
+
+  text-decoration: none;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-learn span {
+  font-size: 14px;
+}
+
+.clinical-mini-stats {
+  display: flex;
+
+  gap: 0;
+
+  margin-top: 65px;
+
+  border-top: 1px solid var(--clinical-line);
+
+  max-width: 530px;
+}
+
+.clinical-mini-stats div {
+  flex: 1;
+
+  padding:
+    17px
+    18px
+    0
+    0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.clinical-mini-stats div + div {
+  padding-left: 18px;
+
+  border-left: 1px solid var(--clinical-line);
+}
+
+.clinical-mini-stats strong {
+  color: #a0a6a2;
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.clinical-mini-stats span {
+  color: #6d7470;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+}
+
+
+/* ============================================================
+   MRI VISUAL
+   ============================================================ */
+
+.clinical-visual {
+  width: 100%;
+  max-width: 650px;
+
+  justify-self: end;
+
+  position: relative;
+}
+
+.clinical-visual-top {
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    var(--clinical-line);
+
+  border-bottom: 0;
+
+  background: white;
+
+  color: #8a918d;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+}
+
+.clinical-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #65756d;
+}
+
+.clinical-live i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #708d7e;
+}
+
+.clinical-mri {
+  width: 100%;
+
+  aspect-ratio: 1.08;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #d2d6d3;
+
+  border: 1px solid var(--clinical-line);
+
+  box-shadow:
+    0 30px 70px
+    rgba(36, 48, 45, 0.10);
+}
+
+.clinical-mri img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  filter:
+    grayscale(100%)
+    contrast(0.95)
+    brightness(1.08);
+
+  transition:
+    transform 700ms ease,
+    filter 700ms ease;
+}
+
+.clinical-mri:hover img {
+  transform: scale(1.025);
+
+  filter:
+    grayscale(100%)
+    contrast(1)
+    brightness(1.03);
+}
+
+.clinical-mri-shade {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.02),
+      rgba(38,58,63,0.08)
+    );
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   CROSSHAIR
+   ============================================================ */
+
+.clinical-crosshair {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 110px;
+  height: 110px;
+
+  transform:
+    translate(-50%, -50%);
+}
+
+.clinical-crosshair::before {
+  content: "";
+
+  position: absolute;
+
+  width: 1px;
+  height: 100%;
+
+  left: 50%;
+
+  background:
+    rgba(255,255,255,0.55);
+}
+
+.clinical-crosshair::after {
+  content: "";
+
+  position: absolute;
+
+  width: 100%;
+  height: 1px;
+
+  top: 50%;
+
+  background:
+    rgba(255,255,255,0.55);
+}
+
+.clinical-crosshair div {
+  position: absolute;
+
+  width: 11px;
+  height: 11px;
+
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+.clinical-crosshair div:first-child {
+  top: 0;
+  left: 0;
+}
+
+.clinical-crosshair div:last-child {
+  bottom: 0;
+  right: 0;
+}
+
+
+/* ============================================================
+   SCAN MARKER
+   ============================================================ */
+
+.clinical-scan-marker {
+  position: absolute;
+
+  left: 52%;
+  top: 42%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  transform:
+    translateY(-50%);
+}
+
+.clinical-scan-marker span {
+  width: 8px;
+  height: 8px;
+
+  border: 1px solid white;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(255,255,255,0.14);
+}
+
+.clinical-scan-marker label {
+  padding: 5px 7px;
+
+  background:
+    rgba(25, 35, 37, 0.68);
+
+  color: white;
+
+  font-size: 6px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.13em;
+
+  backdrop-filter: blur(5px);
+}
+
+
+/* ============================================================
+   IMAGE META
+   ============================================================ */
+
+.clinical-image-meta,
+.clinical-image-bottom {
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+
+  display: flex;
+  justify-content: space-between;
+
+  color: rgba(255,255,255,0.88);
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+}
+
+.clinical-image-meta {
+  top: 15px;
+}
+
+.clinical-image-bottom {
+  bottom: 15px;
+}
+
+
+/* ============================================================
+   AI FLOATING PANEL
+   ============================================================ */
+
+.clinical-ai-panel {
+  width: 265px;
+
+  position: absolute;
+
+  right: -25px;
+
+  bottom: -30px;
+
+  padding: 18px;
+
+  background:
+    rgba(255,255,255,0.94);
+
+  border: 1px solid #d9dfdc;
+
+  box-shadow:
+    0 18px 45px
+    rgba(35, 47, 43, 0.12);
+
+  backdrop-filter: blur(15px);
+
+  z-index: 5;
+}
+
+.clinical-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clinical-ai-header > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.clinical-ai-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--clinical-blue-soft);
+
+  color: var(--clinical-blue);
+
+  border-radius: 6px;
+}
+
+.clinical-ai-header strong {
+  display: block;
+
+  color: #4d5652;
+
+  font-size: 8px;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-header small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #a0a5a2;
+
+  font-size: 6px;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-active {
+  color: #678274;
+
+  font-size: 6px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.clinical-ai-divider {
+  height: 1px;
+
+  margin:
+    15px
+    0
+    4px;
+
+  background: var(--clinical-line);
+}
+
+.clinical-ai-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid #eef0ee;
+
+  color: #969c98;
+
+  font-size: 6px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-row:last-child {
+  border-bottom: 0;
+}
+
+.clinical-ai-row strong {
+  color: #66736d;
+
+  font-size: 6px;
+}
+
+
+/* ============================================================
+   TECHNOLOGY BAR
+   ============================================================ */
+
+.clinical-techbar {
+  min-height: 82px;
+
+  padding:
+    0
+    clamp(24px, 5vw, 75px);
+
+  display: grid;
+
+  grid-template-columns:
+    1.1fr
+    repeat(4, 1fr);
+
+  align-items: center;
+
+  border-top:
+    1px solid
+    var(--clinical-line);
+
+  border-bottom:
+    1px solid
+    var(--clinical-line);
+
+  background: #eef1ef;
+}
+
+.clinical-tech-title {
+  color: #a0a6a2;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+}
+
+.clinical-tech-item {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding-left: 22px;
+
+  border-left:
+    1px solid
+    var(--clinical-line);
+
+  color: #69726e;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-tech-item svg {
+  color: var(--clinical-blue);
+}
+
+
+/* ============================================================
+   TECHNOLOGY SECTION
+   ============================================================ */
+
+.clinical-technology {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding:
+    145px
+    40px;
+}
+
+.clinical-section-head {
+  display: grid;
+
+  grid-template-columns:
+    100px
+    1fr;
+
+  gap: 55px;
+
+  margin-bottom: 70px;
+}
+
+.clinical-section-number {
+  color: #a0a6a2;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+}
+
+.clinical-kicker {
+  color: var(--clinical-blue);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.17em;
+}
+
+.clinical-section-head h2 {
+  margin:
+    24px
+    0
+    0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      3.5rem,
+      6vw,
+      6.5rem
+    );
+
+  line-height: 0.9;
+
+  font-weight: 400;
+
+  letter-spacing: -0.065em;
+}
+
+.clinical-tech-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border-top:
+    1px solid
+    var(--clinical-line);
+
+  border-bottom:
+    1px solid
+    var(--clinical-line);
+}
+
+.clinical-tech-card {
+  min-height: 370px;
+
+  padding: 28px;
+
+  position: relative;
+
+  border-right:
+    1px solid
+    var(--clinical-line);
+}
+
+.clinical-tech-card:last-child {
+  border-right: 0;
+}
+
+.clinical-card-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    #d6ddda;
+
+  border-radius: 8px;
+
+  background: white;
+
+  color: var(--clinical-blue);
+}
+
+.clinical-card-number {
+  position: absolute;
+
+  top: 31px;
+  right: 30px;
+
+  color: #a4aaa6;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.clinical-tech-card h3 {
+  margin:
+    85px
+    0
+    13px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 42px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.055em;
+}
+
+.clinical-tech-card p {
+  max-width: 290px;
+
+  color: #78807c;
+
+  font-size: 12px;
+
+  line-height: 1.8;
+}
+
+.clinical-card-arrow {
+  position: absolute;
+
+  right: 30px;
+  bottom: 27px;
+
+  color: #969d99;
+
+  font-size: 18px;
+}
+
+
+/* ============================================================
+   WORKFLOW
+   ============================================================ */
+
+.clinical-workflow {
+  padding:
+    140px
+    max(40px, calc((100vw - 1250px) / 2));
+
+  display: grid;
+
+  grid-template-columns:
+    0.9fr
+    1.1fr;
+
+  gap: 100px;
+
+  background: #e9eeeb;
+}
+
+.clinical-workflow-copy {
+  max-width: 500px;
+}
+
+.clinical-workflow-copy h2 {
+  margin:
+    24px
+    0
+    28px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      3.5rem,
+      5.5vw,
+      6rem
+    );
+
+  line-height: 0.9;
+
+  font-weight: 400;
+
+  letter-spacing: -0.065em;
+}
+
+.clinical-workflow-copy > p {
+  max-width: 430px;
+
+  color: #737c77;
+
+  font-size: 13px;
+
+  line-height: 1.85;
+}
+
+.clinical-outline-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 32px;
+
+  padding:
+    12px
+    16px;
+
+  border:
+    1px solid
+    #b9c3be;
+
+  background: transparent;
+
+  color: #38433e;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.clinical-workflow-list {
+  border-top:
+    1px solid
+    #cbd4cf;
+}
+
+.clinical-workflow-item {
+  min-height: 105px;
+
+  display: grid;
+
+  grid-template-columns:
+    50px
+    1fr
+    20px;
+
+  gap: 18px;
+
+  align-items: center;
+
+  border-bottom:
+    1px solid
+    #cbd4cf;
+}
+
+.clinical-workflow-item > span {
+  color: #89948e;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.clinical-workflow-item strong {
+  display: block;
+
+  color: #2c3531;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 27px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.04em;
+}
+
+.clinical-workflow-item p {
+  margin: 5px 0 0;
+
+  color: #7c8580;
+
+  font-size: 10px;
+}
+
+.clinical-workflow-item > svg {
+  color: #8b9690;
+}
+
+
+/* ============================================================
+   INTELLIGENCE
+   ============================================================ */
+
+.clinical-intelligence {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding:
+    160px 40px;
+}
+
+.clinical-intelligence-grid {
+  display: grid;
+
+  grid-template-columns:
+    100px
+    1fr;
+
+  gap: 55px;
+}
+
+.clinical-intelligence-grid h2 {
+  margin:
+    25px
+    0
+    30px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7.5rem
+    );
+
+  line-height: 0.87;
+
+  font-weight: 400;
+
+  letter-spacing: -0.07em;
+}
+
+.clinical-intelligence-grid p {
+  max-width: 480px;
+
+  color: #757d79;
+
+  font-size: 14px;
+
+  line-height: 1.85;
+}
+
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+
+.clinical-final {
+  padding:
+    130px
+    max(40px, calc((100vw - 1250px) / 2));
+
+  background: var(--clinical-dark);
+
+  color: white;
+}
+
+.clinical-final-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    0.65fr;
+
+  gap: 100px;
+
+  align-items: end;
+}
+
+.clinical-final h2 {
+  margin:
+    25px
+    0
+    0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7rem
+    );
+
+  line-height: 0.88;
+
+  font-weight: 400;
+
+  letter-spacing: -0.07em;
+}
+
+.clinical-final-right p {
+  max-width: 390px;
+
+  margin: 0;
+
+  color: #9aa39f;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+}
+
+.clinical-final-button {
+  margin-top: 30px;
+
+  background: white;
+
+  color: var(--clinical-dark);
+
+  border-color: white;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.clinical-footer {
+  min-height: 76px;
+
+  padding:
+    0
+    clamp(22px, 5vw, 65px);
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+
+  align-items: center;
+
+  background: var(--clinical-dark);
+
+  border-top:
+    1px solid
+    #343c39;
+
+  color: #737d78;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+.clinical-footer-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color: #aeb6b2;
+}
+
+.clinical-footer-brand .clinical-logo-mark {
+  width: 27px;
+  height: 27px;
+
+  background: transparent;
+
+  border-color: #46504c;
+
+  color: #aeb6b2;
+}
+
+.clinical-footer > span:nth-child(2) {
+  text-align: center;
+}
+
+.clinical-footer > span:last-child {
+  text-align: right;
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+  .clinical-nav-links {
+    display: none;
+  }
+
+  .clinical-hero {
+    grid-template-columns: 1fr;
+
+    gap: 70px;
+  }
+
+  .clinical-hero-content {
+    max-width: 700px;
+  }
+
+  .clinical-visual {
+    justify-self: center;
+
+    max-width: 680px;
+  }
+
+  .clinical-techbar {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .clinical-tech-title {
+    display: none;
+  }
+
+  .clinical-tech-item {
+    min-height: 65px;
+  }
+
+  .clinical-workflow {
+    grid-template-columns: 1fr;
+
+    gap: 65px;
+  }
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .clinical-nav {
+    height: 68px;
+
+    padding: 0 18px;
+  }
+
+  .clinical-login {
+    padding:
+      9px
+      11px;
+
+    font-size: 7px;
+  }
+
+  .clinical-hero {
+    min-height: auto;
+
+    padding:
+      65px
+      20px
+      90px;
+
+    gap: 55px;
+  }
+
+  .clinical-hero h1 {
+    font-size: 17vw;
+  }
+
+  .clinical-hero-text {
+    font-size: 13px;
+  }
+
+  .clinical-actions {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .clinical-mini-stats {
+    margin-top: 45px;
+  }
+
+  .clinical-mini-stats span {
+    font-size: 6px;
+  }
+
+  .clinical-ai-panel {
+    width: 220px;
+
+    right: 10px;
+
+    bottom: -45px;
+  }
+
+  .clinical-techbar {
+    grid-template-columns: 1fr;
+
+    padding: 0;
+  }
+
+  .clinical-tech-item {
+    padding: 20px;
+
+    border-left: 0;
+
+    border-bottom:
+      1px solid
+      var(--clinical-line);
+  }
+
+  .clinical-technology {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-section-head {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .clinical-section-head h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-tech-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clinical-tech-card {
+    min-height: 320px;
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid
+      var(--clinical-line);
+  }
+
+  .clinical-tech-card:last-child {
+    border-bottom: 0;
+  }
+
+  .clinical-workflow {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-workflow-copy h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-intelligence {
+    padding:
+      110px
+      22px;
+  }
+
+  .clinical-intelligence-grid {
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+  }
+
+  .clinical-intelligence-grid h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-final {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-final-grid {
+    grid-template-columns: 1fr;
+
+    gap: 60px;
+  }
+
+  .clinical-final h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-footer {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    padding:
+      25px 20px;
+
+    text-align: center;
+  }
+
+  .clinical-footer-brand {
+    justify-content: center;
+  }
+
+  .clinical-footer > span:nth-child(2),
+  .clinical-footer > span:last-child {
+    text-align: center;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .clinical-page *,
+  .clinical-page *::before,
+  .clinical-page *::after {
+    transition: none !important;
+
+    animation: none !important;
+
+    scroll-behavior: auto !important;
+  }
+}
+/* ============================================================
+   NEUROSCAN — COLOR CLINICAL INTELLIGENCE
+   ============================================================ */
+
+.clinical-page {
+  --clinical-bg: #f4f8fc;
+  --clinical-white: #ffffff;
+
+  --clinical-ink: #172033;
+  --clinical-heading: #12213f;
+
+  --clinical-muted: #64748b;
+  --clinical-soft: #94a3b8;
+
+  --clinical-line: #dce6f0;
+
+  --clinical-blue: #2563eb;
+  --clinical-blue-dark: #1d4ed8;
+
+  --clinical-cyan: #06b6d4;
+  --clinical-teal: #0f9f9a;
+  --clinical-violet: #7c3aed;
+
+  --clinical-blue-soft: #e8f1ff;
+  --clinical-cyan-soft: #e7fafc;
+  --clinical-violet-soft: #f1ebff;
+
+  --clinical-dark: #172554;
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(37, 99, 235, 0.08),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 15% 65%,
+      rgba(6, 182, 212, 0.06),
+      transparent 25%
+    ),
+    var(--clinical-bg);
+
+  color: var(--clinical-ink);
+
+  overflow-x: hidden;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+.clinical-nav {
+  height: 78px;
+
+  padding: 0 clamp(22px, 4vw, 64px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--clinical-line);
+
+  background: rgba(255, 255, 255, 0.82);
+
+  backdrop-filter: blur(16px);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 50;
+}
+
+.clinical-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(--clinical-ink);
+
+  cursor: pointer;
+}
+
+.clinical-logo-mark {
+  width: 35px;
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #c9dcf5;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eef5ff,
+      #e8fbff
+    );
+
+  color: var(--clinical-blue);
+
+  box-shadow:
+    0 5px 18px
+    rgba(37, 99, 235, 0.08);
+}
+
+.clinical-logo-text {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+
+  font-size: 16px;
+
+  font-weight: 750;
+
+  letter-spacing: -0.04em;
+}
+
+.clinical-logo-text small {
+  color: var(--clinical-blue);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.clinical-nav-links {
+  display: flex;
+  align-items: center;
+
+  gap: 38px;
+}
+
+.clinical-nav-links a {
+  color: #68758a;
+
+  text-decoration: none;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  transition:
+    color 180ms ease;
+}
+
+.clinical-nav-links a:hover {
+  color: var(--clinical-blue);
+}
+
+.clinical-login {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 11px 17px;
+
+  border: 1px solid #bcd2ef;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #0ea5e9
+    );
+
+  color: white;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 20px
+    rgba(37, 99, 235, 0.16);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.clinical-login:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 25px
+    rgba(37, 99, 235, 0.23);
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.clinical-hero {
+  max-width: 1450px;
+
+  margin: 0 auto;
+
+  min-height: calc(100vh - 78px);
+
+  padding:
+    clamp(55px, 8vw, 105px)
+    clamp(24px, 5vw, 75px);
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.92fr)
+    minmax(420px, 1fr);
+
+  align-items: center;
+
+  gap:
+    clamp(45px, 8vw, 125px);
+
+  position: relative;
+}
+
+.clinical-hero::before {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  right: 5%;
+  top: 15%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(37, 99, 235, 0.11),
+      rgba(6, 182, 212, 0.05),
+      transparent 68%
+    );
+
+  filter: blur(2px);
+
+  pointer-events: none;
+}
+
+.clinical-hero-content {
+  max-width: 620px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.clinical-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 28px;
+
+  color: var(--clinical-blue);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.clinical-status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--clinical-cyan);
+
+  box-shadow:
+    0 0 0 5px
+    rgba(6, 182, 212, 0.11),
+    0 0 14px
+    rgba(6, 182, 212, 0.35);
+}
+
+.clinical-hero h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4.5rem,
+      7.8vw,
+      8.8rem
+    );
+
+  line-height: 0.86;
+
+  font-weight: 400;
+
+  letter-spacing: -0.075em;
+
+  color: var(--clinical-heading);
+}
+
+.clinical-hero h1 span {
+  color: var(--clinical-blue);
+
+  font-style: italic;
+}
+
+.clinical-hero-text {
+  max-width: 500px;
+
+  margin:
+    34px
+    0
+    0;
+
+  color: var(--clinical-muted);
+
+  font-size: 15px;
+
+  line-height: 1.8;
+}
+
+.clinical-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 25px;
+
+  margin-top: 35px;
+}
+
+.clinical-primary {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 11px;
+
+  padding:
+    14px
+    19px;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--clinical-blue),
+      #0ea5e9
+    );
+
+  color: white;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px
+    rgba(37, 99, 235, 0.19);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.clinical-primary:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 32px
+    rgba(37, 99, 235, 0.25);
+}
+
+.clinical-learn {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #68758a;
+
+  text-decoration: none;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+
+  transition:
+    color 180ms ease;
+}
+
+.clinical-learn:hover {
+  color: var(--clinical-blue);
+}
+
+.clinical-learn span {
+  font-size: 14px;
+}
+
+
+/* ============================================================
+   MINI STATS
+   ============================================================ */
+
+.clinical-mini-stats {
+  display: flex;
+
+  gap: 0;
+
+  margin-top: 65px;
+
+  border-top:
+    1px solid
+    var(--clinical-line);
+
+  max-width: 530px;
+}
+
+.clinical-mini-stats div {
+  flex: 1;
+
+  padding:
+    17px
+    18px
+    0
+    0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.clinical-mini-stats div + div {
+  padding-left: 18px;
+
+  border-left:
+    1px solid
+    var(--clinical-line);
+}
+
+.clinical-mini-stats strong {
+  color: var(--clinical-blue);
+
+  font-size: 9px;
+
+  font-weight: 800;
+}
+
+.clinical-mini-stats span {
+  color: #6d7b8e;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+}
+
+
+/* ============================================================
+   MRI VISUAL
+   ============================================================ */
+
+.clinical-visual {
+  width: 100%;
+
+  max-width: 650px;
+
+  justify-self: end;
+
+  position: relative;
+}
+
+.clinical-visual-top {
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    #d4e1ed;
+
+  border-bottom: 0;
+
+  border-radius:
+    12px
+    12px
+    0
+    0;
+
+  background: white;
+
+  color: #8190a1;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+}
+
+.clinical-live {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--clinical-teal);
+}
+
+.clinical-live i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #18b59d;
+
+  box-shadow:
+    0 0 8px
+    rgba(24, 181, 157, 0.45);
+}
+
+.clinical-mri {
+  width: 100%;
+
+  aspect-ratio: 1.08;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #d8e7ed;
+
+  border:
+    1px solid
+    #d4e1ed;
+
+  box-shadow:
+    0 30px 70px
+    rgba(37, 99, 235, 0.12);
+}
+
+.clinical-mri img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  filter:
+    grayscale(72%)
+    sepia(8%)
+    hue-rotate(155deg)
+    saturate(1.2)
+    contrast(0.94)
+    brightness(1.08);
+
+  transition:
+    transform 700ms ease,
+    filter 700ms ease;
+}
+
+.clinical-mri:hover img {
+  transform: scale(1.025);
+
+  filter:
+    grayscale(55%)
+    sepia(5%)
+    hue-rotate(155deg)
+    saturate(1.3)
+    contrast(1)
+    brightness(1.03);
+}
+
+.clinical-mri-shade {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(37, 99, 235, 0.08),
+      transparent 35%,
+      rgba(6, 182, 212, 0.07)
+    );
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   MRI CROSSHAIR
+   ============================================================ */
+
+.clinical-crosshair {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 110px;
+  height: 110px;
+
+  transform:
+    translate(-50%, -50%);
+}
+
+.clinical-crosshair::before {
+  content: "";
+
+  position: absolute;
+
+  width: 1px;
+
+  height: 100%;
+
+  left: 50%;
+
+  background:
+    rgba(37, 99, 235, 0.55);
+}
+
+.clinical-crosshair::after {
+  content: "";
+
+  position: absolute;
+
+  width: 100%;
+
+  height: 1px;
+
+  top: 50%;
+
+  background:
+    rgba(37, 99, 235, 0.55);
+}
+
+.clinical-crosshair div {
+  position: absolute;
+
+  width: 11px;
+  height: 11px;
+
+  border:
+    1px solid
+    rgba(37, 99, 235, 0.8);
+}
+
+.clinical-crosshair div:first-child {
+  top: 0;
+  left: 0;
+}
+
+.clinical-crosshair div:last-child {
+  bottom: 0;
+  right: 0;
+}
+
+
+/* ============================================================
+   MRI SCAN MARKER
+   ============================================================ */
+
+.clinical-scan-marker {
+  position: absolute;
+
+  left: 52%;
+  top: 42%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  transform:
+    translateY(-50%);
+}
+
+.clinical-scan-marker span {
+  width: 9px;
+  height: 9px;
+
+  border:
+    2px solid
+    #06b6d4;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,0.8);
+
+  box-shadow:
+    0 0 0 5px
+    rgba(6,182,212,0.13),
+    0 0 15px
+    rgba(6,182,212,0.4);
+}
+
+.clinical-scan-marker label {
+  padding:
+    6px
+    8px;
+
+  background:
+    rgba(255,255,255,0.9);
+
+  color:
+    #2563eb;
+
+  font-size: 6px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+
+  border:
+    1px solid
+    rgba(37,99,235,0.15);
+
+  backdrop-filter: blur(8px);
+}
+
+
+/* ============================================================
+   IMAGE META
+   ============================================================ */
+
+.clinical-image-meta,
+.clinical-image-bottom {
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color:
+    rgba(255,255,255,0.95);
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+
+  text-shadow:
+    0 1px 5px
+    rgba(0,0,0,0.2);
+}
+
+.clinical-image-meta {
+  top: 15px;
+}
+
+.clinical-image-bottom {
+  bottom: 15px;
+}
+
+
+/* ============================================================
+   AI PANEL
+   ============================================================ */
+
+.clinical-ai-panel {
+  width: 265px;
+
+  position: absolute;
+
+  right: -25px;
+
+  bottom: -30px;
+
+  padding: 18px;
+
+  background:
+    rgba(255,255,255,0.96);
+
+  border:
+    1px solid
+    #d5e3f2;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 20px 50px
+    rgba(37, 99, 235, 0.13);
+
+  backdrop-filter: blur(15px);
+
+  z-index: 5;
+}
+
+.clinical-ai-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.clinical-ai-header > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.clinical-ai-icon {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e9f0ff,
+      #e7fbff
+    );
+
+  color:
+    var(--clinical-blue);
+
+  border-radius: 7px;
+}
+
+.clinical-ai-header strong {
+  display: block;
+
+  color:
+    #3c4b63;
+
+  font-size: 8px;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-header small {
+  display: block;
+
+  margin-top: 3px;
+
+  color:
+    #9aa6b5;
+
+  font-size: 6px;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-active {
+  color:
+    var(--clinical-teal);
+
+  font-size: 6px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.clinical-ai-divider {
+  height: 1px;
+
+  margin:
+    15px
+    0
+    4px;
+
+  background:
+    #e2eaf2;
+}
+
+.clinical-ai-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 8px 0;
+
+  border-bottom:
+    1px solid
+    #edf2f6;
+
+  color:
+    #8996a7;
+
+  font-size: 6px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-ai-row:last-child {
+  border-bottom: 0;
+}
+
+.clinical-ai-row strong {
+  color:
+    var(--clinical-blue);
+
+  font-size: 6px;
+}
+
+
+/* ============================================================
+   TECHNOLOGY BAR
+   ============================================================ */
+
+.clinical-techbar {
+  min-height: 82px;
+
+  padding:
+    0
+    clamp(24px, 5vw, 75px);
+
+  display: grid;
+
+  grid-template-columns:
+    1.1fr
+    repeat(4, 1fr);
+
+  align-items: center;
+
+  border-top:
+    1px solid
+    var(--clinical-line);
+
+  border-bottom:
+    1px solid
+    var(--clinical-line);
+
+  background:
+    linear-gradient(
+      90deg,
+      #eef5ff,
+      #effcff,
+      #f4f0ff
+    );
+}
+
+.clinical-tech-title {
+  color:
+    #8b98aa;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+}
+
+.clinical-tech-item {
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding-left: 22px;
+
+  border-left:
+    1px solid
+    var(--clinical-line);
+
+  color:
+    #66758a;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+.clinical-tech-item svg {
+  color:
+    var(--clinical-blue);
+}
+
+
+/* ============================================================
+   TECHNOLOGY SECTION
+   ============================================================ */
+
+.clinical-technology {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding:
+    145px 40px;
+}
+
+.clinical-section-head {
+  display: grid;
+
+  grid-template-columns:
+    100px
+    1fr;
+
+  gap: 55px;
+
+  margin-bottom: 70px;
+}
+
+.clinical-section-number {
+  color:
+    #9ba7b7;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+}
+
+.clinical-kicker {
+  color:
+    var(--clinical-blue);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.17em;
+}
+
+.clinical-section-head h2 {
+  margin:
+    24px 0 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      3.5rem,
+      6vw,
+      6.5rem
+    );
+
+  line-height: 0.9;
+
+  font-weight: 400;
+
+  letter-spacing: -0.065em;
+
+  color:
+    var(--clinical-heading);
+}
+
+.clinical-tech-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border-top:
+    1px solid
+    var(--clinical-line);
+
+  border-bottom:
+    1px solid
+    var(--clinical-line);
+}
+
+.clinical-tech-card {
+  min-height: 370px;
+
+  padding: 28px;
+
+  position: relative;
+
+  border-right:
+    1px solid
+    var(--clinical-line);
+
+  background:
+    rgba(255,255,255,0.35);
+
+  transition:
+    background 220ms ease,
+    transform 220ms ease;
+}
+
+.clinical-tech-card:hover {
+  background: white;
+
+  transform: translateY(-3px);
+}
+
+.clinical-tech-card:last-child {
+  border-right: 0;
+}
+
+.clinical-card-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+    1px solid
+    #cfe0f4;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #edf4ff,
+      #e9fbff
+    );
+
+  color:
+    var(--clinical-blue);
+}
+
+.clinical-card-number {
+  position: absolute;
+
+  top: 31px;
+  right: 30px;
+
+  color:
+    #a1adbd;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.clinical-tech-card h3 {
+  margin:
+    85px 0 13px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 42px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.055em;
+
+  color:
+    var(--clinical-heading);
+}
+
+.clinical-tech-card p {
+  max-width: 290px;
+
+  color:
+    #78869a;
+
+  font-size: 12px;
+
+  line-height: 1.8;
+}
+
+.clinical-card-arrow {
+  position: absolute;
+
+  right: 30px;
+  bottom: 27px;
+
+  color:
+    var(--clinical-blue);
+
+  font-size: 18px;
+}
+
+
+/* ============================================================
+   WORKFLOW
+   ============================================================ */
+
+.clinical-workflow {
+  padding:
+    140px
+    max(40px, calc((100vw - 1250px) / 2));
+
+  display: grid;
+
+  grid-template-columns:
+    0.9fr
+    1.1fr;
+
+  gap: 100px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eaf2ff,
+      #eafaf9
+    );
+}
+
+.clinical-workflow-copy {
+  max-width: 500px;
+}
+
+.clinical-workflow-copy h2 {
+  margin:
+    24px
+    0
+    28px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      3.5rem,
+      5.5vw,
+      6rem
+    );
+
+  line-height: 0.9;
+
+  font-weight: 400;
+
+  letter-spacing: -0.065em;
+
+  color:
+    var(--clinical-heading);
+}
+
+.clinical-workflow-copy > p {
+  max-width: 430px;
+
+  color:
+    #687a8c;
+
+  font-size: 13px;
+
+  line-height: 1.85;
+}
+
+.clinical-outline-button {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 32px;
+
+  padding:
+    12px
+    16px;
+
+  border:
+    1px solid
+    #abc7e6;
+
+  border-radius: 7px;
+
+  background:
+    rgba(255,255,255,0.55);
+
+  color:
+    var(--clinical-blue);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.clinical-workflow-list {
+  border-top:
+    1px solid
+    #c9d9e8;
+}
+
+.clinical-workflow-item {
+  min-height: 105px;
+
+  display: grid;
+
+  grid-template-columns:
+    50px
+    1fr
+    20px;
+
+  gap: 18px;
+
+  align-items: center;
+
+  border-bottom:
+    1px solid
+    #c9d9e8;
+}
+
+.clinical-workflow-item > span {
+  color:
+    #8498ad;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.clinical-workflow-item strong {
+  display: block;
+
+  color:
+    #263a55;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 27px;
+
+  font-weight: 400;
+
+  letter-spacing: -0.04em;
+}
+
+.clinical-workflow-item p {
+  margin:
+    5px 0 0;
+
+  color:
+    #73879b;
+
+  font-size: 10px;
+}
+
+.clinical-workflow-item > svg {
+  color:
+    var(--clinical-blue);
+}
+
+
+/* ============================================================
+   INTELLIGENCE
+   ============================================================ */
+
+.clinical-intelligence {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding:
+    160px 40px;
+}
+
+.clinical-intelligence-grid {
+  display: grid;
+
+  grid-template-columns:
+    100px
+    1fr;
+
+  gap: 55px;
+}
+
+.clinical-intelligence-grid h2 {
+  margin:
+    25px
+    0
+    30px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7.5rem
+    );
+
+  line-height: 0.87;
+
+  font-weight: 400;
+
+  letter-spacing: -0.07em;
+
+  color:
+    var(--clinical-heading);
+}
+
+.clinical-intelligence-grid p {
+  max-width: 480px;
+
+  color:
+    #758397;
+
+  font-size: 14px;
+
+  line-height: 1.85;
+}
+
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+
+.clinical-final {
+  padding:
+    130px
+    max(40px, calc((100vw - 1250px) / 2));
+
+  background:
+    linear-gradient(
+      135deg,
+      #172554,
+      #164e63
+    );
+
+  color: white;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.clinical-final::before {
+  content: "";
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  right: -100px;
+  top: -170px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(6,182,212,0.22),
+      transparent 65%
+    );
+}
+
+.clinical-final::after {
+  content: "";
+
+  position: absolute;
+
+  width: 350px;
+  height: 350px;
+
+  left: -120px;
+  bottom: -180px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(124,58,237,0.18),
+      transparent 65%
+    );
+}
+
+.clinical-final-grid {
+  position: relative;
+
+  z-index: 2;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    0.65fr;
+
+  gap: 100px;
+
+  align-items: end;
+}
+
+.clinical-final h2 {
+  margin:
+    25px 0 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      4rem,
+      7vw,
+      7rem
+    );
+
+  line-height: 0.88;
+
+  font-weight: 400;
+
+  letter-spacing: -0.07em;
+}
+
+.clinical-final-right p {
+  max-width: 390px;
+
+  margin: 0;
+
+  color:
+    #b8c7dc;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+}
+
+.clinical-final-button {
+  margin-top: 30px;
+
+  background: white;
+
+  color:
+    var(--clinical-blue-dark);
+
+  border-color: white;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0,0,0,0.15);
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.clinical-footer {
+  min-height: 76px;
+
+  padding:
+    0
+    clamp(22px, 5vw, 65px);
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1fr;
+
+  align-items: center;
+
+  background:
+    #101d3d;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  color:
+    #71819d;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+.clinical-footer-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color:
+    #c6d4e8;
+}
+
+.clinical-footer-brand .clinical-logo-mark {
+  width: 27px;
+  height: 27px;
+
+  background:
+    rgba(255,255,255,0.05);
+
+  border-color:
+    rgba(255,255,255,0.12);
+
+  color:
+    #8ed9e8;
+}
+
+.clinical-footer > span:nth-child(2) {
+  text-align: center;
+}
+
+.clinical-footer > span:last-child {
+  text-align: right;
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+  .clinical-nav-links {
+    display: none;
+  }
+
+  .clinical-hero {
+    grid-template-columns: 1fr;
+
+    gap: 70px;
+  }
+
+  .clinical-hero-content {
+    max-width: 700px;
+  }
+
+  .clinical-visual {
+    justify-self: center;
+
+    max-width: 680px;
+  }
+
+  .clinical-techbar {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .clinical-tech-title {
+    display: none;
+  }
+
+  .clinical-tech-item {
+    min-height: 65px;
+  }
+
+  .clinical-workflow {
+    grid-template-columns: 1fr;
+
+    gap: 65px;
+  }
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .clinical-nav {
+    height: 68px;
+
+    padding: 0 18px;
+  }
+
+  .clinical-login {
+    padding:
+      9px
+      11px;
+
+    font-size: 7px;
+  }
+
+  .clinical-hero {
+    min-height: auto;
+
+    padding:
+      65px
+      20px
+      90px;
+
+    gap: 55px;
+  }
+
+  .clinical-hero h1 {
+    font-size: 17vw;
+  }
+
+  .clinical-hero-text {
+    font-size: 13px;
+  }
+
+  .clinical-actions {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .clinical-mini-stats {
+    margin-top: 45px;
+  }
+
+  .clinical-mini-stats span {
+    font-size: 6px;
+  }
+
+  .clinical-ai-panel {
+    width: 220px;
+
+    right: 10px;
+
+    bottom: -45px;
+  }
+
+  .clinical-techbar {
+    grid-template-columns: 1fr;
+
+    padding: 0;
+  }
+
+  .clinical-tech-item {
+    padding: 20px;
+
+    border-left: 0;
+
+    border-bottom:
+      1px solid
+      var(--clinical-line);
+  }
+
+  .clinical-technology {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-section-head {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .clinical-section-head h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-tech-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clinical-tech-card {
+    min-height: 320px;
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid
+      var(--clinical-line);
+  }
+
+  .clinical-tech-card:last-child {
+    border-bottom: 0;
+  }
+
+  .clinical-workflow {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-workflow-copy h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-intelligence {
+    padding:
+      110px
+      22px;
+  }
+
+  .clinical-intelligence-grid {
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+  }
+
+  .clinical-intelligence-grid h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-final {
+    padding:
+      100px
+      22px;
+  }
+
+  .clinical-final-grid {
+    grid-template-columns: 1fr;
+
+    gap: 60px;
+  }
+
+  .clinical-final h2 {
+    font-size: 17vw;
+  }
+
+  .clinical-footer {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    padding:
+      25px 20px;
+
+    text-align: center;
+  }
+
+  .clinical-footer-brand {
+    justify-content: center;
+  }
+
+  .clinical-footer > span:nth-child(2),
+  .clinical-footer > span:last-child {
+    text-align: center;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .clinical-page *,
+  .clinical-page *::before,
+  .clinical-page *::after {
+    transition: none !important;
+
+    animation: none !important;
+
+    scroll-behavior: auto !important;
+  }
+}
+@import "tailwindcss";
+
+/* =========================================================
+   NEUROSCAN AI — GLOBAL THEME
+   ========================================================= */
+
+:root {
+  --neuro-bg: #F4F8FC;
+  --neuro-card: #FFFFFF;
+
+  --neuro-primary: #2563EB;
+  --neuro-primary-dark: #1D4ED8;
+
+  --neuro-cyan: #06B6D4;
+  --neuro-teal: #0F9F9A;
+  --neuro-violet: #7C3AED;
+
+  --neuro-navy: #172554;
+  --neuro-text: #172033;
+  --neuro-muted: #64748B;
+  --neuro-border: #DCE6F0;
+
+  --neuro-blue-light: #EFF6FF;
+  --neuro-cyan-light: #ECFEFF;
+  --neuro-teal-light: #ECFDF5;
+  --neuro-violet-light: #F5F3FF;
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family:
+      'Plus Jakarta Sans',
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
+
+    background: var(--neuro-bg);
+    color: var(--neuro-text);
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: #BFDBFE;
+    color: #172554;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre,
+  .font-mono {
+    font-family:
+      'JetBrains Mono',
+      'SFMono-Regular',
+      Consolas,
+      monospace;
+  }
+}
+
+
+/* =========================================================
+   NEUROSCAN LANDING PAGE
+   ========================================================= */
+
+.landing-nav {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--neuro-border);
+
+  box-shadow:
+    0 10px 35px rgba(37, 99, 235, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.landing-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 8px 13px;
+
+  border-radius: 999px;
+  border: 1px solid var(--neuro-border);
+
+  background: rgba(255, 255, 255, 0.7);
+
+  color: var(--neuro-muted);
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.landing-mri-card {
+  filter: drop-shadow(
+    0 30px 50px rgba(37, 99, 235, 0.12)
+  );
+
+  animation: neuroFloat 6s ease-in-out infinite;
+}
+
+@keyframes neuroFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+
+/* =========================================================
+   DASHBOARD GLOBAL
+   ========================================================= */
+
+#root {
+  min-height: 100vh;
+  background: var(--neuro-bg);
+}
+
+.editorial-ui {
+  background: var(--neuro-bg) !important;
+  color: var(--neuro-text);
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.editorial-ui aside {
+  background: #FFFFFF !important;
+  border-color: var(--neuro-border) !important;
+}
+
+.editorial-ui aside .text-slate-900 {
+  color: var(--neuro-navy) !important;
+}
+
+.editorial-ui aside .text-slate-500,
+.editorial-ui aside .text-slate-400 {
+  color: var(--neuro-muted) !important;
+}
+
+
+/* Sidebar navigation */
+
+.editorial-ui aside button,
+.editorial-ui aside a {
+  transition: all 0.2s ease;
+}
+
+
+/* Active sidebar item */
+
+.editorial-ui aside .bg-slate-200,
+.editorial-ui aside .bg-slate-100 {
+  background: var(--neuro-blue-light) !important;
+  color: var(--neuro-primary) !important;
+  border-color: #DBEAFE !important;
+}
+
+
+/* Sidebar hover */
+
+.editorial-ui aside button:hover,
+.editorial-ui aside a:hover {
+  background: var(--neuro-blue-light) !important;
+  color: var(--neuro-primary) !important;
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.editorial-ui header {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: var(--neuro-border) !important;
+}
+
+.editorial-ui header .text-slate-900 {
+  color: var(--neuro-navy) !important;
+}
+
+.editorial-ui header .text-slate-500 {
+  color: var(--neuro-muted) !important;
+}
+
+
+/* How To Use */
+
+.editorial-ui header button {
+  background: var(--neuro-blue-light) !important;
+  color: var(--neuro-primary) !important;
+  border-color: #DBEAFE !important;
+}
+
+.editorial-ui header button:hover {
+  background: #DBEAFE !important;
+}
+
+
+/* =========================================================
+   MAIN DASHBOARD
+   ========================================================= */
+
+.editorial-ui main {
+  background: transparent;
+}
+
+.editorial-ui main .text-slate-900 {
+  color: var(--neuro-navy) !important;
+}
+
+.editorial-ui main .text-slate-800 {
+  color: var(--neuro-navy) !important;
+}
+
+.editorial-ui main .text-slate-700 {
+  color: var(--neuro-text) !important;
+}
+
+.editorial-ui main .text-slate-600,
+.editorial-ui main .text-slate-500 {
+  color: var(--neuro-muted) !important;
+}
+
+
+/* =========================================================
+   DASHBOARD CARDS
+   ========================================================= */
+
+.editorial-ui .bg-white {
+  background: #FFFFFF !important;
+}
+
+.editorial-ui .border-slate-200,
+.editorial-ui .border-slate-200\/50,
+.editorial-ui .border-slate-200\/60,
+.editorial-ui .border-slate-200\/70,
+.editorial-ui .border-slate-200\/80 {
+  border-color: var(--neuro-border) !important;
+}
+
+
+/* =========================================================
+   STATISTIC CARDS
+   ========================================================= */
+
+.editorial-ui .bg-blue-50 {
+  background: var(--neuro-blue-light) !important;
+}
+
+.editorial-ui .text-blue-500,
+.editorial-ui .text-blue-600,
+.editorial-ui .text-blue-700 {
+  color: var(--neuro-primary) !important;
+}
+
+
+/* =========================================================
+   PRIMARY BLUE
+   ========================================================= */
+
+.editorial-ui .bg-blue-500,
+.editorial-ui .bg-blue-600,
+.editorial-ui .bg-indigo-600 {
+  background: var(--neuro-primary) !important;
+}
+
+.editorial-ui .bg-blue-500:hover,
+.editorial-ui .bg-blue-600:hover,
+.editorial-ui .bg-indigo-600:hover {
+  background: var(--neuro-primary-dark) !important;
+}
+
+
+/* =========================================================
+   INDIGO → NEUROSCAN BLUE
+   ========================================================= */
+
+.editorial-ui .text-indigo-400,
+.editorial-ui .text-indigo-500,
+.editorial-ui .text-indigo-600,
+.editorial-ui .text-indigo-700 {
+  color: var(--neuro-primary) !important;
+}
+
+.editorial-ui .bg-indigo-50 {
+  background: var(--neuro-blue-light) !important;
+}
+
+.editorial-ui .bg-indigo-100 {
+  background: #DBEAFE !important;
+}
+
+.editorial-ui .border-indigo-200,
+.editorial-ui .border-indigo-300 {
+  border-color: #BFDBFE !important;
+}
+
+
+/* =========================================================
+   CYAN — MRI / SCAN
+   ========================================================= */
+
+.neuro-cyan {
+  color: var(--neuro-cyan) !important;
+}
+
+.neuro-cyan-bg {
+  background: var(--neuro-cyan-light) !important;
+}
+
+.neuro-cyan-border {
+  border-color: #A5F3FC !important;
+}
+
+
+/* =========================================================
+   TEAL — SUCCESS
+   ========================================================= */
+
+.neuro-teal {
+  color: var(--neuro-teal) !important;
+}
+
+.neuro-teal-bg {
+  background: var(--neuro-teal-light) !important;
+}
+
+.neuro-teal-border {
+  border-color: #A7F3D0 !important;
+}
+
+
+/* =========================================================
+   VIOLET — XAI / AI INTELLIGENCE
+   ========================================================= */
+
+.neuro-violet {
+  color: var(--neuro-violet) !important;
+}
+
+.neuro-violet-bg {
+  background: var(--neuro-violet-light) !important;
+}
+
+.neuro-violet-border {
+  border-color: #DDD6FE !important;
+}
+
+
+/* =========================================================
+   RISK CARDS
+   ========================================================= */
+
+.high-risk {
+  background: #FEF2F2 !important;
+  border-color: #FECACA !important;
+  color: #B91C1C !important;
+}
+
+.medium-risk {
+  background: #FFFBEB !important;
+  border-color: #FDE68A !important;
+  color: #B45309 !important;
+}
+
+.low-risk {
+  background: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #047857 !important;
+}
+
+
+/* =========================================================
+   SOFT RISK BACKGROUNDS
+   ========================================================= */
+
+.bg-red-50 {
+  background: #FEF2F2 !important;
+}
+
+.bg-amber-50 {
+  background: #FFFBEB !important;
+}
+
+.bg-green-50 {
+  background: #ECFDF5 !important;
+}
+
+
+/* =========================================================
+   RECENT PATIENT STUDIES
+   ========================================================= */
+
+.editorial-ui .divide-slate-100 > * {
+  border-color: #E8EEF5 !important;
+}
+
+.editorial-ui .hover\:bg-slate-50:hover {
+  background: #F8FBFF !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.editorial-ui button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.editorial-ui .bg-indigo-600.text-white {
+  background: var(--neuro-primary) !important;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.editorial-ui input,
+.editorial-ui select,
+.editorial-ui textarea {
+  background: #FFFFFF;
+  color: var(--neuro-text);
+  border-color: var(--neuro-border);
+}
+
+.editorial-ui input:focus,
+.editorial-ui select:focus,
+.editorial-ui textarea:focus {
+  outline: none;
+  border-color: var(--neuro-primary);
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neuro-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 12mm 12mm;
+  }
+
+  html,
+  body,
+  #root {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  aside,
+  header,
+  nav,
+  .no-print,
+  button,
+  .no-print-area {
+    display: none !important;
+  }
+
+  main,
+  .min-h-screen,
+  .h-screen,
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .overflow-hidden,
+  .flex-1 {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .report-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    font-size: 9.5pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .report-sheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-avoid-break,
+  .report-section {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+}
+/* =========================================================
+   NEUROSCAN AI — FINAL LIGHT BLUE DASHBOARD THEME
+   Put this block at the VERY END of index.css
+   ========================================================= */
+
+:root {
+  --neuro-bg: #F4F8FC;
+  --neuro-card: #FFFFFF;
+
+  --neuro-primary: #2563EB;
+  --neuro-primary-dark: #1D4ED8;
+
+  --neuro-cyan: #06B6D4;
+  --neuro-teal: #0F9F9A;
+  --neuro-violet: #7C3AED;
+
+  --neuro-navy: #172554;
+  --neuro-text: #172033;
+  --neuro-muted: #64748B;
+
+  --neuro-border: #DCE6F0;
+
+  --neuro-blue-light: #EFF6FF;
+  --neuro-cyan-light: #ECFEFF;
+  --neuro-teal-light: #ECFDF5;
+  --neuro-violet-light: #F5F3FF;
+}
+
+
+/* =========================================================
+   DASHBOARD BACKGROUND
+   ========================================================= */
+
+.editorial-ui {
+  background: #F4F8FC !important;
+  color: #172033 !important;
+}
+
+.editorial-ui main {
+  background:
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(219, 234, 254, 0.45),
+      transparent 30rem
+    ),
+    #F4F8FC !important;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.editorial-ui aside {
+  background: #FFFFFF !important;
+  border-right: 1px solid #DCE6F0 !important;
+  box-shadow: none !important;
+}
+
+.editorial-ui aside .text-white,
+.editorial-ui aside .text-slate-900 {
+  color: #172554 !important;
+}
+
+.editorial-ui aside .text-slate-100,
+.editorial-ui aside .text-slate-200,
+.editorial-ui aside .text-slate-300,
+.editorial-ui aside .text-slate-400,
+.editorial-ui aside .text-slate-500 {
+  color: #64748B !important;
+}
+
+
+/* Sidebar active item */
+
+.editorial-ui aside .bg-slate-200,
+.editorial-ui aside .bg-slate-100 {
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+  border-color: #DBEAFE !important;
+}
+
+
+/* Sidebar hover */
+
+.editorial-ui aside button:hover,
+.editorial-ui aside a:hover {
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.editorial-ui header {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: #DCE6F0 !important;
+  box-shadow: none !important;
+}
+
+.editorial-ui header .text-slate-900 {
+  color: #172554 !important;
+}
+
+.editorial-ui header .text-slate-500,
+.editorial-ui header .text-slate-400 {
+  color: #64748B !important;
+}
+
+
+/* How To Use */
+
+.editorial-ui header button {
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+  border: 1px solid #DBEAFE !important;
+}
+
+.editorial-ui header button:hover {
+  background: #DBEAFE !important;
+}
+
+
+/* =========================================================
+   MAIN TEXT
+   ========================================================= */
+
+.editorial-ui main .text-slate-900 {
+  color: #172554 !important;
+}
+
+.editorial-ui main .text-slate-800 {
+  color: #172554 !important;
+}
+
+.editorial-ui main .text-slate-700 {
+  color: #172033 !important;
+}
+
+.editorial-ui main .text-slate-600,
+.editorial-ui main .text-slate-500 {
+  color: #64748B !important;
+}
+
+.editorial-ui main .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.editorial-ui .bg-white {
+  background: #FFFFFF !important;
+}
+
+.editorial-ui .border-slate-100,
+.editorial-ui .border-slate-200,
+.editorial-ui .border-slate-200\/50,
+.editorial-ui .border-slate-200\/60,
+.editorial-ui .border-slate-200\/70,
+.editorial-ui .border-slate-200\/80 {
+  border-color: #DCE6F0 !important;
+}
+
+
+/* =========================================================
+   BLUE — PRIMARY
+   ========================================================= */
+
+.editorial-ui .bg-blue-50 {
+  background: #EFF6FF !important;
+}
+
+.editorial-ui .text-blue-500,
+.editorial-ui .text-blue-600,
+.editorial-ui .text-blue-700 {
+  color: #2563EB !important;
+}
+
+.editorial-ui .bg-blue-500,
+.editorial-ui .bg-blue-600,
+.editorial-ui .bg-indigo-500,
+.editorial-ui .bg-indigo-600 {
+  background: #2563EB !important;
+}
+
+.editorial-ui .hover\:bg-blue-600:hover,
+.editorial-ui .hover\:bg-indigo-600:hover {
+  background: #1D4ED8 !important;
+}
+
+
+/* =========================================================
+   INDIGO → NEURO BLUE
+   ========================================================= */
+
+.editorial-ui .text-indigo-400,
+.editorial-ui .text-indigo-500,
+.editorial-ui .text-indigo-600,
+.editorial-ui .text-indigo-700 {
+  color: #2563EB !important;
+}
+
+.editorial-ui .bg-indigo-50 {
+  background: #EFF6FF !important;
+}
+
+.editorial-ui .bg-indigo-100 {
+  background: #DBEAFE !important;
+}
+
+.editorial-ui .border-indigo-100,
+.editorial-ui .border-indigo-200,
+.editorial-ui .border-indigo-300 {
+  border-color: #BFDBFE !important;
+}
+
+
+/* =========================================================
+   CYAN — MRI / SCAN
+   ========================================================= */
+
+.editorial-ui .bg-cyan-50 {
+  background: #ECFEFF !important;
+}
+
+.editorial-ui .text-cyan-500,
+.editorial-ui .text-cyan-600,
+.editorial-ui .text-cyan-700 {
+  color: #06B6D4 !important;
+}
+
+.editorial-ui .border-cyan-100,
+.editorial-ui .border-cyan-200 {
+  border-color: #A5F3FC !important;
+}
+
+
+/* =========================================================
+   TEAL — SUCCESS / READY
+   ========================================================= */
+
+.editorial-ui .bg-teal-50 {
+  background: #ECFDF5 !important;
+}
+
+.editorial-ui .text-teal-500,
+.editorial-ui .text-teal-600,
+.editorial-ui .text-teal-700 {
+  color: #0F9F9A !important;
+}
+
+
+/* =========================================================
+   VIOLET — AI / XAI
+   ========================================================= */
+
+.editorial-ui .bg-violet-50 {
+  background: #F5F3FF !important;
+}
+
+.editorial-ui .text-violet-500,
+.editorial-ui .text-violet-600,
+.editorial-ui .text-violet-700 {
+  color: #7C3AED !important;
+}
+
+.editorial-ui .border-violet-100,
+.editorial-ui .border-violet-200 {
+  border-color: #DDD6FE !important;
+}
+
+
+/* =========================================================
+   CARD SHADOWS
+   ========================================================= */
+
+.editorial-ui .shadow-sm {
+  box-shadow:
+    0 8px 25px rgba(37, 99, 235, 0.045) !important;
+}
+
+.editorial-ui .shadow-md {
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, 0.08) !important;
+}
+
+
+/* =========================================================
+   ROUNDED CARDS
+   ========================================================= */
+
+.editorial-ui .rounded-2xl {
+  border-radius: 20px !important;
+}
+
+.editorial-ui .rounded-xl {
+  border-radius: 14px !important;
+}
+
+.editorial-ui .rounded-lg {
+  border-radius: 10px !important;
+}
+
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+.editorial-ui input,
+.editorial-ui textarea,
+.editorial-ui select {
+  background: #FFFFFF !important;
+  color: #172033 !important;
+  border-color: #DCE6F0 !important;
+}
+
+.editorial-ui input::placeholder,
+.editorial-ui textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+.editorial-ui input:focus,
+.editorial-ui textarea:focus,
+.editorial-ui select:focus {
+  outline: none !important;
+
+  border-color: #2563EB !important;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10) !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.editorial-ui button {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.editorial-ui button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+.editorial-ui .border-t,
+.editorial-ui .border-b {
+  border-color: #E8EEF5 !important;
+}
+
+.editorial-ui hr {
+  border-color: #E8EEF5 !important;
+}
+
+
+/* =========================================================
+   KEEP MRI VIEWER DARK
+   ========================================================= */
+
+.editorial-ui .mri-viewport,
+.editorial-ui [data-mri-viewport] {
+  background: #12110F !important;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.editorial-ui ::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.editorial-ui ::-webkit-scrollbar-track {
+  background: #F4F8FC;
+}
+
+.editorial-ui ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 999px;
+}
+
+.editorial-ui ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+
+/* =========================================================
+   OVERVIEW SPECIFIC
+   ========================================================= */
+
+.neuro-overview {
+  color: #172033;
+}
+
+.neuro-overview h1,
+.neuro-overview h2,
+.neuro-overview h3 {
+  font-family:
+    'Plus Jakarta Sans',
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif !important;
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-ui *,
+  .editorial-ui *::before,
+  .editorial-ui *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
