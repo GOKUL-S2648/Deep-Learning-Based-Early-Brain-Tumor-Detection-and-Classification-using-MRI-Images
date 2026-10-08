@@ -163,6 +163,7 @@ export interface BenchmarkCase {
   classification: string;
   whoGrade: string;
   modalitySequence: string;
+  imageSrc?: string;
   plane: 'Axial' | 'Coronal' | 'Sagittal';
   patient: {
     mrn: string;
@@ -171,6 +172,7 @@ export interface BenchmarkCase {
     sex: 'M' | 'F';
     indication: string;
     studyDate: string;
+    contact?: string;
   };
   summary: string;
   imageGenerator: (ctx: CanvasRenderingContext2D, width: number, height: number, colormap?: string, windowWidth?: number, windowLevel?: number) => void;

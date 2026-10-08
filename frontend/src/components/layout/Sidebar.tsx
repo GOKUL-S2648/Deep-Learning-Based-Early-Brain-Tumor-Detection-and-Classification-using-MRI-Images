@@ -12,12 +12,14 @@ import {
   MessageSquare,
   CreditCard,
   Settings,
-  Users
+  Users,
+  Split
 } from 'lucide-react';
 
 export type NavigationPage = 
   | 'overview' 
   | 'new_analysis' 
+  | 'compare_scans'
   | 'patient_history' 
   | 'register_patient' 
   | 'patient_search'
@@ -25,7 +27,10 @@ export type NavigationPage =
   | 'patient_appointments'
   | 'patient_messages'
   | 'patient_billing'
-  | 'patient_settings';
+  | 'patient_settings'
+  | 'doctor_diagnostics'
+  | 'doctor_pacs'
+  | 'doctor_consults';
 
 interface SidebarProps {
   currentPage: NavigationPage;
@@ -54,6 +59,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: ScanLine,
     },
     {
+      id: 'compare_scans' as NavigationPage,
+      label: 'Compare Scans',
+      icon: Split,
+    },
+    {
       id: 'patient_category' as NavigationPage,
       label: 'Category',
       icon: Layers,
@@ -65,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'patient_history' as NavigationPage,
-      label: userRole === 'patient' ? 'My Scans' : 'History',
+      label: userRole === 'patient' ? 'My Scans' : 'Records',
       icon: History,
     },
     {
@@ -103,6 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     navItems = navItems.filter(item => 
       item.id === 'overview' || 
       item.id === 'new_analysis' || 
+      item.id === 'compare_scans' ||
       item.id === 'patient_search' ||
       item.id === 'patient_history' ||
       item.id === 'patient_category'

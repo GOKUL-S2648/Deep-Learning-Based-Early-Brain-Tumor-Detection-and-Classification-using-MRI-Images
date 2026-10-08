@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Sidebar, NavigationPage } from './components/layout/Sidebar';
 import { OverviewView } from './components/views/OverviewView';
+import { CompareScansView } from './components/views/CompareScansView';
 import { PatientHistoryView } from './components/views/PatientHistoryView';
 import { RegisterPatientView } from './components/views/RegisterPatientView';
 import { PatientSearchView } from './components/views/PatientSearchView';
@@ -44,7 +45,9 @@ import {
   Mail,
   KeyRound,
   AlertCircle,
-  Settings
+  Settings,
+  Check,
+  Save
 } from 'lucide-react';
 
 
@@ -386,6 +389,17 @@ export default function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUserRole, setCurrentUserRole] = useState<'admin' | 'patient'>('admin');
+  const [currentUserName, setCurrentUserName] = useState<string>('Dr. Gokul');
+
+  const updateUserInfo = (session: any) => {
+    if (session?.user?.user_metadata) {
+      const { name, full_name, role } = session.user.user_metadata;
+      if (name) setCurrentUserName(name);
+      else if (full_name) setCurrentUserName(full_name);
+      
+      if (role) setCurrentUserRole(role);
+    }
+  };
 
   // Listen to Supabase auth changes for OAuth login
   React.useEffect(() => {
@@ -393,6 +407,7 @@ export default function App() {
       if (session) {
         setIsAuthenticated(true);
         setShowLanding(false);
+        updateUserInfo(session);
       }
     });
 
@@ -402,6 +417,7 @@ export default function App() {
       if (session) {
         setIsAuthenticated(true);
         setShowLanding(false);
+        updateUserInfo(session);
       } else {
         setIsAuthenticated(false);
       }
@@ -439,6 +455,8 @@ export default function App() {
   const [currentCase, setCurrentCase] = useState<BenchmarkCase>(BENCHMARK_CASES[0]);
   const [analysis, setAnalysis] = useState<MRIAnalysisResult>(BENCHMARK_CASES[0].defaultAnalysis);
   const [customImage, setCustomImage] = useState<string | null>(null);
+  const [hasActiveScan, setHasActiveScan] = useState<boolean>(false);
+  const [workflowStep, setWorkflowStep] = useState<number>(1);
   const [customPatient, setCustomPatient] = useState<{
     name: string;
     mrn: string;
@@ -446,6 +464,7 @@ export default function App() {
     sex: string;
     indication: string;
     studyDate: string;
+    contact?: string;
   } | null>({
     name: '',
     mrn: '',
@@ -542,6 +561,8 @@ export default function App() {
     setAnalysis(caseItem.defaultAnalysis);
     setCustomImage(null);
     setCustomPatient(null);
+    setHasActiveScan(true);
+    setWorkflowStep(3);
     handleNavigate('new_analysis');
     setAnalysisSubTab('workstation');
     showToast(`Loaded MRI Case: ${caseItem.title}`);
@@ -572,7 +593,19 @@ export default function App() {
       canvas.width = 512;
       canvas.height = 512;
       const ctx = canvas.getContext('2d');
-      if (ctx && currentCase.imageGenerator) {
+      if (currentCase.imageSrc) {
+        const img = new Image();
+        img.onload = () => {
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, 512, 512);
+            resolve(canvas.toDataURL('image/jpeg'));
+          } else {
+            resolve('');
+          }
+        };
+        img.onerror = () => resolve('');
+        img.src = currentCase.imageSrc;
+      } else if (ctx && currentCase.imageGenerator) {
         currentCase.imageGenerator(ctx, 512, 512);
         resolve(canvas.toDataURL('image/png'));
       } else {
@@ -584,6 +617,7 @@ export default function App() {
   // Run AI analysis
   const handleRunAnalysis = async () => {
     setIsAnalyzing(true);
+    setWorkflowStep(4);
     showToast('Analyzing brain MRI scan with deep learning network...');
 
     try {
@@ -600,14 +634,39 @@ export default function App() {
       });
 
       setAnalysis(result);
+      setWorkflowStep(5);
       showToast(`Analysis Complete: ${result.subType} (${result.confidenceScore.toFixed(0)}% Certain)`);
     } catch (err: any) {
       console.warn('Fell back to validated parameters', err);
       setAnalysis(currentCase.defaultAnalysis);
+      setWorkflowStep(5);
       showToast('Scan evaluated.');
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleSaveAnalysis = () => {
+    setPatientRecords((prev) => [
+      {
+        id: `analysis-${Date.now()}`,
+        name: activePatient.name || 'Unknown Patient',
+        mrn: activePatient.mrn || `RAD-${Math.floor(Math.random() * 1000000)}`,
+        age: activePatient.age || 0,
+        sex: activePatient.sex || 'U',
+        classLabel: analysis.classLabel || (analysis.primaryClassification.toLowerCase().includes('glioma') ? 'Class 1' : analysis.primaryClassification.toLowerCase().includes('meningioma') ? 'Class 2' : analysis.primaryClassification.toLowerCase().includes('pituitary') ? 'Class 3' : 'Class 0'),
+        biologicalNature: analysis.biologicalNature || (analysis.tumorDetected ? 'Neoplastic lesion' : 'Normal brain tissue'),
+        diagnosis: analysis.subType,
+        whoGrade: analysis.whoGrade,
+        confidence: Math.round(analysis.confidenceScore),
+        tumorDetected: analysis.tumorDetected,
+        urgency: analysis.tumorDetected ? (analysis.whoGrade.includes('IV') || analysis.whoGrade.includes('III') ? 'High' : 'Medium') : 'Normal',
+        date: new Date().toISOString().split('T')[0],
+        indication: activePatient.indication || ''
+      },
+      ...prev,
+    ]);
+    showToast('Analysis successfully saved to Patient Database');
   };
 
   // Handle uploaded scan
@@ -623,6 +682,8 @@ export default function App() {
   }) => {
     setIsUploadOpen(false);
     setCustomImage(data.imageBase64);
+    setHasActiveScan(true);
+    setWorkflowStep(3);
     setCustomPatient({
       name: data.patientName,
       mrn: data.mrn,
@@ -632,6 +693,7 @@ export default function App() {
       studyDate: new Date().toISOString().split('T')[0],
     });
 
+    setWorkflowStep(4);
     setIsAnalyzing(true);
     showToast('Uploading & processing scan through neural networks...');
 
@@ -648,6 +710,7 @@ export default function App() {
       setAnalysis(result);
       handleNavigate('new_analysis');
       setAnalysisSubTab('workstation');
+      setWorkflowStep(5);
 
       // Add to patient records
       setPatientRecords((prev) => [
@@ -673,6 +736,7 @@ export default function App() {
       showToast(`Scan analyzed: ${result.subType}`);
     } catch (err: any) {
       console.error(err);
+      setWorkflowStep(5);
       showToast('Scan evaluated.');
     } finally {
       setIsAnalyzing(false);
@@ -702,7 +766,8 @@ export default function App() {
         fNameLower.includes('tr-no') ||
         fNameLower.includes('aug-no') ||
         fNameLower.includes('-no_') ||
-        fNameLower.includes('_no_')
+        fNameLower.includes('_no_') ||
+        fNameLower.includes('without')
       ) {
         indication = 'Normal healthy brain screening. Rule out intracranial mass.';
       } else if (
@@ -746,6 +811,8 @@ export default function App() {
       const finalIndication = (customPatient?.indication && customPatient.indication.trim() !== '') ? customPatient.indication : indication;
 
       setCustomImage(base64Data);
+      setHasActiveScan(true);
+      setWorkflowStep(3);
       setCustomPatient({
         name: finalName,
         mrn: finalMrn,
@@ -757,6 +824,7 @@ export default function App() {
 
       handleNavigate('new_analysis');
       setAnalysisSubTab('workstation');
+      setWorkflowStep(4);
       setIsAnalyzing(true);
       showToast(`Uploading & analyzing ${file.name}...`);
 
@@ -767,6 +835,7 @@ export default function App() {
         });
 
         setAnalysis(result);
+        setWorkflowStep(5);
         setPatientRecords((prev) => [
           {
             id: `upload-${Date.now()}`,
@@ -790,6 +859,7 @@ export default function App() {
         showToast(`Analyzed: ${result.primaryClassification} (${result.classLabel})`);
       } catch (err) {
         console.error('Scan analysis error:', err);
+        setWorkflowStep(5);
         showToast('Scan evaluated.');
       } finally {
         setIsAnalyzing(false);
@@ -881,7 +951,7 @@ if (!isAuthenticated) {
         <Sidebar
           currentPage={currentPage}
           onPageChange={(page) => handleNavigate(page)}
-          userName={currentUserRole === 'admin' ? 'Dr. Gokul' : 'Patient User'}
+          userName={currentUserName}
           userRole={currentUserRole}
           onSignOut={async () => {
             await supabase.auth.signOut();
@@ -965,31 +1035,66 @@ if (!isAuthenticated) {
               {/* Subtab 1: Workstation */}
               {analysisSubTab === 'workstation' && (
                 <div className="space-y-6">
-                  {/* Quick-Switch Sample Pills */}
-                  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-slate-700">Quick Test Cases:</span>
-                      {BENCHMARK_CASES.map((b) => (
-                        <button
-                          key={b.id}
-                          onClick={() => handleSelectCase(b)}
-                          className={`px-3 py-1.5 rounded-lg border font-semibold transition-all ${
-                            currentCase.id === b.id && !customImage
-                              ? 'bg-indigo-600 text-white border-slate-900 shadow-sm'
-                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          {b.title.split(' ')[0]} ({b.whoGrade})
-                        </button>
+
+                  {/* Workflow Stepper */}
+                  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm mb-6 mt-2">
+                    <div className="flex items-center justify-between relative max-w-4xl mx-auto">
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 -z-10 rounded-full"></div>
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-indigo-600 -z-10 rounded-full transition-all duration-700 ease-out" style={{ width: `${((workflowStep - 1) / 5) * 100}%` }}></div>
+                      
+                      {[
+                        { step: 1, label: 'Patient Registration' },
+                        { step: 2, label: 'Upload MRI' },
+                        { step: 3, label: 'Preview / Validate' },
+                        { step: 4, label: 'AI Analysis' },
+                        { step: 5, label: 'Analysis Results' },
+                        { step: 6, label: 'Final Report' }
+                      ].map((s) => (
+                        <div key={s.step} className="flex flex-col items-center gap-2 bg-white px-3 relative cursor-default" onClick={() => s.step < workflowStep && setWorkflowStep(s.step)}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all duration-300 ${workflowStep >= s.step ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30' : 'bg-white text-slate-400 border-slate-200'}`}>
+                            {workflowStep > s.step ? <Check className="w-4 h-4" /> : s.step}
+                          </div>
+                          <span className={`absolute -bottom-6 w-32 text-center text-[10px] font-bold uppercase tracking-wider ${workflowStep >= s.step ? 'text-indigo-900' : 'text-slate-400'}`}>
+                            {s.label}
+                          </span>
+                        </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    {/* MRI Canvas Viewport (7 Cols) */}
-                    <div className="lg:col-span-7">
+                  {!hasActiveScan ? (
+                    <div className="flex flex-col items-center justify-center min-h-[500px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center animate-fade-in shadow-sm">
+                      <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                        <Upload className="w-10 h-10 text-indigo-600" />
+                      </div>
+                      <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">Upload MRI Scan</h2>
+                      <p className="text-slate-500 max-w-md text-sm mb-8 leading-relaxed">
+                        Please upload a DICOM, PNG, or JPEG file of the brain MRI scan to begin deep learning tumor detection and classification.
+                      </p>
+                      
+                      <input
+                        type="file"
+                        className="hidden"
+                        ref={directFileInputRef}
+                        accept="image/*,.dcm"
+                        onChange={handleDirectFileInputChange}
+                      />
+                      
+                      <button
+                        onClick={() => directFileInputRef.current?.click()}
+                        className="flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-500 hover:-translate-y-1 transition-all shadow-xl shadow-indigo-600/30"
+                      >
+                        <Upload className="w-5 h-5" />
+                        <span>Select File or Drag & Drop</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-8">
+                      {/* MRI Canvas Viewport (7 Cols) */}
+                      <div className="lg:col-span-7">
                       <MRIViewer
-                        imageSrc={customImage || undefined}
+                        imageSrc={customImage || currentCase.imageSrc || undefined}
                         imageGenerator={customImage ? undefined : currentCase.imageGenerator}
                         boundingBox={analysis.localization.boundingBox}
                         tumorDetected={analysis.tumorDetected}
@@ -1253,8 +1358,18 @@ if (!isAuthenticated) {
                         {/* Action CTAs */}
                         <div className="pt-2 flex flex-col gap-2">
                           <button
-                            onClick={() => setAnalysisSubTab('report')}
-                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-slate-100 rounded-xl shadow-md transition-colors cursor-pointer"
+                            onClick={handleSaveAnalysis}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition-colors cursor-pointer"
+                          >
+                            <Save className="w-4 h-4" />
+                            <span>Save to Patient Database</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setWorkflowStep(6);
+                              setAnalysisSubTab('report');
+                            }}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl shadow-sm border border-slate-200 transition-colors cursor-pointer"
                           >
                             <FileText className="w-4 h-4" />
                             <span>View Hospital Radiology Report</span>
@@ -1280,7 +1395,9 @@ if (!isAuthenticated) {
                         </div>
                       </div>
                     </div>
-                  </div>
+                    </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -1310,6 +1427,11 @@ if (!isAuthenticated) {
               {/* Subtab 4: Model Diagnostics */}
               {analysisSubTab === 'model_info' && <ModelDiagnosticsView />}
             </div>
+          )}
+
+          {/* 2b. COMPARE SCANS PAGE */}
+          {currentPage === 'compare_scans' && (
+            <CompareScansView records={patientRecords} />
           )}
 
           {/* 3. PATIENT HISTORY PAGE */}

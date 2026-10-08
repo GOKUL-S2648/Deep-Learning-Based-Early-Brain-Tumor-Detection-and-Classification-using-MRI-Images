@@ -88,7 +88,7 @@ export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    if (customImage) {
+    if (customImage || currentCase?.imageSrc) {
       const img = new Image();
       img.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -104,7 +104,7 @@ export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
           ctx.strokeRect(bx, by, bw, bh);
         }
       };
-      img.src = customImage;
+      img.src = customImage || currentCase?.imageSrc || '';
     } else if (currentCase?.imageGenerator) {
       currentCase.imageGenerator(ctx, canvas.width, canvas.height, 'grayscale', 140, 60);
       if (tumorDetected && localization?.boundingBox) {

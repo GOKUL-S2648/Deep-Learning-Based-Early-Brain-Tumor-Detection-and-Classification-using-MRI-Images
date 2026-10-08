@@ -267,7 +267,7 @@ export function generateClientHeuristic(
 
   const indLower = indication.toLowerCase();
   const isHematoma = indLower.includes('hematoma') || indLower.includes('hemorrhage') || indLower.includes('subdural') || indLower.includes('epidural') || indLower.includes('sah') || indLower.includes('bleed');
-  const isNormal = indLower.includes('normal') || indLower.includes('healthy') || indLower.includes('te-no') || indLower.includes('tr-no') || indLower.includes('aug-no') || indLower.includes('-no_') || indLower.includes('_no_');
+  const isNormal = indLower.includes('normal') || indLower.includes('healthy') || indLower.includes('te-no') || indLower.includes('tr-no') || indLower.includes('aug-no') || indLower.includes('-no_') || indLower.includes('_no_') || indLower.includes('without');
   const isMeningioma = indLower.includes('meningioma') || indLower.includes('dural') || indLower.includes('te-me') || indLower.includes('tr-me') || indLower.includes('aug-me') || indLower.includes('-me_') || indLower.includes('_me_');
   const isPituitary = indLower.includes('pituitary') || indLower.includes('sella') || indLower.includes('adenoma') || indLower.includes('te-pi') || indLower.includes('tr-pi') || indLower.includes('aug-pi') || indLower.includes('-pi_') || indLower.includes('_pi_');
 

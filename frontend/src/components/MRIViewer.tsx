@@ -328,8 +328,8 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left - pan.x) / zoom;
-    const y = (e.clientY - rect.top - pan.y) / zoom;
+    const x = (e.clientX - rect.left) / zoom;
+    const y = (e.clientY - rect.top) / zoom;
 
     if (activeTool === 'pan') {
       setIsPanning(true);
@@ -342,8 +342,8 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const rawX = Math.round((e.clientX - rect.left - pan.x) / zoom);
-    const rawY = Math.round((e.clientY - rect.top - pan.y) / zoom);
+    const rawX = Math.round((e.clientX - rect.left) / zoom);
+    const rawY = Math.round((e.clientY - rect.top) / zoom);
 
     if (rawX >= 0 && rawX < CANVAS_SIZE && rawY >= 0 && rawY < CANVAS_SIZE) {
       setMousePos({ x: rawX, y: rawY, val: Math.round((rawX + rawY) % 255) });
@@ -576,7 +576,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
         <div
           className="relative"
           style={{
-            transform: `tranzinc(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
             transformOrigin: 'center center',
             transition: isPanning ? 'none' : 'transform 100ms ease-out',
           }}
@@ -625,7 +625,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
                 <circle cx={boxPx.bx} cy={boxPx.by + boxPx.bh} r="4" fill="#f43f5e" />
                 <circle cx={boxPx.bx + boxPx.bw} cy={boxPx.by + boxPx.bh} r="4" fill="#f43f5e" />
 
-                <g transform={`tranzinc(${boxPx.bx}, ${boxPx.by - 26})`}>
+                <g transform={`translate(${boxPx.bx}, ${boxPx.by - 26})`}>
                   <rect
                     x="0"
                     y="0"
