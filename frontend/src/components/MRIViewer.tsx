@@ -427,7 +427,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
               title="Upload MRI scan file into viewer"
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>Upload Scan</span>
+              <span>New Analysis</span>
             </button>
           )}
 
@@ -447,7 +447,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
               ) : (
                 <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
               )}
-              <span>{isAnalyzing ? 'Analyzing Scan...' : 'Analyze Scan'}</span>
+              <span>{isAnalyzing ? 'Reviewing...' : 'Review'}</span>
             </button>
           )}
 

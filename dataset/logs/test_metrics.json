@@ -1,0 +1,37 @@
+{
+    "overall_accuracy": 0.845,
+    "macro_precision": 0.857319,
+    "macro_recall": 0.845,
+    "macro_f1": 0.840371,
+    "per_class": {
+        "glioma": {
+            "precision": 0.971119,
+            "recall": 0.6725,
+            "f1_score": 0.794682
+        },
+        "meningioma": {
+            "precision": 0.779255,
+            "recall": 0.7325,
+            "f1_score": 0.755155
+        },
+        "notumor": {
+            "precision": 0.77821,
+            "recall": 1.0,
+            "f1_score": 0.875274
+        },
+        "pituitary": {
+            "precision": 0.900693,
+            "recall": 0.975,
+            "f1_score": 0.936375
+        }
+    },
+    "checkpoint_epoch": 27,
+    "best_val_acc": 0.9125,
+    "num_test_samples": 1600,
+    "num_train_samples": 4480,
+    "num_val_samples": 1120,
+    "epochs_trained": 30,
+    "batch_size": 32,
+    "learning_rate": 0.001,
+    "image_size": 224
+}

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Layers, FileText, Eye, Download, AlertTriangle, Info, CheckCircle2 } from 'lucide-react';
+import { Layers, FileText, Eye, Download, AlertTriangle, Info, CheckCircle2, Trash2, AlertCircle, X } from 'lucide-react';
 import { downloadCategoryReportPDF, downloadBatchFullReportsPDF } from '../../utils/pdfExport';
 
 interface PatientRecord {
@@ -23,14 +23,19 @@ interface PatientCategoryViewProps {
   records: PatientRecord[];
   onSelectCase: (caseId: string) => void;
   onOpenReport: (caseId: string) => void;
+  onDeleteCase?: (caseId: string) => void;
+  userName?: string;
 }
 
 export const PatientCategoryView: React.FC<PatientCategoryViewProps> = ({
   records,
   onSelectCase,
   onOpenReport,
+  onDeleteCase,
+  userName = 'Dr. Marcus Sterling, MD (Neuroradiology)',
 }) => {
   const [selectedRisk, setSelectedRisk] = useState<'All' | 'High' | 'Medium' | 'Low'>('All');
+  const [caseToDelete, setCaseToDelete] = useState<PatientRecord | null>(null);
 
   const { categories, riskGroups } = useMemo(() => {
     const tumorGroups: Record<string, { title: string, color: string, records: PatientRecord[] }> = {
@@ -104,7 +109,7 @@ export const PatientCategoryView: React.FC<PatientCategoryViewProps> = ({
               </div>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => downloadBatchFullReportsPDF(category.title, category.records as any)}
+                  onClick={() => downloadBatchFullReportsPDF(category.title, category.records as any, userName)}
                   className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-white/60 hover:bg-white/90 rounded transition-colors ${category.color.split(' ')[1]}`}
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -150,6 +155,16 @@ export const PatientCategoryView: React.FC<PatientCategoryViewProps> = ({
                       <FileText className="w-3.5 h-3.5" />
                       <span>Report</span>
                     </button>
+                    
+                    {onDeleteCase && (
+                      <button
+                        onClick={() => setCaseToDelete(item)}
+                        className="flex items-center justify-center w-8 h-8 text-rose-500 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg transition-colors ml-1 border border-rose-100"
+                        title="Delete Patient Record"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -163,6 +178,49 @@ export const PatientCategoryView: React.FC<PatientCategoryViewProps> = ({
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {caseToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xl max-w-sm w-full font-sans relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-rose-500"></div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-5 h-5 text-rose-600" />
+              </div>
+              <div className="flex-1 pt-1">
+                <h3 className="text-base font-bold text-slate-900 mb-1 tracking-tight">Delete Patient Record</h3>
+                <p className="text-xs text-slate-500 mb-5 leading-relaxed">
+                  Are you sure you want to permanently delete the medical record and analysis data for <strong className="text-slate-700">{caseToDelete.name}</strong> ({caseToDelete.mrn})? This action cannot be undone.
+                </p>
+                <div className="flex items-center justify-end gap-3">
+                  <button
+                    onClick={() => setCaseToDelete(null)}
+                    className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onDeleteCase) onDeleteCase(caseToDelete.id);
+                      setCaseToDelete(null);
+                    }}
+                    className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-xl transition-colors shadow-md shadow-rose-600/20"
+                  >
+                    Delete Record
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => setCaseToDelete(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

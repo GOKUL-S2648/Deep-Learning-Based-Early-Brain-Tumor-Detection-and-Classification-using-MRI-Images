@@ -626,7 +626,7 @@ export async function downloadCategoryReportPDF(categoryTitle: string, records: 
   return { filename, blob };
 }
 
-export async function downloadBatchFullReportsPDF(categoryTitle: string, records: CategoryPatientRecord[]): Promise<void> {
+export async function downloadBatchFullReportsPDF(categoryTitle: string, records: CategoryPatientRecord[], radiologistName?: string): Promise<void> {
   const { BENCHMARK_CASES } = await import('../data/benchmarkCases');
   let doc: jsPDF | undefined = undefined;
   
@@ -636,7 +636,8 @@ export async function downloadBatchFullReportsPDF(categoryTitle: string, records
       if (doc) doc.addPage();
       doc = await generateRadiologyReportPDF({
         analysis: bCase.defaultAnalysis,
-        patient: bCase.patient
+        patient: bCase.patient,
+        radiologistName
       }, doc);
     }
   }

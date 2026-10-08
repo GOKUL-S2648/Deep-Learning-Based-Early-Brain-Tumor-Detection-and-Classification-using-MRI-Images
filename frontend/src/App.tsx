@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Sidebar, NavigationPage } from './components/layout/Sidebar';
 import { OverviewView } from './components/views/OverviewView';
-import { CompareScansView } from './components/views/CompareScansView';
 import { PatientHistoryView } from './components/views/PatientHistoryView';
 import { RegisterPatientView } from './components/views/RegisterPatientView';
 import { PatientSearchView } from './components/views/PatientSearchView';
@@ -389,15 +388,18 @@ export default function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUserRole, setCurrentUserRole] = useState<'admin' | 'patient'>('admin');
-  const [currentUserName, setCurrentUserName] = useState<string>('Dr. Gokul');
+  const [currentUserName, setCurrentUserName] = useState<string>('');
 
   const updateUserInfo = (session: any) => {
     if (session?.user?.user_metadata) {
       const { name, full_name, role } = session.user.user_metadata;
       if (name) setCurrentUserName(name);
       else if (full_name) setCurrentUserName(full_name);
+      else if (session.user.email) setCurrentUserName(session.user.email.split('@')[0]);
       
       if (role) setCurrentUserRole(role);
+    } else if (session?.user?.email) {
+      setCurrentUserName(session.user.email.split('@')[0]);
     }
   };
 
@@ -573,6 +575,34 @@ export default function App() {
     const found = BENCHMARK_CASES.find((c) => c.id === caseId);
     if (found) {
       handleSelectCase(found);
+    } else {
+      const customRecord = patientRecords.find(p => p.id === caseId);
+      if (customRecord) {
+        showToast(`Processing category review for ${customRecord.name}...`);
+        
+        // Find a benchmark case that matches the class label to simulate the review
+        const matchingBenchmark = BENCHMARK_CASES.find(c => c.defaultAnalysis.classLabel === customRecord.classLabel) || BENCHMARK_CASES[0];
+        
+        // Mock a case item based on the patient record
+        const mockCase: BenchmarkCase = {
+          ...matchingBenchmark,
+          id: customRecord.id,
+          title: `Custom Case: ${customRecord.diagnosis}`,
+          patient: {
+            name: customRecord.name,
+            mrn: customRecord.mrn,
+            age: customRecord.age,
+            sex: customRecord.sex,
+            indication: customRecord.indication || 'Clinical review of previously analyzed scan.'
+          }
+        };
+        
+        // Delay to simulate processing and make the function clear to the user
+        setTimeout(() => {
+          handleSelectCase(mockCase);
+          showToast(`Category review displayed for ${customRecord.name}`);
+        }, 800);
+      }
     }
   };
 
@@ -667,6 +697,7 @@ export default function App() {
       ...prev,
     ]);
     showToast('Analysis successfully saved to Patient Database');
+    handleGoBack();
   };
 
   // Handle uploaded scan
@@ -807,8 +838,8 @@ export default function App() {
       const finalName = customPatient?.name || '';
       const finalAge = customPatient?.age || ('' as any);
       const finalSex = customPatient?.sex || 'M';
-      const finalMrn = customPatient?.mrn || mrn;
-      const finalIndication = (customPatient?.indication && customPatient.indication.trim() !== '') ? customPatient.indication : indication;
+      const finalMrn = customPatient?.mrn || '';
+      const finalIndication = customPatient?.indication || '';
 
       setCustomImage(base64Data);
       setHasActiveScan(true);
@@ -984,6 +1015,74 @@ if (!isAuthenticated) {
           </div>
 
           <div className="flex items-center gap-3 relative">
+            <div className="relative">
+              <button
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors border ${
+                  isNotificationsOpen 
+                    ? 'bg-indigo-50 border-indigo-200 text-indigo-600' 
+                    : 'bg-slate-100 hover:bg-slate-200 border-slate-200/70 text-slate-700'
+                }`}
+                title="Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-0 right-0 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border-2 border-white"></span>
+                </span>
+              </button>
+
+              {isNotificationsOpen && (
+                <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden font-sans animate-fade-in origin-top-right">
+                  <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">Alerts & Notifications</span>
+                    <span className="text-[10px] font-bold text-white bg-indigo-600 px-2 py-0.5 rounded-full">2 New</span>
+                  </div>
+                  
+                  <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+                    {/* Notification 1: Patient Follow-up */}
+                    <button className="w-full text-left p-4 hover:bg-slate-50 transition-colors flex gap-3 relative">
+                      <div className="w-2 h-2 rounded-full bg-indigo-500 absolute top-5 left-2"></div>
+                      <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 ml-2">
+                        <Activity className="w-4 h-4 text-indigo-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 leading-tight mb-1">Patient Follow-up Due</div>
+                        <div className="text-xs text-slate-500 leading-relaxed">
+                          MRI follow-up scan for <span className="font-semibold text-slate-700">Eleanor Vance</span> is due in 3 days (Post-resection monitoring).
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-2">Just now</div>
+                      </div>
+                    </button>
+
+                    {/* Notification 2: Risk Category */}
+                    <button className="w-full text-left p-4 hover:bg-slate-50 transition-colors flex gap-3 relative">
+                      <div className="w-2 h-2 rounded-full bg-rose-500 absolute top-5 left-2"></div>
+                      <div className="w-8 h-8 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center shrink-0 ml-2">
+                        <AlertCircle className="w-4 h-4 text-rose-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 leading-tight mb-1">High-Risk Category Alert</div>
+                        <div className="text-xs text-slate-500 leading-relaxed">
+                          Recent scan analysis flagged as <span className="font-semibold text-rose-600">WHO Grade IV</span>. Requires immediate radiologist review.
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-2">2 hours ago</div>
+                      </div>
+                    </button>
+                  </div>
+                  
+                  <div className="p-2 border-t border-slate-100 bg-slate-50">
+                    <button 
+                      onClick={() => setIsNotificationsOpen(false)}
+                      className="w-full py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors"
+                    >
+                      Mark All as Read
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => setIsGuideOpen(true)}
               className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors border border-slate-200/70"
@@ -1008,7 +1107,7 @@ if (!isAuthenticated) {
           {currentPage === 'overview' && (
             <OverviewView
               records={patientRecords}
-              userName={currentUserRole === 'admin' ? 'Dr. Gokul' : 'Patient User'}
+              userName={currentUserName}
               userRole={currentUserRole}
               totalAnalyses={patientRecords.length}
               todaysReports={patientRecords.length}
@@ -1126,12 +1225,21 @@ if (!isAuthenticated) {
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="col-span-2">
+                          <div>
                             <label className="block text-xs font-semibold text-slate-700 mb-1.5">Full Name</label>
                             <input 
                               type="text"
                               value={activePatient.name}
                               onChange={(e) => handleUpdatePatientField('name', e.target.value)}
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Patient ID (MRN)</label>
+                            <input 
+                              type="text"
+                              value={activePatient.mrn}
+                              onChange={(e) => handleUpdatePatientField('mrn', e.target.value)}
                               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800"
                             />
                           </div>
@@ -1408,6 +1516,7 @@ if (!isAuthenticated) {
                   currentCase={customImage ? null : currentCase}
                   customImage={customImage}
                   patientData={customPatient || undefined}
+                  userName={currentUserName}
                   onConsultRequest={() => setIsConsultOpen(true)}
                   onBackToWorkstation={() => setAnalysisSubTab('workstation')}
                 />
@@ -1429,35 +1538,43 @@ if (!isAuthenticated) {
             </div>
           )}
 
-          {/* 2b. COMPARE SCANS PAGE */}
-          {currentPage === 'compare_scans' && (
-            <CompareScansView records={patientRecords} />
-          )}
-
           {/* 3. PATIENT HISTORY PAGE */}
-          {currentPage === 'patient_history' && currentUserRole === 'admin' && (
+          {currentPage === 'patient_history' && (
             <PatientHistoryView
               records={patientRecords}
               onSelectCase={handleSelectCaseById}
               onOpenReport={handleOpenReportForCase}
+              onDeleteCase={(caseId) => {
+                setPatientRecords(prev => prev.filter(r => r.id !== caseId));
+                showToast('Patient record deleted successfully.');
+              }}
             />
           )}
 
           {/* 5. PATIENT SEARCH PAGE */}
-          {currentPage === 'patient_search' && currentUserRole === 'admin' && (
+          {currentPage === 'patient_search' && (
             <PatientSearchView
               patients={patientRecords}
               onSelectPatient={handleSelectCaseById}
               onOpenReport={handleOpenReportForCase}
+              onDeletePatient={(caseId) => {
+                setPatientRecords(prev => prev.filter(r => r.id !== caseId));
+                showToast('Patient record deleted successfully.');
+              }}
             />
           )}
 
           {/* 6. PATIENT CATEGORY PAGE */}
-          {currentPage === 'patient_category' && currentUserRole === 'admin' && (
+          {currentPage === 'patient_category' && (
             <PatientCategoryView
               records={patientRecords}
+              userName={currentUserName}
               onSelectCase={handleSelectCaseById}
               onOpenReport={handleOpenReportForCase}
+              onDeleteCase={(caseId) => {
+                setPatientRecords(prev => prev.filter(r => r.id !== caseId));
+                showToast('Patient record deleted successfully.');
+              }}
             />
           )}
 

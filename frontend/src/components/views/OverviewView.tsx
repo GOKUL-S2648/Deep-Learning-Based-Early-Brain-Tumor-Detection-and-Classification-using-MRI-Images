@@ -45,7 +45,7 @@ interface OverviewViewProps {
 
 export const OverviewView: React.FC<OverviewViewProps> = ({
   records = [],
-  userName = 'Gokul',
+  userName = 'User',
   userRole = 'admin',
 
   totalAnalyses = 4,
@@ -376,7 +376,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  downloadBatchFullReportsPDF('High Risk Patients', riskGroups.High as any);
+                  downloadBatchFullReportsPDF('High Risk Patients', riskGroups.High as any, userName);
                 }}
                 disabled={riskGroups.High.length === 0}
                 className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-rose-50 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-100"
@@ -428,7 +428,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  downloadBatchFullReportsPDF('Medium Risk Patients', riskGroups.Medium as any);
+                  downloadBatchFullReportsPDF('Medium Risk Patients', riskGroups.Medium as any, userName);
                 }}
                 disabled={riskGroups.Medium.length === 0}
                 className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-amber-50 text-xs font-bold text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-100"
@@ -480,7 +480,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  downloadBatchFullReportsPDF('Low Risk Patients', riskGroups.Low as any);
+                  downloadBatchFullReportsPDF('Low Risk Patients', riskGroups.Low as any, userName);
                 }}
                 disabled={riskGroups.Low.length === 0}
                 className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-emerald-50 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-100"

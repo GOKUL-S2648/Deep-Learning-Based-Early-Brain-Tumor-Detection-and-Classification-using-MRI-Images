@@ -34,6 +34,7 @@ interface DiagnosticReportViewProps {
     indication: string;
     studyDate: string;
   };
+  userName?: string;
   onConsultRequest?: () => void;
   onBackToWorkstation?: () => void;
 }
@@ -43,12 +44,18 @@ export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
   currentCase,
   customImage,
   patientData,
+  userName = 'Dr. Marcus Sterling, MD (Neuroradiology)',
   onConsultRequest,
   onBackToWorkstation,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isSigned, setIsSigned] = useState(true);
-  const [radiologistName, setRadiologistName] = useState('Dr. Marcus Sterling, MD (Neuroradiology)');
+  const [radiologistName, setRadiologistName] = useState(userName);
+  
+  useEffect(() => {
+    setRadiologistName(userName);
+  }, [userName]);
+
   const [radiologistNotes, setRadiologistNotes] = useState('');
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
