@@ -107,10 +107,7 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
         </div>
 
         <div className="flex items-center gap-4 text-xs font-semibold">
-          <button className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 transition-colors">
-            <Calendar className="w-4 h-4" />
-            <span>Filter by Date</span>
-          </button>
+          <DatePicker selectedDate={selectedDate} onChange={setSelectedDate} />
           
           <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
             <span className="text-slate-500 mr-1">Filter:</span>

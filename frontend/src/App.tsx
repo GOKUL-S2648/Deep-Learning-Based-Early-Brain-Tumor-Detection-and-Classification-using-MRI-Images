@@ -697,7 +697,16 @@ export default function App() {
       ...prev,
     ]);
     showToast('Analysis successfully saved to Patient Database');
-    handleGoBack();
+    
+    // Reset state for the next analysis
+    setWorkflowStep(1);
+    setHasActiveScan(false);
+    setCustomImage(null);
+    setCustomPatient(null);
+    setCurrentCase(BENCHMARK_CASES[0]);
+    
+    // Return to overview page as requested
+    handleNavigate('overview');
   };
 
   // Handle uploaded scan
