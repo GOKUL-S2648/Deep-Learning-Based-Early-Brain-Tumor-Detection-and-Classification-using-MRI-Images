@@ -213,6 +213,7 @@ app.post('/api/analyze-mri', async (req, res) => {
 
     // --- PHASE 1: PYTORCH CNN PREDICTION ---
     const execPromise = util.promisify(exec);
+    let parsedCnnClass = '';
     
     try {
       console.log('Running PyTorch CNN...');
@@ -226,8 +227,9 @@ app.post('/api/analyze-mri', async (req, res) => {
       const confMatch = stdout.match(/Confidence\s*:\s*([\d.]+%)/);
       
       if (predMatch && confMatch) {
-        console.log(`CNN Success: Detected ${predMatch[1]} at ${confMatch[1]} confidence.`);
-        cnnPredictionStr = `\nAI ASSISTANT HINT: A local PyTorch CNN model analyzed this image and predicted ${predMatch[1]} with ${confMatch[1]} confidence. Please consider this as a supporting hint, but rely on your own advanced visual analysis of the MRI scan to make the final and most accurate diagnostic classification.`;
+        parsedCnnClass = predMatch[1];
+        console.log(`CNN Success: Detected ${parsedCnnClass} at ${confMatch[1]} confidence.`);
+        cnnPredictionStr = `\nAI ASSISTANT HINT: A local PyTorch CNN model analyzed this image and predicted ${parsedCnnClass} with ${confMatch[1]} confidence. Please consider this as a supporting hint, but rely on your own advanced visual analysis of the MRI scan to make the final and most accurate diagnostic classification.`;
       }
       
       if (fs.existsSync(tempImagePath)) {
@@ -239,8 +241,8 @@ app.post('/api/analyze-mri', async (req, res) => {
 
     const ai = getAiClient();
     if (!ai) {
-      console.warn('GEMINI_API_KEY not set or invalid; generating high-fidelity fallback diagnostic evaluation.');
-      const fallbackReport = generateHeuristicAnalysis(cleanBase64, sequence, plane, clinicalHistory, patientAge, patientSex);
+      console.warn('GEMINI_API_KEY not set; generating high-fidelity fallback diagnostic evaluation.');
+      const fallbackReport = generateHeuristicAnalysis(cleanBase64, sequence, plane, clinicalHistory, patientAge, patientSex, parsedCnnClass);
       res.json(fallbackReport);
       return;
     }
@@ -318,7 +320,7 @@ Provide your complete deep learning diagnostic classification (Class 0 / Class 1
       // In case of any API error, generate a robust clinical response based on inputs
       const { sequence = 'T1+C', plane = 'Axial', clinicalHistory = '', patientAge = 58, patientSex = 'M' } = req.body;
       // Inject the CNN prediction into the clinical history so the heuristic generates the right report!
-      const fallback = generateHeuristicAnalysis(req.body.imageBase64 || '', sequence, plane, String(clinicalHistory) + ' ' + cnnPredictionStr, patientAge, patientSex);
+      const fallback = generateHeuristicAnalysis(req.body.imageBase64 || '', sequence, plane, String(clinicalHistory) + ' ' + cnnPredictionStr, patientAge, patientSex, parsedCnnClass);
       res.json(fallback);
     } catch (fallbackError) {
       console.error('CRITICAL: Fallback generator also failed:', fallbackError);
@@ -397,17 +399,20 @@ function generateHeuristicAnalysis(
   plane: string,
   indication: string,
   age: number,
-  sex: string
+  sex: string,
+  cnnPrediction: string = ''
 ) {
   const getFollowUpDateStr = (days: number) => {
     const d = new Date();
     d.setDate(d.getDate() + days);
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
-  // Determine realistic scenario based on cues or default to Glioblastoma Multiforme
-  const isNormal = indication.toLowerCase().includes('normal') || indication.toLowerCase().includes('healthy') || indication.toLowerCase().includes('notumor');
-  const isMeningioma = indication.toLowerCase().includes('meningioma') || indication.toLowerCase().includes('dural');
-  const isPituitary = indication.toLowerCase().includes('pituitary') || indication.toLowerCase().includes('sella') || indication.toLowerCase().includes('chiasm');
+  
+  // Use PyTorch CNN prediction if available, otherwise fallback to clinical indication cues
+  const isNormal = cnnPrediction === 'NOTUMOR' || indication.toLowerCase().includes('normal') || indication.toLowerCase().includes('healthy') || indication.toLowerCase().includes('notumor');
+  const isMeningioma = cnnPrediction === 'MENINGIOMA' || indication.toLowerCase().includes('meningioma') || indication.toLowerCase().includes('dural');
+  const isPituitary = cnnPrediction === 'PITUITARY' || indication.toLowerCase().includes('pituitary') || indication.toLowerCase().includes('sella') || indication.toLowerCase().includes('chiasm');
+
 
   if (isNormal) {
     return {
