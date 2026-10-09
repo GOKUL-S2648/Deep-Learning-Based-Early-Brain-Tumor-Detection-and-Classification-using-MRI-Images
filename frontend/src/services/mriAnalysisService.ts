@@ -243,13 +243,14 @@ Provide the exact classLabel (Class 0, Class 1, Class 2, or Class 3), classIndex
       }
     } catch (_err) {
       console.error("Gemini API Error: Failed to generate content. Please check your API key and quotas.", _err);
+      throw new Error("Gemini API Error: Please check your API key.");
     }
   } else {
-    console.error("Gemini Client could not be initialized. Make sure VITE_GEMINI_API_KEY is set in your .env.local file and the server was restarted.");
+    console.error("Gemini Client could not be initialized. Make sure VITE_GEMINI_API_KEY is set.");
+    throw new Error("Gemini API Key missing.");
   }
-
-  // Return heuristic diagnostic report based on indication or default to high grade glioma
-  return generateClientHeuristic(sequence, plane, clinicalHistory, patientAge, patientSex);
+  
+  throw new Error("Unable to analyze scan.");
 }
 
 export function generateClientHeuristic(

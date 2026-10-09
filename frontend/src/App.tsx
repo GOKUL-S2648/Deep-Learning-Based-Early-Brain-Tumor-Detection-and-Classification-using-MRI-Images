@@ -906,8 +906,8 @@ export default function App() {
         showToast(`Analyzed: ${result.primaryClassification} (${result.classLabel})`);
       } catch (err) {
         console.error('Scan analysis error:', err);
-        setWorkflowStep(5);
-        showToast('Scan evaluated.');
+        setWorkflowStep(4);
+        showToast('API Error: Please check your VITE_GEMINI_API_KEY in environment variables.');
       } finally {
         setIsAnalyzing(false);
       }
