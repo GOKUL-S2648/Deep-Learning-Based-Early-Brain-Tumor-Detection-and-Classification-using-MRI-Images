@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: neuroscan-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 3000
