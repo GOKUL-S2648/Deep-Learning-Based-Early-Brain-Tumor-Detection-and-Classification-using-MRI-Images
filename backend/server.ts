@@ -281,7 +281,7 @@ Provide your complete deep learning diagnostic classification (Class 0 / Class 1
 
     const response = await Promise.race([
       ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-1.5-flash',
         contents: {
           parts: [
             {
@@ -374,7 +374,7 @@ Provide a thorough, evidence-based, neuroradiological and neurosurgical consulta
 
     const response = await Promise.race([
       ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-1.5-flash',
         contents: { parts },
         config: {
           systemInstruction: 'You are a Senior Neuroradiology Fellow and AI Diagnostics Consultant. Answer clinical questions with exact anatomical precision, evidence-based neuro-oncology guidelines (WHO 2021 CNS classification, NCCN), and diagnostic nuance.',
