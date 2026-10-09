@@ -667,10 +667,17 @@ export default function App() {
       setWorkflowStep(5);
       showToast(`Analysis Complete: ${result.subType} (${result.confidenceScore.toFixed(0)}% Certain)`);
     } catch (err: any) {
-      console.warn('Fell back to validated parameters', err);
-      setAnalysis(currentCase.defaultAnalysis);
-      setWorkflowStep(5);
-      showToast('Scan evaluated.');
+      console.warn('Prediction failed', err);
+      if (customImage) {
+        // If it's a custom uploaded image, don't show a misleading hardcoded bounding box
+        showToast('API Error: Please check your VITE_GEMINI_API_KEY in environment variables.');
+        setWorkflowStep(4); // Keep them on the analysis step or let them try again
+      } else {
+        // If it's a benchmark case, fallback to its known default analysis
+        setAnalysis(currentCase.defaultAnalysis);
+        setWorkflowStep(5);
+        showToast('Scan evaluated using validated parameters.');
+      }
     } finally {
       setIsAnalyzing(false);
     }
