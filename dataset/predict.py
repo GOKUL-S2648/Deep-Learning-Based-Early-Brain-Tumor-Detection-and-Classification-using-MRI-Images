@@ -142,6 +142,11 @@ def parse_args():
         default=224,
         help="Image resize dimension used during training (default: 224)",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output inference result in structured JSON format",
+    )
     return parser.parse_args()
 
 
@@ -151,15 +156,20 @@ def main():
     ckpt_path = Path(args.checkpoint)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print("\n" + "="*50)
-    print("  Brain Tumor Classifier - Prediction")
-    print("="*50)
-    print(f"  Device      : {device}")
-    print(f"  Image       : {img_path}")
+    if not args.json:
+        print("\n" + "="*50)
+        print("  Brain Tumor Classifier - Prediction")
+        print("="*50)
+        print(f"  Device      : {device}")
+        print(f"  Image       : {img_path}")
 
     # -- Validate image path
     if not img_path.exists():
-        print(f"\n[ERROR] Image not found: {img_path}")
+        if args.json:
+            import json
+            print("__JSON_START__" + json.dumps({"error": f"Image not found: {img_path}"}) + "__JSON_END__")
+        else:
+            print(f"\n[ERROR] Image not found: {img_path}")
         sys.exit(1)
 
     # -- Load model
@@ -170,6 +180,17 @@ def main():
     results = predict(model, tensor, class_names, device)
 
     top_class, top_prob = results[0]
+
+    if args.json:
+        import json
+        prob_dict = {cls: float(prob) for cls, prob in results}
+        payload = {
+            "prediction": top_class.lower(),
+            "confidence": float(top_prob),
+            "probabilities": prob_dict,
+        }
+        print("__JSON_START__" + json.dumps(payload) + "__JSON_END__")
+        return
 
     # -- Print results
     print("\n" + "-"*50)

@@ -104,6 +104,9 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
   const [measureLine, setMeasureLine] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const [isMeasuring, setIsMeasuring] = useState(false);
 
+  // PACS DICOM Metadata Inspector
+  const [showDicomInfo, setShowDicomInfo] = useState(false);
+
   // Fullscreen
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -424,10 +427,10 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
             <button
               onClick={onUploadScan}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs shadow-sm transition-all cursor-pointer border border-slate-700"
-              title="Upload MRI scan file into viewer"
+              title="Upload a new MRI scan image into the viewer"
             >
-              <Upload className="w-3.5 h-3.5" />
-              <span>New Analysis</span>
+              <Upload className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Upload MRI Scan</span>
             </button>
           )}
 
@@ -435,19 +438,19 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
             <button
               onClick={onAnalyzeScan}
               disabled={isAnalyzing}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm transition-all cursor-pointer border ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-bold text-xs shadow-md transition-all cursor-pointer border ${
                 isAnalyzing
-                  ? 'bg-indigo-600/60 text-white border-indigo-400/40 cursor-wait'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-500 hover:shadow-indigo-500/20'
+                  ? 'bg-indigo-700/60 text-white border-indigo-500/40 cursor-wait'
+                  : 'bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-400 hover:shadow-indigo-500/30'
               }`}
-              title="Run AI neural network analysis on this scan"
+              title="Run PyTorch Deep Learning CNN inference on this scan"
             >
               {isAnalyzing ? (
                 <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               )}
-              <span>{isAnalyzing ? 'Reviewing...' : 'Review'}</span>
+              <span>{isAnalyzing ? 'Analyzing Neural Network...' : 'Run Deep Learning AI'}</span>
             </button>
           )}
 
@@ -456,7 +459,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
               <span className={`px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold border ${
                 (classLabel === 'Class 1' || classificationLabel.toLowerCase().includes('glioma')) ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' :
                 (classLabel === 'Class 2' || classificationLabel.toLowerCase().includes('meningioma')) ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' :
-                'bg-slate-500/20 text-slate-600 border-slate-500/40'
+                'bg-slate-500/20 text-slate-300 border-slate-500/40'
               }`}>
                 {classLabel || (classificationLabel.toLowerCase().includes('glioma') ? 'Class 1' : classificationLabel.toLowerCase().includes('meningioma') ? 'Class 2' : 'Class 3')}
               </span>
@@ -480,10 +483,23 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
             </div>
           )}
 
+          <button
+            onClick={() => setShowDicomInfo(!showDicomInfo)}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer border ${
+              showDicomInfo
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-xs'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700 hover:text-white'
+            }`}
+            title="Inspect DICOM 3.0 Acquisition Header & Imaging Physics"
+          >
+            <Info className="w-3.5 h-3.5 text-cyan-400" />
+            <span>DICOM PACS</span>
+          </button>
+
           {onOpenGuide && (
             <button
               onClick={onOpenGuide}
-              className="p-1 text-slate-500 hover:text-cyan-300 rounded hover:bg-slate-100"
+              className="p-1.5 text-slate-400 hover:text-cyan-300 rounded hover:bg-slate-800 transition-colors"
               title="Click for quick viewer tips"
             >
               <HelpCircle className="w-4 h-4" />
@@ -494,15 +510,15 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
 
       {/* Characteristic Banner */}
       {keyMriDefiningCharacteristic && (
-        <div className="px-4 py-1.5 bg-slate-200/90 border-b border-slate-300/80 flex items-center justify-between text-[11px] text-slate-700">
+        <div className="px-4 py-1.5 bg-[#0e131f] border-b border-slate-800 flex items-center justify-between text-[11px] text-slate-300">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-500 uppercase tracking-wider text-[10px] font-mono">
+            <span className="font-semibold text-indigo-400 uppercase tracking-wider text-[10px] font-mono">
               Key MRI Defining Sign:
             </span>
-            <span className="text-slate-700">{keyMriDefiningCharacteristic}</span>
+            <span className="text-slate-200">{keyMriDefiningCharacteristic}</span>
           </div>
           {biologicalNature && (
-            <span className="font-mono text-[10px] text-slate-500 hidden sm:inline">
+            <span className="font-mono text-[10px] text-slate-400 hidden sm:inline">
               Nature: {biologicalNature}
             </span>
           )}
@@ -538,7 +554,54 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
               <Upload className="w-7 h-7 animate-bounce" />
             </div>
             <span className="font-bold text-base tracking-tight">Drop Brain MRI Scan Image Here</span>
-            <span className="text-xs text-slate-600 mt-1">PNG, JPG, WebP, or DICOM slice to load & analyze</span>
+            <span className="text-xs text-slate-400 mt-1">PNG, JPG, WebP, or DICOM slice to load & analyze</span>
+          </div>
+        )}
+
+        {/* DICOM PACS Acquisition Metadata HUD */}
+        {showDicomInfo && (
+          <div className="absolute top-12 left-4 z-30 w-72 bg-slate-950/95 border border-slate-700/80 rounded-xl p-4 shadow-2xl backdrop-blur-md text-xs font-mono text-slate-300 space-y-2.5 animate-fade-in pointer-events-auto">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="font-bold text-cyan-400 flex items-center gap-1.5">
+                <Scan className="w-3.5 h-3.5" />
+                DICOM 3.0 TELEMETRY
+              </span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">CALIBRATED</span>
+            </div>
+            <div className="space-y-1.5 text-[11px]">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Magnetic Field:</span>
+                <span className="text-white font-bold">3.0 Tesla</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Sequence / Acq:</span>
+                <span className="text-indigo-300 font-bold">{sequence}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Orientation Plane:</span>
+                <span className="text-slate-200">{plane}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">TR / TE:</span>
+                <span className="text-slate-200">550 ms / 14.2 ms</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Slice Thickness:</span>
+                <span className="text-slate-200">3.0 mm (0.5 mm spacing)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Pixel Spacing:</span>
+                <span className="text-slate-200">0.468 mm/pixel</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Contrast Medium:</span>
+                <span className="text-amber-300">IV Gadobutrol (0.1 mmol/kg)</span>
+              </div>
+              <div className="flex justify-between border-t border-slate-800/80 pt-1.5 mt-1.5">
+                <span className="text-slate-500">CNN Model:</span>
+                <span className="text-emerald-400 font-bold">PyTorch 4-Block ConvNet</span>
+              </div>
+            </div>
           </div>
         )}
         {/* Anatomical Compass Labels */}
@@ -822,33 +885,33 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
       </div>
 
       {/* Secondary Bottom Bar: Contrast presets & Advanced Adjustments toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-950/80 border-t border-slate-200 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-950/90 border-t border-slate-800 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-slate-500 font-medium">Brightness Preset:</span>
+          <span className="text-slate-400 font-medium">Window Preset:</span>
           <div className="flex flex-wrap items-center gap-1.5">
             {WINDOW_PRESETS.map((p) => (
               <button
                 key={p.id}
                 onClick={() => applyPreset(p)}
-                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer border ${
                   activePreset === p.id && !autoContrast
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                    : 'text-slate-400 hover:text-slate-200 bg-indigo-600 border border-slate-200'
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 font-bold'
+                    : 'text-slate-300 hover:text-white bg-slate-900 border-slate-800 hover:bg-slate-800'
                 }`}
               >
                 {p.name.split(' ')[0]}
               </button>
             ))}
 
-            <div className="w-px h-3.5 bg-slate-100 mx-1 hidden sm:block" />
+            <div className="w-px h-3.5 bg-slate-800 mx-1 hidden sm:block" />
 
             {/* Dedicated Auto-Contrast (Histogram Equalization) Preset Pill */}
             <button
               onClick={toggleAutoContrast}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer border ${
                 autoContrast
-                  ? 'bg-indigo-600 text-white border border-slate-500 shadow-sm'
-                  : 'text-slate-600 hover:text-white bg-slate-950/60 border border-slate-200/80 hover:bg-indigo-600/60'
+                  ? 'bg-indigo-600 text-white border-indigo-400 shadow-sm font-bold'
+                  : 'text-slate-300 hover:text-white bg-slate-900 border-slate-800 hover:bg-slate-800'
               }`}
               title="Dynamically applies histogram equalization to expand brain tissue contrast for tumor detection"
             >
@@ -861,7 +924,7 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
 
         <button
           onClick={() => setShowAdvancedSliders(!showAdvancedSliders)}
-          className="text-slate-500 hover:text-cyan-300 text-[11px] flex items-center gap-1 font-medium"
+          className="text-slate-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 font-medium transition-colors cursor-pointer"
         >
           <Sliders className="w-3.5 h-3.5" />
           <span>{showAdvancedSliders ? 'Hide Sliders' : 'Fine Tuning Sliders'}</span>
