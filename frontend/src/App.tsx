@@ -698,15 +698,15 @@ export default function App() {
     ]);
     showToast('Analysis successfully saved to Patient Database');
     
-    // Reset state for the next analysis
+    // Reset state for the next analysis - redirect to starting page of New Analysis
     setWorkflowStep(1);
     setHasActiveScan(false);
     setCustomImage(null);
     setCustomPatient(null);
     setCurrentCase(BENCHMARK_CASES[0]);
-    
-    // Return to overview page as requested
-    handleNavigate('overview');
+    setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
+    setAnalysisSubTab('workstation');
+    _setCurrentPage('new_analysis');
   };
 
   // Handle uploaded scan
@@ -1171,30 +1171,71 @@ if (!isAuthenticated) {
                   </div>
 
                   {!hasActiveScan ? (
-                    <div className="flex flex-col items-center justify-center min-h-[500px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center animate-fade-in shadow-sm">
-                      <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                        <Upload className="w-10 h-10 text-indigo-600" />
+                    <div className="space-y-8 animate-fade-in">
+                      <div className="flex flex-col items-center justify-center min-h-[460px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center shadow-sm hover:border-indigo-400 transition-colors">
+                        <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                          <Upload className="w-10 h-10 text-indigo-600" />
+                        </div>
+                        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">Upload MRI Scan</h2>
+                        <p className="text-slate-500 max-w-md text-sm mb-8 leading-relaxed">
+                          Please upload a DICOM, PNG, or JPEG file of the brain MRI scan to begin deep learning tumor detection and classification.
+                        </p>
+                        
+                        <input
+                          type="file"
+                          className="hidden"
+                          ref={directFileInputRef}
+                          accept="image/*,.dcm"
+                          onChange={handleDirectFileInputChange}
+                        />
+                        
+                        <button
+                          onClick={() => directFileInputRef.current?.click()}
+                          className="flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-500 hover:-translate-y-1 transition-all shadow-xl shadow-indigo-600/30 cursor-pointer"
+                        >
+                          <Upload className="w-5 h-5" />
+                          <span>Select File or Drag & Drop</span>
+                        </button>
                       </div>
-                      <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">Upload MRI Scan</h2>
-                      <p className="text-slate-500 max-w-md text-sm mb-8 leading-relaxed">
-                        Please upload a DICOM, PNG, or JPEG file of the brain MRI scan to begin deep learning tumor detection and classification.
-                      </p>
-                      
-                      <input
-                        type="file"
-                        className="hidden"
-                        ref={directFileInputRef}
-                        accept="image/*,.dcm"
-                        onChange={handleDirectFileInputChange}
-                      />
-                      
-                      <button
-                        onClick={() => directFileInputRef.current?.click()}
-                        className="flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-500 hover:-translate-y-1 transition-all shadow-xl shadow-indigo-600/30"
-                      >
-                        <Upload className="w-5 h-5" />
-                        <span>Select File or Drag & Drop</span>
-                      </button>
+
+                      {/* Clinical Reference Test Scans Quick Pick */}
+                      <div className="border-t border-slate-200/80 pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-800">Or Select a Clinical Benchmark MRI Case</h3>
+                            <p className="text-xs text-slate-500">Quickly load a validated 4-class MRI dataset scan into the workstation</p>
+                          </div>
+                          <button
+                            onClick={() => setAnalysisSubTab('gallery')}
+                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer"
+                          >
+                            View Case Library →
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {BENCHMARK_CASES.slice(0, 4).map((c) => (
+                            <button
+                              key={c.id}
+                              onClick={() => {
+                                handleSelectCase(c);
+                                setHasActiveScan(true);
+                                setWorkflowStep(3);
+                              }}
+                              className="p-4 bg-white border border-slate-200 hover:border-indigo-400 rounded-2xl text-left transition-all hover:shadow-md group flex flex-col justify-between cursor-pointer"
+                            >
+                              <div>
+                                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">{c.caseNumber}</span>
+                                <div className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 transition-colors mt-0.5">{c.patient.name}</div>
+                                <div className="text-[11px] text-slate-500 mt-1">{c.modalitySequence} · {c.plane}</div>
+                              </div>
+                              <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">{c.defaultAnalysis.primaryClassification}</span>
+                                <span className="text-[10px] text-indigo-600 font-semibold group-hover:translate-x-0.5 transition-transform">Load →</span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <>
@@ -1477,9 +1518,10 @@ if (!isAuthenticated) {
                           <button
                             onClick={handleSaveAnalysis}
                             className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition-colors cursor-pointer"
+                            title="Save findings to database and redirect to starting page of New Analysis"
                           >
                             <Save className="w-4 h-4" />
-                            <span>Save to Patient Database</span>
+                            <span>Save Analysis & Start New Scan</span>
                           </button>
                           <button
                             onClick={() => {
@@ -1528,6 +1570,7 @@ if (!isAuthenticated) {
                   userName={currentUserName}
                   onConsultRequest={() => setIsConsultOpen(true)}
                   onBackToWorkstation={() => setAnalysisSubTab('workstation')}
+                  onSaveAnalysis={handleSaveAnalysis}
                 />
               )}
 
@@ -1556,6 +1599,19 @@ if (!isAuthenticated) {
               onDeleteCase={(caseId) => {
                 setPatientRecords(prev => prev.filter(r => r.id !== caseId));
                 showToast('Patient record deleted successfully.');
+              }}
+            />
+          )}
+
+          {/* 4. REGISTER PATIENT PAGE */}
+          {currentPage === 'register_patient' && (
+            <RegisterPatientView
+              onRegisterSuccess={handleRegisterPatientSuccess}
+              onNavigateToAnalysis={() => {
+                _setCurrentPage('new_analysis');
+                setAnalysisSubTab('workstation');
+                setWorkflowStep(1);
+                setHasActiveScan(false);
               }}
             />
           )}

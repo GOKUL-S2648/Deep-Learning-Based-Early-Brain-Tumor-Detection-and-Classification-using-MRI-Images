@@ -17,7 +17,8 @@ import {
   Building2,
   FileText,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Save
 } from 'lucide-react';
 import { MRIAnalysisResult, BenchmarkCase } from '../types/radiology';
 import { downloadRadiologyReportPDF } from '../utils/pdfExport';
@@ -37,6 +38,7 @@ interface DiagnosticReportViewProps {
   userName?: string;
   onConsultRequest?: () => void;
   onBackToWorkstation?: () => void;
+  onSaveAnalysis?: () => void;
 }
 
 export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
@@ -47,6 +49,7 @@ export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
   userName = 'Dr. Marcus Sterling, MD (Neuroradiology)',
   onConsultRequest,
   onBackToWorkstation,
+  onSaveAnalysis,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isSigned, setIsSigned] = useState(true);
@@ -252,6 +255,17 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
             >
               <ArrowLeft className="w-4 h-4 text-slate-500" />
               <span>Back to Workstation</span>
+            </button>
+          )}
+
+          {onSaveAnalysis && (
+            <button
+              onClick={onSaveAnalysis}
+              className="flex items-center gap-1.5 px-3.5 py-2 font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm cursor-pointer"
+              title="Save patient record to database and start new analysis"
+            >
+              <Save className="w-4 h-4" />
+              <span>Save & New Analysis</span>
             </button>
           )}
 
