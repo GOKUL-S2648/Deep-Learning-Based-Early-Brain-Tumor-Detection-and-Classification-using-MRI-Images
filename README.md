@@ -8,6 +8,14 @@ The platform explores the application of artificial intelligence and deep learni
 
 ---
 
+
+## 🚀 Live Demo
+
+🔗 https://brainscan-backend-yxhv.onrender.com
+
+> Click the link above to access the deployed application.
+
+
 ## 🚀 Project Overview
 
 Brain tumors are serious medical conditions that require careful examination of medical images. Analyzing MRI scans manually requires specialized medical knowledge and can be time-consuming.
