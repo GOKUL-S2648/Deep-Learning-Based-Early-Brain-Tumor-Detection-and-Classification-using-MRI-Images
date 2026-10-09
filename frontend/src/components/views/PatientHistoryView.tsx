@@ -106,7 +106,7 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
           />
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-semibold">
+        <div className="flex items-center gap-4 text-sm font-semibold">
           <DatePicker selectedDate={selectedDate} onChange={setSelectedDate} />
           
           <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
@@ -131,9 +131,9 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
       {/* Table Card */}
       <div className="bg-white border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden pb-4">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border-collapse">
+          <table className="w-full text-sm text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-50/50 border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                 <th className="p-4 pl-6">Patient / MRN</th>
                 <th className="p-4">Age / Sex</th>
                 <th className="p-4">Date</th>

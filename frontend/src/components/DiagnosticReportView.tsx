@@ -433,21 +433,21 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
                 
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3.5 bg-white/60 print:bg-slate-100 rounded-lg border border-slate-300/50 print:border-slate-300">
                   <div>
-                    <span className="text-slate-500 print:text-slate-600 block text-[10px] uppercase font-mono mb-1">Tumor Type</span>
-                    <span className="font-bold text-slate-900 text-xs">{subType}</span>
+                    <span className="text-slate-500 print:text-slate-600 block text-[11px] uppercase font-mono mb-1">Tumor Type</span>
+                    <span className="font-bold text-slate-900 text-sm">{subType}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 print:text-slate-600 block text-[10px] uppercase font-mono mb-1">Tumor Category</span>
-                    <span className="font-bold text-slate-900 text-xs">{biologicalNature} (WHO {whoGrade})</span>
+                    <span className="text-slate-500 print:text-slate-600 block text-[11px] uppercase font-mono mb-1">Tumor Category</span>
+                    <span className="font-bold text-slate-900 text-sm">{biologicalNature} (WHO {whoGrade})</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 print:text-slate-600 block text-[10px] uppercase font-mono mb-1">Localization</span>
-                    <span className="font-bold text-slate-900 text-xs">
+                    <span className="text-slate-500 print:text-slate-600 block text-[11px] uppercase font-mono mb-1">Localization</span>
+                    <span className="font-bold text-slate-900 text-sm">
                       {localization.hemisphere} {localization.anatomicalLobe} ({localization.compartment})
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 print:text-slate-600 block text-[10px] uppercase font-mono mb-1">Primary Treatment</span>
+                    <span className="text-slate-500 print:text-slate-600 block text-[11px] uppercase font-mono mb-1">Primary Treatment</span>
                     <span className="font-bold text-indigo-600 print:text-slate-900 text-xs leading-tight line-clamp-2" title={radiologyReport.recommendations[0] || 'N/A'}>
                       {radiologyReport.recommendations[0] || 'See Next Steps'}
                     </span>

@@ -353,7 +353,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
               
               <div className="mb-6 rounded-xl bg-[#F8FAFC] p-4 border border-[#E2E8F0]">
-                <p className="text-xs font-medium leading-relaxed text-[#475569]">
+                <p className="text-sm font-medium leading-relaxed text-[#475569]">
                   Immediate clinical attention required. High probability of aggressive pathology or acute conditions.
                 </p>
               </div>
@@ -361,15 +361,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <div className="space-y-3 mb-7">
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Malignant Neoplasms (Glioma, Mets)</span>
+                  <span className="text-sm font-semibold text-[#334155]">Malignant Neoplasms (Glioma, Mets)</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Significant Mass Effect / Shift</span>
+                  <span className="text-sm font-semibold text-[#334155]">Significant Mass Effect / Shift</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Acute Hemorrhage / Hydrocephalus</span>
+                  <span className="text-sm font-semibold text-[#334155]">Acute Hemorrhage / Hydrocephalus</span>
                 </div>
               </div>
               
@@ -379,7 +379,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   downloadBatchFullReportsPDF('High Risk Patients', riskGroups.High as any, userName);
                 }}
                 disabled={riskGroups.High.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-rose-50 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-100"
+                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-rose-50 text-sm font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-100"
               >
                 <Download className="h-4 w-4" />
                 Export {riskGroups.High.length} Cases
@@ -405,7 +405,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
 
               <div className="mb-6 rounded-xl bg-[#F8FAFC] p-4 border border-[#E2E8F0]">
-                <p className="text-xs font-medium leading-relaxed text-[#475569]">
+                <p className="text-sm font-medium leading-relaxed text-[#475569]">
                   Clinical monitoring advised. Lesions exhibiting benign or chronic features requiring surveillance.
                 </p>
               </div>
@@ -413,15 +413,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <div className="space-y-3 mb-7">
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Benign Tumors (Meningioma, Pituitary)</span>
+                  <span className="text-sm font-semibold text-[#334155]">Benign Tumors (Meningioma, Pituitary)</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Indeterminate Low-Grade Lesions</span>
+                  <span className="text-sm font-semibold text-[#334155]">Indeterminate Low-Grade Lesions</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Minimal to No Mass Effect</span>
+                  <span className="text-sm font-semibold text-[#334155]">Minimal to No Mass Effect</span>
                 </div>
               </div>
               
@@ -431,7 +431,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   downloadBatchFullReportsPDF('Medium Risk Patients', riskGroups.Medium as any, userName);
                 }}
                 disabled={riskGroups.Medium.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-amber-50 text-xs font-bold text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-100"
+                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-amber-50 text-sm font-bold text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-100"
               >
                 <Download className="h-4 w-4" />
                 Export {riskGroups.Medium.length} Cases
@@ -457,7 +457,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
 
               <div className="mb-6 rounded-xl bg-[#F8FAFC] p-4 border border-[#E2E8F0]">
-                <p className="text-xs font-medium leading-relaxed text-[#475569]">
+                <p className="text-sm font-medium leading-relaxed text-[#475569]">
                   Routine review workflow. No acute or concerning intracranial pathology detected in the study.
                 </p>
               </div>
@@ -465,15 +465,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <div className="space-y-3 mb-7">
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Normal Brain Parenchyma</span>
+                  <span className="text-sm font-semibold text-[#334155]">Normal Brain Parenchyma</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Age-Related Atrophic Changes</span>
+                  <span className="text-sm font-semibold text-[#334155]">Age-Related Atrophic Changes</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                  <span className="text-xs font-semibold text-[#334155]">Incidental Stable Findings</span>
+                  <span className="text-sm font-semibold text-[#334155]">Incidental Stable Findings</span>
                 </div>
               </div>
               
@@ -483,7 +483,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   downloadBatchFullReportsPDF('Low Risk Patients', riskGroups.Low as any, userName);
                 }}
                 disabled={riskGroups.Low.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-emerald-50 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-100"
+                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-emerald-50 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-100"
               >
                 <Download className="h-4 w-4" />
                 Export {riskGroups.Low.length} Cases
