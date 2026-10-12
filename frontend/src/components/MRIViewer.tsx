@@ -181,7 +181,8 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
 
       if (tissuePixelCount > 0) {
         // Contrast limiting to prevent noise over-amplification (inspired by CLAHE)
-        const clipLimit = Math.max(12, Math.floor(tissuePixelCount * 0.045));
+        // Tuned limit down to 0.015 (1.5%) for smoother, more natural MRI tissue contrast
+        const clipLimit = Math.max(5, Math.floor(tissuePixelCount * 0.015));
         let excess = 0;
         const clippedHist = new Uint32Array(256);
         for (let g = BG_THRESHOLD + 1; g < 256; g++) {
@@ -206,14 +207,16 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
         }
 
         lut = new Uint8Array(256);
+        // Smoothly blend background into the equalized tissue range
         for (let g = 0; g <= BG_THRESHOLD; g++) {
-          lut[g] = g; // keep background dark
+          lut[g] = Math.round((g / BG_THRESHOLD) * 5); // Keep background extremely dark but smooth
         }
 
         const totalCdf = cum > 0 ? cum : 1;
         for (let g = BG_THRESHOLD + 1; g < 256; g++) {
           const norm = cdf[g] / totalCdf;
-          lut[g] = Math.min(255, Math.max(10, Math.round(10 + norm * 245)));
+          // Map tissue from 5 to 250 for a softer, more diagnostic look that doesn't blow out highlights
+          lut[g] = Math.min(255, Math.max(5, Math.round(5 + norm * 245)));
         }
       }
     }
@@ -267,13 +270,15 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
       const radius = Math.max(bw, bh) * 0.75;
 
       destCtx.save();
-      destCtx.globalAlpha = heatmapOpacity;
+      // Use 'overlay' or 'multiply' so the underlying brain tissue texture remains visible
+      destCtx.globalCompositeOperation = 'overlay';
+      destCtx.globalAlpha = heatmapOpacity * 0.8; // Further reduce opacity
 
       const gradient = destCtx.createRadialGradient(bcx, bcy, radius * 0.15, bcx, bcy, radius);
-      gradient.addColorStop(0, 'rgba(239, 68, 68, 0.95)'); // Core high attention (Red)
-      gradient.addColorStop(0.35, 'rgba(249, 115, 22, 0.85)'); // Amber
-      gradient.addColorStop(0.65, 'rgba(234, 179, 8, 0.6)'); // Yellow
-      gradient.addColorStop(0.85, 'rgba(6, 182, 212, 0.35)'); // Cyan periphery
+      gradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)'); // Core high attention (Red, but translucent)
+      gradient.addColorStop(0.35, 'rgba(249, 115, 22, 0.5)'); // Amber
+      gradient.addColorStop(0.65, 'rgba(234, 179, 8, 0.25)'); // Yellow
+      gradient.addColorStop(0.85, 'rgba(6, 182, 212, 0.1)'); // Cyan periphery
       gradient.addColorStop(1, 'rgba(59, 130, 246, 0)'); // Fade
 
       destCtx.fillStyle = gradient;

@@ -1,13 +1,3 @@
-"""
-Brain Tumor Classification - Standalone Prediction Script
-=========================================================
-Usage:
-    python predict.py --image path/to/brain_mri.jpg
-    python predict.py --image path/to/brain_mri.jpg --checkpoint checkpoints/best_model.pth
-
-Output:
-    Predicted class, confidence score, and top-3 probabilities.
-"""
 import sys
 import io
 # Fix Windows console UTF-8 output

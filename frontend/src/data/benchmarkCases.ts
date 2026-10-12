@@ -105,7 +105,6 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     whoGrade: 'Grade IV',
     modalitySequence: 'T1-weighted Gadolinium Contrast (T1+C)',
     plane: 'Axial',
-    imageSrc: '/glioblastoma.jpg',
     patient: {
       mrn: 'RAD-948102',
       name: 'Eleanor Vance',
@@ -266,7 +265,6 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     whoGrade: 'Grade I',
     modalitySequence: 'T1-weighted Gadolinium Contrast (T1+C)',
     plane: 'Axial',
-    imageSrc: '/meningioma.jpg',
     patient: {
       mrn: 'RAD-881290',
       name: 'Arthur Pendelton',
@@ -407,7 +405,6 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     whoGrade: 'Grade I',
     modalitySequence: 'T1-weighted Contrast (Coronal)',
     plane: 'Coronal',
-    imageSrc: '/pituitary.jpg',
     patient: {
       mrn: 'RAD-739104',
       name: 'Julian Henderson',
@@ -560,7 +557,6 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     whoGrade: 'Non-neoplastic',
     modalitySequence: 'T2-weighted Fast Spin Echo (FSE)',
     plane: 'Axial',
-    imageSrc: '/normal.jpg',
     patient: {
       mrn: 'RAD-552199',
       name: 'Samantha Wright',

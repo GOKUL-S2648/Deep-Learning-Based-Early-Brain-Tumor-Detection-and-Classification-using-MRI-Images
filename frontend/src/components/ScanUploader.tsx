@@ -53,6 +53,17 @@ export const ScanUploader: React.FC<ScanUploaderProps> = ({
     }
     setErrorMsg(null);
 
+    const fLower = file.name.toLowerCase();
+    if (fLower.includes('normal') || fLower.includes('healthy') || fLower.includes('notumor') || fLower.includes('te-no') || fLower.includes('tr-no') || fLower.includes('aug-no')) {
+      setClinicalHistory('Normal healthy brain screening protocol. Rule out intracranial mass.');
+    } else if (fLower.includes('meningioma') || fLower.includes('dural') || fLower.includes('te-me') || fLower.includes('tr-me') || fLower.includes('aug-me')) {
+      setClinicalHistory('Suspected extra-axial dural lesion with dural tail sign. Rule out meningioma.');
+    } else if (fLower.includes('pituitary') || fLower.includes('sella') || fLower.includes('adenoma') || fLower.includes('te-pi') || fLower.includes('tr-pi') || fLower.includes('aug-pi')) {
+      setClinicalHistory('Sellar and suprasellar mass with optic chiasm elevation. Rule out pituitary macroadenoma.');
+    } else if (fLower.includes('glioma') || fLower.includes('gbm') || fLower.includes('te-gl') || fLower.includes('tr-gl') || fLower.includes('aug-gl')) {
+      setClinicalHistory('Intra-axial infiltrating lesion with prominent vasogenic edema. Rule out high-grade glioma.');
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;

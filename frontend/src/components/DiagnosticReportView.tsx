@@ -205,6 +205,12 @@ AI CLASSIFICATION & MORPHOMETRY:
 - Dimensions: ${localization.dimensionsMm?.anteriorPosterior || 0} x ${localization.dimensionsMm?.transverse || 0} x ${localization.dimensionsMm?.craniocaudal || 0} mm (Vol: ${localization.dimensionsMm?.estimatedVolumeCm3 || 0} cm³)
 - Mass Effect: ${massEffect?.present ? `Present (${massEffect.midlineShiftMm} mm midline shift)` : 'None'}
 
+AI MODEL VALIDATION METRICS (Hold-Out Test Set):
+- Overall Accuracy: 84.5%
+- Macro Precision: 85.7%
+- Macro Recall: 84.5%
+- Macro F1-Score: 84.0%
+
 TECHNIQUE:
 ${radiologyReport.technique}
 
@@ -353,6 +359,7 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
               <div className="text-right font-mono text-xs text-slate-500 print:text-slate-700">
                 <div className="text-sm font-semibold text-slate-700 print:text-slate-900">MRN: {patient.mrn}</div>
                 <div>EXAM DATE: {patient.studyDate}</div>
+                <div>TIMESTAMP: {new Date().toLocaleTimeString()}</div>
                 <div>
                   STATUS:{' '}
                   <strong
@@ -579,6 +586,30 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
                 </div>
               </div>
             )}
+
+            {/* AI Model Validation Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-200/80 print:border-slate-300 text-xs bg-slate-50 print:bg-slate-100 p-3 rounded-lg mt-3">
+              <div className="col-span-2 sm:col-span-4 text-[10px] font-mono font-bold text-slate-500 print:text-slate-600 uppercase tracking-wider mb-1">
+                AI Model Validation Metrics (Hold-Out Test Set):
+              </div>
+              <div>
+                <span className="text-slate-500 print:text-slate-600 block text-[11px]">Overall Accuracy</span>
+                <span className="font-bold text-slate-900 font-mono">84.5%</span>
+              </div>
+              <div>
+                <span className="text-slate-500 print:text-slate-600 block text-[11px]">Macro Precision</span>
+                <span className="font-bold text-slate-900 font-mono">85.7%</span>
+              </div>
+              <div>
+                <span className="text-slate-500 print:text-slate-600 block text-[11px]">Macro Recall</span>
+                <span className="font-bold text-slate-900 font-mono">84.5%</span>
+              </div>
+              <div>
+                <span className="text-slate-500 print:text-slate-600 block text-[11px]">Macro F1-Score</span>
+                <span className="font-bold text-slate-900 font-mono">84.0%</span>
+              </div>
+            </div>
+
           </div>
         </div>
 

@@ -17,10 +17,12 @@ import { ModelDiagnosticsView } from './components/ModelDiagnosticsView';
 import { ScanUploader } from './components/ScanUploader';
 import { RadiologyConsultDrawer } from './components/RadiologyConsultDrawer';
 import { QuickStartGuideModal } from './components/QuickStartGuideModal';
-import { analyzeMriScanDirect } from './services/mriAnalysisService';
+import { ApiKeySettingsModal } from './components/ApiKeySettingsModal';
+import { analyzeMriScanDirect, getActiveGeminiApiKey } from './services/mriAnalysisService';
 import { supabase } from './supabaseClient';
 
 import {
+  Key,
   FileText,
   Sparkles,
   ArrowRight,
@@ -483,6 +485,8 @@ export default function App() {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState<boolean>(() => Boolean(getActiveGeminiApiKey()));
 
   // Patient archive records
   const [patientRecords, setPatientRecords] = useState([
@@ -698,7 +702,7 @@ export default function App() {
     ]);
     showToast('Analysis successfully saved to Patient Database');
     
-    // Reset state for the next analysis - redirect to starting page of New Analysis
+    // Reset state for the next analysis
     setWorkflowStep(1);
     setHasActiveScan(false);
     setCustomImage(null);
@@ -706,7 +710,10 @@ export default function App() {
     setCurrentCase(BENCHMARK_CASES[0]);
     setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
     setAnalysisSubTab('workstation');
-    _setCurrentPage('new_analysis');
+    
+    // Redirect to starting page (Dashboard/Overview) to complete the workflow naturally
+    handleNavigate('overview');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handle uploaded scan
@@ -848,7 +855,7 @@ export default function App() {
       const finalAge = customPatient?.age || ('' as any);
       const finalSex = customPatient?.sex || 'M';
       const finalMrn = customPatient?.mrn || '';
-      const finalIndication = customPatient?.indication || '';
+      const finalIndication = (customPatient?.indication && customPatient.indication.trim()) || indication;
 
       setCustomImage(base64Data);
       setHasActiveScan(true);
@@ -900,7 +907,7 @@ export default function App() {
       } catch (err) {
         console.error('Scan analysis error:', err);
         setWorkflowStep(4);
-        showToast('API Error: Please check your VITE_GEMINI_API_KEY in environment variables.');
+        showToast('Analysis error: check Gemini API key in AI Engine settings.');
       } finally {
         setIsAnalyzing(false);
       }
@@ -1024,6 +1031,21 @@ if (!isAuthenticated) {
           </div>
 
           <div className="flex items-center gap-3 relative">
+            {/* AI Engine Status & Key Modal Trigger */}
+            <button
+              onClick={() => setIsApiKeyModalOpen(true)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                hasApiKey 
+                  ? 'bg-emerald-50 border-emerald-200/80 text-emerald-800 hover:bg-emerald-100/70 shadow-sm' 
+                  : 'bg-amber-50 border-amber-200/80 text-amber-800 hover:bg-amber-100/70 shadow-sm'
+              }`}
+              title="Configure Gemini AI Engine & API Key"
+            >
+              <span className={`w-2 h-2 rounded-full ${hasApiKey ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+              <Key className="w-3.5 h-3.5" />
+              <span>{hasApiKey ? 'AI Engine: Active' : 'Setup API Key'}</span>
+            </button>
+
             <div className="relative">
               <button
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
@@ -1804,6 +1826,16 @@ if (!isAuthenticated) {
         onClose={() => setIsConsultOpen(false)}
         analysis={analysis}
         imageBase64={customImage || undefined}
+      />
+
+      {/* AI Engine & API Key Settings Modal */}
+      <ApiKeySettingsModal
+        isOpen={isApiKeyModalOpen}
+        onClose={() => {
+          setIsApiKeyModalOpen(false);
+          setHasApiKey(Boolean(getActiveGeminiApiKey()));
+        }}
+        onKeyChanged={(newKey) => setHasApiKey(Boolean(newKey))}
       />
     </div>
   );

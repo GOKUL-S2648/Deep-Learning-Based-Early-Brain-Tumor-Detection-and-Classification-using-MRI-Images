@@ -1,15 +1,14 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "npm run build:frontend",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
     {
-      "src": "backend/server.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
+      "source": "/api/:path*",
+      "destination": "https://brainscan-backend-yxhv.onrender.com/api/:path*"
+    },
     {
-      "src": "/(.*)",
-      "dest": "backend/server.ts"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

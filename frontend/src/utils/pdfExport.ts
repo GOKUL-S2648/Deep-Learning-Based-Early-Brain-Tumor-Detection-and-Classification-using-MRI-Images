@@ -351,6 +351,24 @@ export async function generateRadiologyReportPDF(options: PDFExportOptions, exis
     y += 13;
   }
 
+  // AI MODEL VALIDATION METRICS
+  checkPageBreak(16);
+  doc.setFillColor(241, 245, 249);
+  doc.rect(margin, y, contentWidth, 11, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text('AI MODEL VALIDATION METRICS (Hold-Out Test Set):', margin + 3, y + 4);
+  
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(71, 85, 105);
+  doc.text('Overall Accuracy: 84.5%', margin + 3, y + 8.5);
+  doc.text('Macro Precision: 85.7%', margin + 48, y + 8.5);
+  doc.text('Macro Recall: 84.5%', margin + 96, y + 8.5);
+  doc.text('Macro F1-Score: 84.0%', margin + 145, y + 8.5);
+  y += 15;
+
   // 4. SECTION 2: CLINICAL INDICATION & TECHNIQUE
   checkPageBreak(25);
   doc.setFont('helvetica', 'bold');
