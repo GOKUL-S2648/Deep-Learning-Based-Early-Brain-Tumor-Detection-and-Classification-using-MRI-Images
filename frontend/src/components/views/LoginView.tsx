@@ -251,22 +251,10 @@ export function LoginView({ onLoginSuccess, onBack }: LoginViewProps) {
                    <span className="relative bg-white px-4 text-xs text-gray-400">Or continue with</span>
                 </div>
 
-                <div className="flex flex-col gap-3 mb-6">
+                <div className="flex flex-col gap-3 mb-8">
                    <button type="button" onClick={handleGoogleLogin} className="w-full h-12 flex items-center justify-center gap-3 bg-[#f2f2f2] hover:bg-[#e8e8e8] text-slate-900 rounded-[0.85rem] text-[14px] font-semibold transition-colors cursor-pointer">
                       <GoogleIcon />
                       Sign in with Google
-                   </button>
-
-                   <button
-                     type="button"
-                     onClick={() => {
-                       onLoginSuccess({ email: 'gokul.radiologist@neuroscan.ai' }, 'admin');
-                     }}
-                     className="w-full h-12 flex items-center justify-center gap-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-[0.85rem] text-[14px] font-bold transition-all shadow-xs cursor-pointer"
-                     title="Access workstation directly without third-party authentication"
-                   >
-                     <Brain className="w-4 h-4 text-emerald-600" />
-                     1-Click Instant Access (Clinical Radiologist)
                    </button>
                 </div>
 
