@@ -1582,15 +1582,6 @@ if (!isAuthenticated) {
 
                         <div className="flex items-center gap-2.5">
                           <button
-                            onClick={handleResetToNewScan}
-                            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
-                            title="Clear active scan and intake another MRI"
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" />
-                            <span>Upload New Scan</span>
-                          </button>
-
-                          <button
                             onClick={() => {
                               setWorkflowStep(6);
                               setAnalysisSubTab('report');
