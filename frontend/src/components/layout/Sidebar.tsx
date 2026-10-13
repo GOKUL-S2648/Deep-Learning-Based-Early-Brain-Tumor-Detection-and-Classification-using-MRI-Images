@@ -13,22 +13,23 @@ import {
   CreditCard,
   Settings,
   Users,
-  Split
+  Split,
+  Clock
 } from 'lucide-react';
 
 export type NavigationPage = 
   | 'overview' 
   | 'new_analysis' 
   | 'patient_history' 
+  | 'recently_viewed' 
   | 'register_patient' 
-  | 'patient_search'
+  | 'patient_search' 
   | 'patient_category'
   | 'patient_appointments'
   | 'patient_messages'
   | 'patient_billing'
   | 'patient_settings'
   | 'doctor_diagnostics'
-  | 'doctor_pacs'
   | 'doctor_consults';
 
 interface SidebarProps {
@@ -46,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userRole = 'Clinical Radiologist',
   onSignOut,
 }) => {
-  let navItems = [
+  const navItems = [
     {
       id: 'overview' as NavigationPage,
       label: 'Overview',
@@ -54,64 +55,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'new_analysis' as NavigationPage,
-      label: 'New Analysis',
+      label: 'Diagnostic Workstation',
       icon: ScanLine,
     },
     {
       id: 'patient_category' as NavigationPage,
-      label: 'Category',
+      label: 'Patient Category',
       icon: Layers,
     },
     {
-      id: 'patient_search' as NavigationPage,
-      label: 'Consultations',
-      icon: Users,
-    },
-    {
       id: 'patient_history' as NavigationPage,
-      label: userRole === 'patient' ? 'My Scans' : 'Records',
+      label: userRole === 'patient' ? 'My Scans' : 'Patient Records',
       icon: History,
     },
     {
-      id: 'patient_appointments' as NavigationPage,
-      label: 'Appointments',
-      icon: Calendar,
-    },
-    {
-      id: 'patient_messages' as NavigationPage,
-      label: 'Messages',
-      icon: MessageSquare,
-    },
-    {
-      id: 'patient_billing' as NavigationPage,
-      label: 'Billing & Insurance',
-      icon: CreditCard,
-    },
-    {
-      id: 'patient_settings' as NavigationPage,
-      label: 'Account Settings',
-      icon: Settings,
+      id: 'recently_viewed' as NavigationPage,
+      label: 'Recently Viewed',
+      icon: Clock,
     },
   ];
-
-  if (userRole === 'patient') {
-    navItems = navItems.filter(item => 
-      item.id === 'overview' || 
-      item.id === 'patient_history' ||
-      item.id === 'patient_appointments' ||
-      item.id === 'patient_messages' ||
-      item.id === 'patient_billing' ||
-      item.id === 'patient_settings'
-    );
-  } else if (userRole === 'admin') {
-    navItems = navItems.filter(item => 
-      item.id === 'overview' || 
-      item.id === 'new_analysis' || 
-      item.id === 'patient_search' ||
-      item.id === 'patient_history' ||
-      item.id === 'patient_category'
-    );
-  }
 
   return (
     <aside className="no-print w-64 bg-slate-950 border-r border-slate-200 flex flex-col justify-between shrink-0 h-screen sticky top-0 text-slate-600 select-none z-30">

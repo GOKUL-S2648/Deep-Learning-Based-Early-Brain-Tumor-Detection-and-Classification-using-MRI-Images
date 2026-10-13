@@ -17,6 +17,8 @@ interface PatientRecord {
   date: string;
   urgency: string;
   indication: string;
+  imageSrc?: string;
+  imageBase64?: string;
 }
 
 interface PatientCategoryViewProps {

@@ -12,6 +12,8 @@ interface PatientItem {
   whoGrade: string;
   confidence: number;
   tumorDetected: boolean;
+  imageSrc?: string;
+  imageBase64?: string;
 }
 
 interface PatientSearchViewProps {

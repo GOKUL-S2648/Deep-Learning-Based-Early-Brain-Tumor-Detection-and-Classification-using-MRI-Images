@@ -268,10 +268,10 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
             <button
               onClick={onSaveAnalysis}
               className="flex items-center gap-1.5 px-3.5 py-2 font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm cursor-pointer"
-              title="Save patient record to database and start new analysis"
+              title="Save patient record to database and view in Patient Records archive"
             >
               <Save className="w-4 h-4" />
-              <span>Save & New Analysis</span>
+              <span>Save to Patient Records</span>
             </button>
           )}
 

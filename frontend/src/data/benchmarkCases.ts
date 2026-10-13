@@ -104,6 +104,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     classification: 'Glioma',
     whoGrade: 'Grade IV',
     modalitySequence: 'T1-weighted Gadolinium Contrast (T1+C)',
+    imageSrc: '/glioblastoma.jpg',
     plane: 'Axial',
     patient: {
       mrn: 'RAD-948102',
@@ -203,7 +204,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
         hemisphere: 'Right',
         anatomicalLobe: 'Frontotemporal White Matter',
         compartment: 'Intra-axial',
-        boundingBox: { ymin: 310, xmin: 210, ymax: 640, xmax: 560 },
+        boundingBox: { ymin: 200, xmin: 220, ymax: 420, xmax: 450 },
         dimensionsMm: { anteriorPosterior: 52, transverse: 44, craniocaudal: 48, estimatedVolumeCm3: 57.5 },
       },
       imagingFeatures: {
@@ -264,6 +265,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     classification: 'Meningioma',
     whoGrade: 'Grade I',
     modalitySequence: 'T1-weighted Gadolinium Contrast (T1+C)',
+    imageSrc: '/meningioma.jpg',
     plane: 'Axial',
     patient: {
       mrn: 'RAD-881290',
@@ -348,7 +350,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
         hemisphere: 'Left',
         anatomicalLobe: 'Frontoparietal Convexity',
         compartment: 'Extra-axial',
-        boundingBox: { ymin: 220, xmin: 590, ymax: 470, xmax: 820 },
+        boundingBox: { ymin: 260, xmin: 470, ymax: 500, xmax: 710 },
         dimensionsMm: { anteriorPosterior: 38, transverse: 34, craniocaudal: 31, estimatedVolumeCm3: 20.8 },
       },
       imagingFeatures: {
@@ -404,6 +406,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     classification: 'Pituitary Tumor',
     whoGrade: 'Grade I',
     modalitySequence: 'T1-weighted Contrast (Coronal)',
+    imageSrc: '/pituitary.jpg',
     plane: 'Coronal',
     patient: {
       mrn: 'RAD-739104',
@@ -499,7 +502,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
         hemisphere: 'Midline',
         anatomicalLobe: 'Sella Turcica & Suprasellar Cistern',
         compartment: 'Extra-axial',
-        boundingBox: { ymin: 440, xmin: 410, ymax: 680, xmax: 590 },
+        boundingBox: { ymin: 360, xmin: 440, ymax: 490, xmax: 560 },
         dimensionsMm: { anteriorPosterior: 24, transverse: 21, craniocaudal: 29, estimatedVolumeCm3: 7.6 },
       },
       imagingFeatures: {
@@ -556,6 +559,7 @@ export const BENCHMARK_CASES: BenchmarkCase[] = [
     classification: 'No Tumor (Healthy)',
     whoGrade: 'Non-neoplastic',
     modalitySequence: 'T2-weighted Fast Spin Echo (FSE)',
+    imageSrc: '/normal.jpg',
     plane: 'Axial',
     patient: {
       mrn: 'RAD-552199',

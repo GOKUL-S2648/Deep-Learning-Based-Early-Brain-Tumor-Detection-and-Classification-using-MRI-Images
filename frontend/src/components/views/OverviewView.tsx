@@ -13,7 +13,9 @@ import {
   ScanLine,
   Sparkles,
   Search,
-  Filter
+  Filter,
+  UserPlus,
+  Layers
 } from 'lucide-react';
 
 import { downloadBatchFullReportsPDF } from '../../utils/pdfExport';
@@ -187,8 +189,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </p>
           </div>
 
-          <div className="hidden sm:flex items-center gap-3 rounded-2xl border border-[#DCE6F0] bg-[#F8FBFF] px-4 py-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-blue-100 text-blue-600 shadow-sm">
+          <button
+            onClick={() => onNavigate('new_analysis')}
+            className="hidden sm:flex items-center gap-3 rounded-2xl border border-[#DCE6F0] bg-[#F8FBFF] hover:bg-blue-50/80 hover:border-blue-200 px-4 py-3 cursor-pointer transition-all group shadow-sm text-left"
+            title="Open Diagnostic Workstation"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-blue-100 text-blue-600 shadow-sm group-hover:scale-105 transition-transform">
               <Brain className="h-5 w-5" />
             </div>
 
@@ -197,16 +203,19 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 NeuroScan AI
               </p>
 
-              <p className="mt-0.5 text-xs font-semibold text-[#172033]">
-                MRI Analysis Ready
+              <p className="mt-0.5 text-xs font-semibold text-[#172033] group-hover:text-blue-600 transition-colors flex items-center gap-1">
+                <span>MRI Analysis Ready</span>
+                <span className="text-blue-500 font-bold">→</span>
               </p>
             </div>
 
-            <span className="ml-2 h-2 w-2 rounded-full bg-[#0F9F9A]" />
-          </div>
+            <span className="ml-2 h-2 w-2 rounded-full bg-[#0F9F9A] animate-pulse" />
+          </button>
 
         </div>
       </section>
+
+
 
 
       {/* =====================================================
@@ -217,6 +226,18 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
+
+          const getTargetPage = () => {
+            if (stat.title === 'Total Analyses') return 'new_analysis';
+            if (stat.title === 'Malignant Cases') return 'patient_category';
+            return 'patient_history';
+          };
+
+          const getActionText = () => {
+            if (stat.title === 'Total Analyses') return 'Open Workstation →';
+            if (stat.title === 'Malignant Cases') return 'View Categories →';
+            return 'View Records →';
+          };
 
           return (
             <div
@@ -236,15 +257,11 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 duration-300
                 hover:-translate-y-1
                 hover:shadow-[0_16px_35px_rgba(37,99,235,0.10)]
+                hover:border-blue-300
+                cursor-pointer
               "
-              onClick={() => {
-                if (stat.title === 'Total Analyses') {
-                  onNavigate('patient_search');
-                } else if (stat.title === 'Registered Patients') {
-                  onNavigate('patient_history');
-                }
-              }}
-              style={{ cursor: (stat.title === 'Total Analyses' || stat.title === 'Registered Patients') ? 'pointer' : 'default' }}
+              onClick={() => onNavigate(getTargetPage())}
+              title={`Click to open ${stat.title === 'Total Analyses' ? 'Diagnostic Workstation' : stat.title === 'Malignant Cases' ? 'Patient Category' : 'Patient Records'}`}
             >
 
               {/* Card accent */}
@@ -253,8 +270,6 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   idx === 0
                     ? 'bg-blue-500'
                     : idx === 1
-                    ? 'bg-cyan-500'
-                    : idx === 2
                     ? 'bg-violet-500'
                     : 'bg-teal-500'
                 }`}
@@ -300,9 +315,14 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
               </div>
 
-              <div className="mt-4 flex items-center gap-1.5 text-[10px] font-semibold text-[#94A3B8]">
-                <Activity className="h-3 w-3" />
-                NeuroScan workspace
+              <div className="mt-4 flex items-center justify-between text-[10px] font-semibold text-[#94A3B8]">
+                <div className="flex items-center gap-1.5">
+                  <Activity className="h-3 w-3" />
+                  <span>NeuroScan workspace</span>
+                </div>
+                <span className="text-blue-600 font-bold group-hover:translate-x-0.5 transition-transform">
+                  {getActionText()}
+                </span>
               </div>
 
             </div>
@@ -328,20 +348,30 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               Clinical criteria and case distributions based on AI analysis
             </p>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-[10px] font-semibold text-[#64748B]">
-            <Sparkles className="h-3.5 w-3.5 text-violet-500" />
-            AI Insights
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate('patient_category')}
+              className="flex items-center gap-1.5 text-[10px] font-bold text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full border border-violet-200 transition-colors cursor-pointer shadow-xs"
+              title="View all patient categories"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-violet-500" />
+              <span>View All Categories →</span>
+            </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* High Risk */}
-          <div className="group relative overflow-hidden rounded-2xl border border-rose-100 bg-white shadow-[0_4px_20px_rgba(225,29,72,0.04)] hover:shadow-[0_8px_30px_rgba(225,29,72,0.08)] transition-all duration-300 hover:-translate-y-1">
+          <div 
+            onClick={() => onNavigate('patient_category')}
+            className="group relative overflow-hidden rounded-2xl border border-rose-100 bg-white shadow-[0_4px_20px_rgba(225,29,72,0.04)] hover:shadow-[0_8px_30px_rgba(225,29,72,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 cursor-pointer"
+            title="Click to view High Risk categories in Patient Category"
+          >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 to-rose-400" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3 text-rose-700">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-100">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-100 group-hover:scale-105 transition-transform">
                     <AlertTriangle className="h-5 w-5" />
                   </div>
                   <div>
@@ -373,27 +403,44 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 </div>
               </div>
               
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  downloadBatchFullReportsPDF('High Risk Patients', riskGroups.High as any, userName);
-                }}
-                disabled={riskGroups.High.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-rose-50 text-sm font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-100"
-              >
-                <Download className="h-4 w-4" />
-                Export {riskGroups.High.length} Cases
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate('patient_category');
+                  }}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-rose-100/70 text-xs font-bold text-rose-800 transition-colors hover:bg-rose-200/80 cursor-pointer shadow-xs"
+                  title="View High Risk cases in Patient Category"
+                >
+                  View Category →
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadBatchFullReportsPDF('High Risk Patients', riskGroups.High as any, userName);
+                  }}
+                  disabled={riskGroups.High.length === 0}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-rose-50 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-200 cursor-pointer"
+                  title="Export cases PDF"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Export PDF
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Medium Risk */}
-          <div className="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-[0_4px_20px_rgba(217,119,6,0.04)] hover:shadow-[0_8px_30px_rgba(217,119,6,0.08)] transition-all duration-300 hover:-translate-y-1">
+          <div 
+            onClick={() => onNavigate('patient_category')}
+            className="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-[0_4px_20px_rgba(217,119,6,0.04)] hover:shadow-[0_8px_30px_rgba(217,119,6,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 cursor-pointer"
+            title="Click to view Medium Risk categories in Patient Category"
+          >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-400" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3 text-amber-700">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 border border-amber-100">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 border border-amber-100 group-hover:scale-105 transition-transform">
                     <Info className="h-5 w-5" />
                   </div>
                   <div>
@@ -425,27 +472,44 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 </div>
               </div>
               
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  downloadBatchFullReportsPDF('Medium Risk Patients', riskGroups.Medium as any, userName);
-                }}
-                disabled={riskGroups.Medium.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-amber-50 text-sm font-bold text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-100"
-              >
-                <Download className="h-4 w-4" />
-                Export {riskGroups.Medium.length} Cases
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate('patient_category');
+                  }}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-amber-100/70 text-xs font-bold text-amber-800 transition-colors hover:bg-amber-200/80 cursor-pointer shadow-xs"
+                  title="View Medium Risk cases in Patient Category"
+                >
+                  View Category →
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadBatchFullReportsPDF('Medium Risk Patients', riskGroups.Medium as any, userName);
+                  }}
+                  disabled={riskGroups.Medium.length === 0}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-amber-50 text-xs font-bold text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-200 cursor-pointer"
+                  title="Export cases PDF"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Export PDF
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Low Risk */}
-          <div className="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-[0_4px_20px_rgba(16,185,129,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1">
+          <div 
+            onClick={() => onNavigate('patient_category')}
+            className="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-[0_4px_20px_rgba(16,185,129,0.04)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 cursor-pointer"
+            title="Click to view Low Risk categories in Patient Category"
+          >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-400" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3 text-emerald-700">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100 group-hover:scale-105 transition-transform">
                     <CheckCircle2 className="h-5 w-5" />
                   </div>
                   <div>
@@ -477,17 +541,30 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 </div>
               </div>
               
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  downloadBatchFullReportsPDF('Low Risk Patients', riskGroups.Low as any, userName);
-                }}
-                disabled={riskGroups.Low.length === 0}
-                className="w-full flex h-10 items-center justify-center gap-2 rounded-xl bg-emerald-50 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-100"
-              >
-                <Download className="h-4 w-4" />
-                Export {riskGroups.Low.length} Cases
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate('patient_category');
+                  }}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-emerald-100/70 text-xs font-bold text-emerald-800 transition-colors hover:bg-emerald-200/80 cursor-pointer shadow-xs"
+                  title="View Low Risk cases in Patient Category"
+                >
+                  View Category →
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadBatchFullReportsPDF('Low Risk Patients', riskGroups.Low as any, userName);
+                  }}
+                  disabled={riskGroups.Low.length === 0}
+                  className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-emerald-50 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-200 cursor-pointer"
+                  title="Export cases PDF"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Export PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -554,15 +631,14 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
             </div>
 
-            {userRole === 'admin' && (
-              <button
-                onClick={() => onNavigate('patient_history')}
-                className="hidden xl:inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 transition-colors hover:bg-blue-100"
-              >
-                View All
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </button>
-            )}
+            <button
+              onClick={() => onNavigate('patient_history')}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 transition-all hover:bg-blue-100 hover:border-blue-300 cursor-pointer shadow-xs"
+              title="View all patient records in Patient Records archive"
+            >
+              <span>View All Records</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
 
@@ -575,6 +651,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
             <div
               key={item.id}
+              onClick={() => onSelectCase(item.id)}
               className="
                 group
                 flex
@@ -583,23 +660,25 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 gap-4
                 px-6
                 py-4
-                transition-colors
-                hover:bg-[#F8FBFF]
+                transition-all
+                hover:bg-blue-50/60
+                cursor-pointer
               "
+              title={`Click to open ${item.patientName}'s study in Diagnostic Workstation`}
             >
 
               <div className="flex min-w-0 items-center gap-4">
 
                 {/* Avatar / MRI icon */}
 
-                <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
+                <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600 group-hover:scale-105 group-hover:bg-blue-600 group-hover:text-white transition-all">
                   <Brain className="h-4.5 w-4.5" />
                 </div>
 
 
                 <div className="min-w-0">
 
-                  <p className="truncate text-sm font-bold text-[#172033]">
+                  <p className="truncate text-sm font-bold text-[#172033] group-hover:text-blue-600 transition-colors">
 
                     {item.patientName}
 
@@ -654,7 +733,10 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 </span>
 
                 <button
-                  onClick={() => onSelectCase(item.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectCase(item.id);
+                  }}
                   className="
                     flex
                     h-9
@@ -667,11 +749,13 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                     bg-white
                     text-[#64748B]
                     transition-all
-                    hover:border-blue-200
-                    hover:bg-blue-50
-                    hover:text-blue-600
+                    hover:border-blue-300
+                    hover:bg-blue-600
+                    hover:text-white
+                    shadow-xs
+                    cursor-pointer
                   "
-                  title="Open study"
+                  title="Open study in Diagnostic Workstation"
                 >
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
@@ -694,6 +778,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <p className="mt-1 text-xs text-[#94A3B8]">
                 Try adjusting your search query or risk filter.
               </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setRiskFilter('All');
+                }}
+                className="mt-3 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+              >
+                Clear filters
+              </button>
             </div>
           )}
 

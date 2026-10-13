@@ -137,7 +137,30 @@ export const MRIViewer: React.FC<MRIViewerProps> = ({
         tempCtx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
         applyImageProcessing(tempCtx, ctx);
       };
+      img.onerror = () => {
+        console.warn('MRIViewer: imageSrc failed to load, falling back to procedural generator:', imageSrc);
+        if (imageGenerator) {
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = CANVAS_SIZE;
+          tempCanvas.height = CANVAS_SIZE;
+          const tempCtx = tempCanvas.getContext('2d');
+          if (!tempCtx) return;
+
+          imageGenerator(tempCtx, CANVAS_SIZE, CANVAS_SIZE);
+          applyImageProcessing(tempCtx, ctx);
+        }
+      };
       img.src = imageSrc;
+      if (img.complete && img.naturalWidth > 0) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = CANVAS_SIZE;
+        tempCanvas.height = CANVAS_SIZE;
+        const tempCtx = tempCanvas.getContext('2d');
+        if (tempCtx) {
+          tempCtx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+          applyImageProcessing(tempCtx, ctx);
+        }
+      }
     } else if (imageGenerator) {
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = CANVAS_SIZE;

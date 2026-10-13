@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   Filter,
   Trash2,
-  X
+  X,
+  ScanLine
 } from 'lucide-react';
 
 interface PatientRecord {
@@ -30,6 +31,8 @@ interface PatientRecord {
   date: string;
   urgency: string;
   indication: string;
+  imageSrc?: string;
+  imageBase64?: string;
 }
 
 interface PatientHistoryViewProps {
@@ -37,6 +40,7 @@ interface PatientHistoryViewProps {
   onSelectCase: (caseId: string) => void;
   onOpenReport: (caseId: string) => void;
   onDeleteCase?: (caseId: string) => void;
+  onNewAnalysis?: () => void;
 }
 
 export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
@@ -44,9 +48,10 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
   onSelectCase,
   onOpenReport,
   onDeleteCase,
+  onNewAnalysis,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'malignant' | 'benign'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'glioma' | 'meningioma' | 'pituitary' | 'normal'>('all');
   const [caseToDelete, setCaseToDelete] = useState<PatientRecord | null>(null);
 
   const filtered = records.filter((r) => {
@@ -55,8 +60,10 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
       r.mrn.toLowerCase().includes(searchTerm.toLowerCase()) ||
       r.diagnosis.toLowerCase().includes(searchTerm.toLowerCase());
 
-    if (filterType === 'malignant') return matchesSearch && r.whoGrade === 'Grade IV';
-    if (filterType === 'benign') return matchesSearch && r.whoGrade !== 'Grade IV';
+    if (filterType === 'glioma') return matchesSearch && (r.classLabel === 'Class 1' || r.diagnosis.toLowerCase().includes('glioma'));
+    if (filterType === 'meningioma') return matchesSearch && (r.classLabel === 'Class 2' || r.diagnosis.toLowerCase().includes('meningioma'));
+    if (filterType === 'pituitary') return matchesSearch && (r.classLabel === 'Class 3' || r.diagnosis.toLowerCase().includes('pituitary'));
+    if (filterType === 'normal') return matchesSearch && (r.classLabel === 'Class 0' || !r.tumorDetected);
     return matchesSearch;
   });
 
@@ -84,17 +91,28 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-[2.75rem] font-serif text-[#171f3a] tracking-tight leading-tight mb-2">
-          Patient Records & Study Archive
-        </h1>
-        <p className="text-sm text-slate-500">
-          Review historical brain MRI evaluations, AI classifications, and diagnostic reports.
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+            Patient Records & Study Archive
+          </h1>
+          <p className="text-sm text-slate-500">
+            Review historical brain MRI evaluations, AI classifications, and diagnostic reports.
+          </p>
+        </div>
+        {onNewAnalysis && (
+          <button
+            onClick={onNewAnalysis}
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/20 cursor-pointer self-start sm:self-auto"
+          >
+            <ScanLine className="w-4 h-4" />
+            <span>+ Analyze New MRI Scan</span>
+          </button>
+        )}
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white rounded-full px-5 py-3 shadow-sm border border-slate-200/60 flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="bg-white rounded-2xl sm:rounded-full px-5 py-3 shadow-sm border border-slate-200/60 flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="relative flex-1 min-w-[260px]">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -106,22 +124,28 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
           />
         </div>
 
-        <div className="flex items-center gap-4 text-sm font-semibold">
+        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
           <DatePicker selectedDate={selectedDate} onChange={setSelectedDate} />
           
-          <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
-            <span className="text-slate-500 mr-1">Filter:</span>
-            {(['all', 'malignant', 'benign'] as const).map((type) => (
+          <div className="flex flex-wrap items-center gap-1.5 border-l border-slate-200 pl-3">
+            <span className="text-slate-500 mr-1 hidden lg:inline">Category:</span>
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'glioma', label: 'Glioma (Class 1)' },
+              { id: 'meningioma', label: 'Meningioma (Class 2)' },
+              { id: 'pituitary', label: 'Pituitary (Class 3)' },
+              { id: 'normal', label: 'Healthy (Class 0)' },
+            ].map((cat) => (
               <button
-                key={type}
-                onClick={() => setFilterType(type)}
-                className={`px-4 py-1.5 rounded-full transition-colors ${
-                  filterType === type
-                    ? 'bg-[#3b82f6] text-white shadow-sm shadow-blue-500/20'
+                key={cat.id}
+                onClick={() => setFilterType(cat.id as any)}
+                className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer text-xs ${
+                  filterType === cat.id
+                    ? 'bg-indigo-600 text-white shadow-sm font-bold'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {type === 'all' ? 'All Scans' : type === 'malignant' ? 'High-Grade' : 'Benign / Normal'}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -154,8 +178,23 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
                   {groupRecords.map((item) => (
                     <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="p-4 pl-6">
-                        <div className="font-bold text-slate-900">{item.name}</div>
-                        <div className="text-[11px] text-slate-500 font-mono">{item.mrn}</div>
+                        <div className="flex items-center gap-3">
+                          {item.imageSrc ? (
+                            <img 
+                              src={item.imageSrc} 
+                              alt={item.name}
+                              className="w-10 h-10 rounded-lg object-cover bg-slate-950 border border-slate-200 shrink-0 shadow-xs" 
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 text-slate-400">
+                              <ScanLine className="w-5 h-5" />
+                            </div>
+                          )}
+                          <div>
+                            <div className="font-bold text-slate-900">{item.name}</div>
+                            <div className="text-[11px] text-slate-500 font-mono">{item.mrn}</div>
+                          </div>
+                        </div>
                       </td>
 
                       <td className="p-4 text-slate-700 font-medium">

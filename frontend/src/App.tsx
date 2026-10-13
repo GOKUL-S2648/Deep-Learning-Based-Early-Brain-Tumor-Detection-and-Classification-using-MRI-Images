@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Sidebar, NavigationPage } from './components/layout/Sidebar';
 import { OverviewView } from './components/views/OverviewView';
 import { PatientHistoryView } from './components/views/PatientHistoryView';
 import { RegisterPatientView } from './components/views/RegisterPatientView';
 import { PatientSearchView } from './components/views/PatientSearchView';
 import { PatientCategoryView } from './components/views/PatientCategoryView';
+import { RecentlyViewedView } from './components/views/RecentlyViewedView';
+import { RecentlyViewedPatient } from './types/recentPatient';
 
 import { BENCHMARK_CASES } from './data/benchmarkCases';
 import { BenchmarkCase, MRIAnalysisResult } from './types/radiology';
@@ -48,7 +50,11 @@ import {
   AlertCircle,
   Settings,
   Check,
-  Save
+  Save,
+  RotateCcw,
+  History,
+  Clock,
+  ChevronDown
 } from 'lucide-react';
 
 
@@ -434,11 +440,33 @@ export default function App() {
   const [currentPage, _setCurrentPage] = useState<NavigationPage>('overview');
   const [pageHistory, setPageHistory] = useState<NavigationPage[]>([]);
 
-  const handleNavigate = (page: NavigationPage) => {
+
+
+  const handleNavigate = (
+    page: NavigationPage,
+    options?: {
+      reset?: boolean;
+      subTab?: 'workstation' | 'report' | 'gallery' | 'model_info';
+      step?: number;
+    }
+  ) => {
     if (page !== currentPage) {
       setPageHistory(prev => [...prev, currentPage]);
       _setCurrentPage(page);
     }
+
+    if (page === 'new_analysis') {
+      if (options?.reset) {
+        setHasActiveScan(false);
+        setCustomImage(null);
+        setWorkflowStep(2);
+        setAnalysisSubTab('workstation');
+      } else if (options?.subTab) {
+        setAnalysisSubTab(options.subTab);
+        if (options.step) setWorkflowStep(options.step);
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleGoBack = () => {
@@ -452,13 +480,33 @@ export default function App() {
     });
   };
 
+  const handleResetToNewScan = () => {
+    setWorkflowStep(2);
+    setHasActiveScan(false);
+    setCustomImage(null);
+    setCustomPatient(null);
+    setCurrentCase(BENCHMARK_CASES[0]);
+    setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
+    setAnalysisSubTab('workstation');
+    handleNavigate('new_analysis');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSidebarNavigate = (page: NavigationPage) => {
+    if (page === 'new_analysis' && currentPage === 'new_analysis' && hasActiveScan) {
+      handleResetToNewScan();
+      return;
+    }
+    handleNavigate(page);
+  };
+
   // Secondary sub-tab inside New Analysis
   const [analysisSubTab, setAnalysisSubTab] = useState<'workstation' | 'report' | 'gallery' | 'model_info'>('workstation');
 
   // Active Scan and Patients state
   const [currentCase, setCurrentCase] = useState<BenchmarkCase>(BENCHMARK_CASES[0]);
   const [analysis, setAnalysis] = useState<MRIAnalysisResult>(BENCHMARK_CASES[0].defaultAnalysis);
-  const [customImage, setCustomImage] = useState<string | null>(null);
+  const [customImage, setCustomImage] = useState<string | null>(BENCHMARK_CASES[0].imageSrc || null);
   const [hasActiveScan, setHasActiveScan] = useState<boolean>(false);
   const [workflowStep, setWorkflowStep] = useState<number>(1);
   const [customPatient, setCustomPatient] = useState<{
@@ -488,6 +536,111 @@ export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [hasApiKey, setHasApiKey] = useState<boolean>(() => Boolean(getActiveGeminiApiKey()));
 
+  // Recently Viewed Patients State & Persistence (Tracks only visited patients)
+  const INITIAL_RECENT_PATIENTS: RecentlyViewedPatient[] = [
+    {
+      id: 'case-gbm-01',
+      name: 'Eleanor Vance',
+      mrn: 'RAD-948102',
+      age: 61,
+      sex: 'F',
+      date: '2026-08-14',
+      classLabel: 'Class 1',
+      biologicalNature: 'Malignant / Infiltrative',
+      diagnosis: 'Glioblastoma Multiforme (WHO IV)',
+      whoGrade: 'Grade IV',
+      confidence: 97,
+      tumorDetected: true,
+      imageSrc: '/glioblastoma.jpg',
+      indication: 'Progressive left hemiparesis and new adult-onset seizure.',
+      timestamp: Date.now(),
+    },
+  ];
+
+  const [recentlyViewedPatients, setRecentlyViewedPatients] = useState<RecentlyViewedPatient[]>(() => {
+    try {
+      const saved = localStorage.getItem('neuroscan_recently_viewed');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // fallback
+    }
+    return INITIAL_RECENT_PATIENTS;
+  });
+
+  // Notifications State & Persistence
+  const [notifications, setNotifications] = useState([
+    {
+      id: 'notif-1',
+      title: 'Patient Follow-up Due',
+      text: 'MRI follow-up scan for Eleanor Vance is due in 3 days (Post-resection monitoring).',
+      highlight: 'Eleanor Vance',
+      time: 'Just now',
+      type: 'followup' as const,
+      read: false,
+    },
+    {
+      id: 'notif-2',
+      title: 'High-Risk Category Alert',
+      text: 'Recent scan analysis flagged as WHO Grade IV. Requires immediate radiologist review.',
+      highlight: 'WHO Grade IV',
+      time: '2 hours ago',
+      type: 'alert' as const,
+      read: false,
+    },
+  ]);
+
+  const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
+  const notificationsDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationsDropdownRef.current &&
+        !notificationsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationsOpen(false);
+      }
+    };
+
+    if (isNotificationsOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNotificationsOpen]);
+
+  const trackRecentlyViewed = (patientData: Omit<RecentlyViewedPatient, 'timestamp'>) => {
+    setRecentlyViewedPatients((prev) => {
+      const updated = [
+        { ...patientData, timestamp: Date.now() },
+        ...prev.filter((p) => p.id !== patientData.id && p.mrn !== patientData.mrn),
+      ].slice(0, 15);
+      try {
+        localStorage.setItem('neuroscan_recently_viewed', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  };
+
+  const handleRemoveRecentPatient = (patientId: string) => {
+    setRecentlyViewedPatients((prev) => {
+      const updated = prev.filter((p) => p.id !== patientId);
+      try {
+        localStorage.setItem('neuroscan_recently_viewed', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+    showToast('Removed patient from Recently Viewed list.');
+  };
+
   // Patient archive records
   const [patientRecords, setPatientRecords] = useState([
     {
@@ -505,6 +658,7 @@ export default function App() {
       date: '2026-08-14',
       urgency: 'Emergent / STAT',
       indication: 'Progressive left hemiparesis and new adult-onset seizure.',
+      imageSrc: '/glioblastoma.jpg',
     },
     {
       id: 'case-men-02',
@@ -521,6 +675,7 @@ export default function App() {
       date: '2026-07-29',
       urgency: 'Priority',
       indication: 'Intermittent localized frontoparietal tension headaches.',
+      imageSrc: '/meningioma.jpg',
     },
     {
       id: 'case-pit-03',
@@ -537,6 +692,7 @@ export default function App() {
       date: '2026-06-19',
       urgency: 'Priority',
       indication: 'Bitemporal hemianopsia, fatigue, visual impairment.',
+      imageSrc: '/pituitary.jpg',
     },
     {
       id: 'case-norm-04',
@@ -553,6 +709,7 @@ export default function App() {
       date: '2026-09-02',
       urgency: 'Routine',
       indication: 'Atypical migraine screening; rule out space-occupying lesion.',
+      imageSrc: '/normal.jpg',
     },
   ]);
 
@@ -562,58 +719,108 @@ export default function App() {
   };
 
   // Select a case by BenchmarkCase
-  const handleSelectCase = (caseItem: BenchmarkCase) => {
+  const handleSelectCase = (caseItem: BenchmarkCase, targetSubTab: 'workstation' | 'report' = 'workstation') => {
     setCurrentCase(caseItem);
     setAnalysis(caseItem.defaultAnalysis);
-    setCustomImage(null);
+    setCustomImage(caseItem.imageSrc || null);
     setCustomPatient(null);
     setHasActiveScan(true);
-    setWorkflowStep(3);
+    setWorkflowStep(targetSubTab === 'report' ? 6 : 5);
     handleNavigate('new_analysis');
-    setAnalysisSubTab('workstation');
+    setAnalysisSubTab(targetSubTab);
+    trackRecentlyViewed({
+      id: caseItem.id,
+      name: caseItem.patient.name,
+      mrn: caseItem.patient.mrn,
+      age: caseItem.patient.age,
+      sex: caseItem.patient.sex,
+      date: caseItem.patient.studyDate || new Date().toISOString().split('T')[0],
+      diagnosis: caseItem.defaultAnalysis.subType || caseItem.title,
+      whoGrade: caseItem.defaultAnalysis.whoGrade,
+      classLabel: caseItem.defaultAnalysis.classLabel,
+      biologicalNature: caseItem.defaultAnalysis.biologicalNature,
+      confidence: Math.round(caseItem.defaultAnalysis.confidenceScore),
+      tumorDetected: caseItem.defaultAnalysis.tumorDetected,
+      imageSrc: caseItem.imageSrc,
+      indication: caseItem.patient.indication,
+    });
     showToast(`Loaded MRI Case: ${caseItem.title}`);
   };
 
   // Select by ID
-  const handleSelectCaseById = (caseId: string) => {
-    const found = BENCHMARK_CASES.find((c) => c.id === caseId);
-    if (found) {
-      handleSelectCase(found);
-    } else {
-      const customRecord = patientRecords.find(p => p.id === caseId);
-      if (customRecord) {
-        showToast(`Processing category review for ${customRecord.name}...`);
-        
-        // Find a benchmark case that matches the class label to simulate the review
-        const matchingBenchmark = BENCHMARK_CASES.find(c => c.defaultAnalysis.classLabel === customRecord.classLabel) || BENCHMARK_CASES[0];
-        
-        // Mock a case item based on the patient record
-        const mockCase: BenchmarkCase = {
-          ...matchingBenchmark,
-          id: customRecord.id,
-          title: `Custom Case: ${customRecord.diagnosis}`,
-          patient: {
-            name: customRecord.name,
-            mrn: customRecord.mrn,
-            age: customRecord.age,
-            sex: customRecord.sex,
-            indication: customRecord.indication || 'Clinical review of previously analyzed scan.'
-          }
-        };
-        
-        // Delay to simulate processing and make the function clear to the user
-        setTimeout(() => {
-          handleSelectCase(mockCase);
-          showToast(`Category review displayed for ${customRecord.name}`);
-        }, 800);
-      }
+  const handleSelectCaseById = (caseId: string, targetSubTab: 'workstation' | 'report' = 'workstation') => {
+    const customRecord = patientRecords.find(p => p.id === caseId);
+    const benchmark = BENCHMARK_CASES.find((c) => c.id === caseId);
+
+    if (customRecord) {
+      // Find a benchmark case that matches the class label to simulate the review
+      const matchingBenchmark = benchmark || BENCHMARK_CASES.find(c => c.defaultAnalysis.classLabel === customRecord.classLabel) || BENCHMARK_CASES[0];
+      const restoredImage = customRecord.imageSrc || (customRecord as any).imageBase64 || matchingBenchmark.imageSrc || null;
+      
+      // Build case item based on the patient record
+      const mockCase: BenchmarkCase = {
+        ...matchingBenchmark,
+        id: customRecord.id,
+        title: benchmark ? benchmark.title : `Patient Case: ${customRecord.diagnosis}`,
+        imageSrc: restoredImage || matchingBenchmark.imageSrc,
+        patient: {
+          name: customRecord.name,
+          mrn: customRecord.mrn,
+          age: customRecord.age,
+          sex: (customRecord.sex as any) || matchingBenchmark.patient.sex,
+          indication: customRecord.indication || matchingBenchmark.patient.indication,
+          studyDate: customRecord.date || new Date().toISOString().split('T')[0],
+        }
+      };
+
+      setCurrentCase(mockCase);
+      setCustomPatient({
+        name: customRecord.name,
+        mrn: customRecord.mrn,
+        age: customRecord.age,
+        sex: customRecord.sex,
+        indication: customRecord.indication || matchingBenchmark.patient.indication,
+        studyDate: customRecord.date || new Date().toISOString().split('T')[0],
+      });
+      setAnalysis({
+        ...matchingBenchmark.defaultAnalysis,
+        primaryClassification: customRecord.diagnosis,
+        whoGrade: customRecord.whoGrade,
+        confidenceScore: customRecord.confidence,
+        tumorDetected: customRecord.tumorDetected,
+        classLabel: (customRecord.classLabel as any) || matchingBenchmark.defaultAnalysis.classLabel,
+        biologicalNature: customRecord.biologicalNature || matchingBenchmark.defaultAnalysis.biologicalNature,
+      });
+      setCustomImage(restoredImage);
+      setHasActiveScan(true);
+      setWorkflowStep(targetSubTab === 'report' ? 6 : 5);
+      handleNavigate('new_analysis');
+      setAnalysisSubTab(targetSubTab);
+      trackRecentlyViewed({
+        id: customRecord.id,
+        name: customRecord.name,
+        mrn: customRecord.mrn,
+        age: customRecord.age,
+        sex: customRecord.sex,
+        date: customRecord.date || new Date().toISOString().split('T')[0],
+        diagnosis: customRecord.diagnosis,
+        whoGrade: customRecord.whoGrade,
+        classLabel: customRecord.classLabel,
+        biologicalNature: customRecord.biologicalNature,
+        confidence: customRecord.confidence,
+        tumorDetected: customRecord.tumorDetected,
+        imageSrc: restoredImage,
+        indication: customRecord.indication,
+      });
+      showToast(`Loaded patient record for ${customRecord.name}`);
+    } else if (benchmark) {
+      handleSelectCase(benchmark, targetSubTab);
     }
   };
 
   // Open report directly for a patient
   const handleOpenReportForCase = (caseId: string) => {
-    handleSelectCaseById(caseId);
-    setAnalysisSubTab('report');
+    handleSelectCaseById(caseId, 'report');
   };
 
   // Convert current canvas to base64 if needed
@@ -681,39 +888,34 @@ export default function App() {
   };
 
   const handleSaveAnalysis = () => {
-    setPatientRecords((prev) => [
-      {
-        id: `analysis-${Date.now()}`,
-        name: activePatient.name || 'Unknown Patient',
-        mrn: activePatient.mrn || `RAD-${Math.floor(Math.random() * 1000000)}`,
-        age: activePatient.age || 0,
-        sex: activePatient.sex || 'U',
-        classLabel: analysis.classLabel || (analysis.primaryClassification.toLowerCase().includes('glioma') ? 'Class 1' : analysis.primaryClassification.toLowerCase().includes('meningioma') ? 'Class 2' : analysis.primaryClassification.toLowerCase().includes('pituitary') ? 'Class 3' : 'Class 0'),
-        biologicalNature: analysis.biologicalNature || (analysis.tumorDetected ? 'Neoplastic lesion' : 'Normal brain tissue'),
-        diagnosis: analysis.subType,
-        whoGrade: analysis.whoGrade,
-        confidence: Math.round(analysis.confidenceScore),
-        tumorDetected: analysis.tumorDetected,
-        urgency: analysis.tumorDetected ? (analysis.whoGrade.includes('IV') || analysis.whoGrade.includes('III') ? 'High' : 'Medium') : 'Normal',
-        date: new Date().toISOString().split('T')[0],
-        indication: activePatient.indication || ''
-      },
-      ...prev,
-    ]);
-    showToast('Analysis successfully saved to Patient Database');
-    
-    // Reset state for the next analysis
-    setWorkflowStep(1);
-    setHasActiveScan(false);
-    setCustomImage(null);
-    setCustomPatient(null);
-    setCurrentCase(BENCHMARK_CASES[0]);
-    setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
-    setAnalysisSubTab('workstation');
-    
-    // Redirect to starting page (Dashboard/Overview) to complete the workflow naturally
-    handleNavigate('overview');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const savedId = `analysis-${Date.now()}`;
+    const imageToSave = customImage || currentCase.imageSrc || (
+      analysis.classLabel === 'Class 1' ? '/glioblastoma.jpg' :
+      analysis.classLabel === 'Class 2' ? '/meningioma.jpg' :
+      analysis.classLabel === 'Class 3' ? '/pituitary.jpg' : '/normal.jpg'
+    );
+    const newRecord = {
+      id: savedId,
+      name: activePatient.name || 'Unknown Patient',
+      mrn: activePatient.mrn || `RAD-${Math.floor(Math.random() * 1000000)}`,
+      age: activePatient.age || 0,
+      sex: activePatient.sex || 'U',
+      classLabel: analysis.classLabel || (analysis.primaryClassification.toLowerCase().includes('glioma') ? 'Class 1' : analysis.primaryClassification.toLowerCase().includes('meningioma') ? 'Class 2' : analysis.primaryClassification.toLowerCase().includes('pituitary') ? 'Class 3' : 'Class 0'),
+      biologicalNature: analysis.biologicalNature || (analysis.tumorDetected ? 'Neoplastic lesion' : 'Normal brain tissue'),
+      diagnosis: analysis.subType,
+      whoGrade: analysis.whoGrade,
+      confidence: Math.round(analysis.confidenceScore),
+      tumorDetected: analysis.tumorDetected,
+      urgency: analysis.tumorDetected ? (analysis.whoGrade.includes('IV') || analysis.whoGrade.includes('III') ? 'High' : 'Medium') : 'Normal',
+      date: new Date().toISOString().split('T')[0],
+      indication: activePatient.indication || '',
+      imageSrc: imageToSave,
+      imageBase64: customImage || undefined,
+    };
+
+    setPatientRecords((prev) => [newRecord, ...prev]);
+    showToast(`Study successfully saved to Patient Records for ${newRecord.name} (${newRecord.mrn})`);
+    handleNavigate('patient_history');
   };
 
   // Handle uploaded scan
@@ -776,9 +978,25 @@ export default function App() {
           date: new Date().toISOString().split('T')[0],
           urgency: result.radiologyReport.urgencyLevel,
           indication: data.clinicalHistory,
+          imageSrc: data.imageBase64,
+          imageBase64: data.imageBase64,
         },
         ...prev,
       ]);
+
+      trackRecentlyViewed({
+        id: `custom-${Date.now()}`,
+        name: data.patientName,
+        mrn: data.mrn,
+        age: data.patientAge,
+        sex: data.patientSex,
+        diagnosis: result.subType,
+        whoGrade: result.whoGrade,
+        classLabel: result.classLabel,
+        tumorDetected: result.tumorDetected,
+        imageSrc: data.imageBase64,
+        indication: data.clinicalHistory,
+      });
 
       showToast(`Scan analyzed: ${result.subType}`);
     } catch (err: any) {
@@ -899,9 +1117,25 @@ export default function App() {
             date: new Date().toISOString().split('T')[0],
             urgency: result.radiologyReport.urgencyLevel,
             indication: finalIndication,
+            imageSrc: base64Data,
+            imageBase64: base64Data,
           },
           ...prev,
         ]);
+
+        trackRecentlyViewed({
+          id: `upload-${Date.now()}`,
+          name: finalName || 'Anonymous Patient',
+          mrn: finalMrn || mrn,
+          age: typeof finalAge === 'number' ? finalAge : 0,
+          sex: finalSex || 'U',
+          diagnosis: result.subType,
+          whoGrade: result.whoGrade,
+          classLabel: result.classLabel,
+          tumorDetected: result.tumorDetected,
+          imageSrc: base64Data,
+          indication: finalIndication,
+        });
 
         showToast(`Analyzed: ${result.primaryClassification} (${result.classLabel})`);
       } catch (err) {
@@ -997,7 +1231,7 @@ if (!isAuthenticated) {
         {/* Exact Left Dark Sidebar matching user screenshot */}
         <Sidebar
           currentPage={currentPage}
-          onPageChange={(page) => handleNavigate(page)}
+          onPageChange={(page) => handleSidebarNavigate(page)}
           userName={currentUserName}
           userRole={currentUserRole}
           onSignOut={async () => {
@@ -1026,7 +1260,11 @@ if (!isAuthenticated) {
             </span>
             <span className="text-slate-500">/</span>
             <span className="text-sm font-semibold text-slate-900 capitalize">
-              {currentPage.replace('_', ' ')}
+              {currentPage === 'patient_category'
+                ? 'Patient Category'
+                : currentPage === 'recently_viewed'
+                ? 'Recently Viewed'
+                : currentPage.replace('_', ' ')}
             </span>
           </div>
 
@@ -1046,10 +1284,11 @@ if (!isAuthenticated) {
               <span>{hasApiKey ? 'AI Engine: Active' : 'Setup API Key'}</span>
             </button>
 
-            <div className="relative">
+            {/* Notifications Dropdown */}
+            <div className="relative" ref={notificationsDropdownRef}>
               <button
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors border ${
+                className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors border cursor-pointer ${
                   isNotificationsOpen 
                     ? 'bg-indigo-50 border-indigo-200 text-indigo-600' 
                     : 'bg-slate-100 hover:bg-slate-200 border-slate-200/70 text-slate-700'
@@ -1057,57 +1296,96 @@ if (!isAuthenticated) {
                 title="Notifications"
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute top-0 right-0 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border-2 border-white"></span>
-                </span>
+                {unreadNotificationsCount > 0 && (
+                  <span className="absolute top-0 right-0 flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border-2 border-white"></span>
+                  </span>
+                )}
               </button>
 
               {isNotificationsOpen && (
                 <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden font-sans animate-fade-in origin-top-right">
                   <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">Alerts & Notifications</span>
-                    <span className="text-[10px] font-bold text-white bg-indigo-600 px-2 py-0.5 rounded-full">2 New</span>
+                    {unreadNotificationsCount > 0 ? (
+                      <span className="text-[10px] font-bold text-white bg-indigo-600 px-2 py-0.5 rounded-full font-mono">
+                        {unreadNotificationsCount} New
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full font-mono">
+                        All Read
+                      </span>
+                    )}
                   </div>
                   
                   <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
-                    {/* Notification 1: Patient Follow-up */}
-                    <button className="w-full text-left p-4 hover:bg-slate-50 transition-colors flex gap-3 relative">
-                      <div className="w-2 h-2 rounded-full bg-indigo-500 absolute top-5 left-2"></div>
-                      <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 ml-2">
-                        <Activity className="w-4 h-4 text-indigo-600" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-slate-900 leading-tight mb-1">Patient Follow-up Due</div>
-                        <div className="text-xs text-slate-500 leading-relaxed">
-                          MRI follow-up scan for <span className="font-semibold text-slate-700">Eleanor Vance</span> is due in 3 days (Post-resection monitoring).
+                    {notifications.map((notif) => (
+                      <button
+                        key={notif.id}
+                        onClick={() => {
+                          setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+                        }}
+                        className={`w-full text-left p-4 hover:bg-slate-50 transition-colors flex gap-3 relative cursor-pointer ${
+                          notif.read ? 'opacity-70 bg-slate-50/50' : 'bg-white'
+                        }`}
+                      >
+                        {!notif.read && (
+                          <div className={`w-2 h-2 rounded-full absolute top-5 left-2 ${
+                            notif.type === 'alert' ? 'bg-rose-500' : 'bg-indigo-500'
+                          }`}></div>
+                        )}
+                        <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 ml-2 ${
+                          notif.type === 'alert'
+                            ? 'bg-rose-50 border-rose-100 text-rose-600'
+                            : 'bg-indigo-50 border-indigo-100 text-indigo-600'
+                        }`}>
+                          {notif.type === 'alert' ? (
+                            <AlertCircle className="w-4 h-4" />
+                          ) : (
+                            <Activity className="w-4 h-4" />
+                          )}
                         </div>
-                        <div className="text-[10px] text-slate-400 font-mono mt-2">Just now</div>
-                      </div>
-                    </button>
-
-                    {/* Notification 2: Risk Category */}
-                    <button className="w-full text-left p-4 hover:bg-slate-50 transition-colors flex gap-3 relative">
-                      <div className="w-2 h-2 rounded-full bg-rose-500 absolute top-5 left-2"></div>
-                      <div className="w-8 h-8 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center shrink-0 ml-2">
-                        <AlertCircle className="w-4 h-4 text-rose-600" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-slate-900 leading-tight mb-1">High-Risk Category Alert</div>
-                        <div className="text-xs text-slate-500 leading-relaxed">
-                          Recent scan analysis flagged as <span className="font-semibold text-rose-600">WHO Grade IV</span>. Requires immediate radiologist review.
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-bold text-slate-900 leading-tight mb-1 flex items-center justify-between">
+                            <span>{notif.title}</span>
+                            {notif.read && (
+                              <span className="text-[10px] font-normal text-slate-400">Read</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-500 leading-relaxed">
+                            {notif.highlight ? (
+                              <>
+                                {notif.text.split(notif.highlight)[0]}
+                                <span className={`font-semibold ${notif.type === 'alert' ? 'text-rose-600' : 'text-slate-700'}`}>
+                                  {notif.highlight}
+                                </span>
+                                {notif.text.split(notif.highlight)[1]}
+                              </>
+                            ) : (
+                              notif.text
+                            )}
+                          </div>
+                          <div className="text-[10px] text-slate-400 font-mono mt-2">{notif.time}</div>
                         </div>
-                        <div className="text-[10px] text-slate-400 font-mono mt-2">2 hours ago</div>
-                      </div>
-                    </button>
+                      </button>
+                    ))}
                   </div>
                   
                   <div className="p-2 border-t border-slate-100 bg-slate-50">
                     <button 
-                      onClick={() => setIsNotificationsOpen(false)}
-                      className="w-full py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors"
+                      onClick={() => {
+                        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                        showToast('All notifications marked as read.');
+                      }}
+                      disabled={unreadNotificationsCount === 0}
+                      className={`w-full py-2 text-xs font-bold rounded-xl transition-colors ${
+                        unreadNotificationsCount > 0
+                          ? 'text-indigo-600 hover:bg-indigo-50 cursor-pointer'
+                          : 'text-slate-400 cursor-default'
+                      }`}
                     >
-                      Mark All as Read
+                      {unreadNotificationsCount > 0 ? 'Mark All as Read' : 'All Notifications Read ✓'}
                     </button>
                   </div>
                 </div>
@@ -1162,44 +1440,63 @@ if (!isAuthenticated) {
           {/* 2. NEW ANALYSIS PAGE (Diagnostic Workstation & Report) */}
           {currentPage === 'new_analysis' && (
             <div className="space-y-6">
-              {/* Subtab 1: Workstation */}
+              {/* Active Subtab: Workstation */}
               {analysisSubTab === 'workstation' && (
                 <div className="space-y-6">
 
-                  {/* Workflow Stepper */}
-                  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm mb-6 mt-2">
-                    <div className="flex items-center justify-between relative max-w-4xl mx-auto">
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 -z-10 rounded-full"></div>
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-indigo-600 -z-10 rounded-full transition-all duration-700 ease-out" style={{ width: `${((workflowStep - 1) / 5) * 100}%` }}></div>
-                      
-                      {[
-                        { step: 1, label: 'Patient Registration' },
-                        { step: 2, label: 'Upload MRI' },
-                        { step: 3, label: 'Preview / Validate' },
-                        { step: 4, label: 'AI Analysis' },
-                        { step: 5, label: 'Analysis Results' },
-                        { step: 6, label: 'Final Report' }
-                      ].map((s) => (
-                        <div key={s.step} className="flex flex-col items-center gap-2 bg-white px-3 relative cursor-default" onClick={() => s.step < workflowStep && setWorkflowStep(s.step)}>
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all duration-300 ${workflowStep >= s.step ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30' : 'bg-white text-slate-400 border-slate-200'}`}>
-                            {workflowStep > s.step ? <Check className="w-4 h-4" /> : s.step}
-                          </div>
-                          <span className={`absolute -bottom-6 w-32 text-center text-[10px] font-bold uppercase tracking-wider ${workflowStep >= s.step ? 'text-indigo-900' : 'text-slate-400'}`}>
-                            {s.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
                   {!hasActiveScan ? (
                     <div className="space-y-8 animate-fade-in">
-                      <div className="flex flex-col items-center justify-center min-h-[460px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center shadow-sm hover:border-indigo-400 transition-colors">
-                        <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                      {/* Active Patient Indicator Banner if already registered */}
+                      {customPatient?.name && (
+                        <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                              {customPatient.name.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-indigo-950 flex items-center gap-2">
+                                <span>Target Patient: {customPatient.name}</span>
+                                <span className="font-mono text-[10px] px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">{customPatient.mrn}</span>
+                              </div>
+                              <p className="text-[11px] text-indigo-700 mt-0.5">
+                                {customPatient.age} Y / {customPatient.sex} · Indication: {customPatient.indication}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleNavigate('register_patient')}
+                              className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold underline cursor-pointer"
+                            >
+                              Edit Details
+                            </button>
+                            <span className="text-slate-300">•</span>
+                            <button
+                              onClick={() => setCustomPatient(null)}
+                              className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer"
+                            >
+                              Clear Patient
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (e.dataTransfer.files?.[0]) {
+                            handleDroppedFile(e.dataTransfer.files[0]);
+                          }
+                        }}
+                        className="flex flex-col items-center justify-center min-h-[460px] bg-slate-50 border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center shadow-sm hover:border-indigo-400 transition-colors cursor-pointer"
+                        onClick={() => directFileInputRef.current?.click()}
+                      >
+                        <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner pointer-events-none">
                           <Upload className="w-10 h-10 text-indigo-600" />
                         </div>
-                        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">Upload MRI Scan</h2>
-                        <p className="text-slate-500 max-w-md text-sm mb-8 leading-relaxed">
+                        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-3 pointer-events-none">Upload MRI Scan</h2>
+                        <p className="text-slate-500 max-w-md text-sm mb-8 leading-relaxed pointer-events-none">
                           Please upload a DICOM, PNG, or JPEG file of the brain MRI scan to begin deep learning tumor detection and classification.
                         </p>
                         
@@ -1212,7 +1509,11 @@ if (!isAuthenticated) {
                         />
                         
                         <button
-                          onClick={() => directFileInputRef.current?.click()}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            directFileInputRef.current?.click();
+                          }}
                           className="flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-500 hover:-translate-y-1 transition-all shadow-xl shadow-indigo-600/30 cursor-pointer"
                         >
                           <Upload className="w-5 h-5" />
@@ -1261,7 +1562,48 @@ if (!isAuthenticated) {
                     </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-8">
+                      {/* Active Study Banner & Direct Clinical Progression */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-600/20 shrink-0">
+                            <ScanLine className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-slate-900 text-sm">{activePatient.name || 'Active Patient Study'}</span>
+                              <span className="font-mono text-xs px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-semibold">{activePatient.mrn}</span>
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Active Study Loaded" />
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {activePatient.age ? `${activePatient.age} Y / ${activePatient.sex} · ` : ''}{currentCase.modalitySequence} · {currentCase.plane} Plane · Study Date: {activePatient.studyDate || 'Today'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            onClick={handleResetToNewScan}
+                            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
+                            title="Clear active scan and intake another MRI"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Upload New Scan</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setWorkflowStep(6);
+                              setAnalysisSubTab('report');
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-md shadow-indigo-600/25 transition-all cursor-pointer"
+                          >
+                            <FileText className="w-4 h-4" />
+                            <span>View Full Diagnostic Report & Sign-Off →</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-6">
                       {/* MRI Canvas Viewport (7 Cols) */}
                       <div className="lg:col-span-7">
                       <MRIViewer
@@ -1538,23 +1880,35 @@ if (!isAuthenticated) {
                         {/* Action CTAs */}
                         <div className="pt-2 flex flex-col gap-2">
                           <button
-                            onClick={handleSaveAnalysis}
-                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition-colors cursor-pointer"
-                            title="Save findings to database and redirect to starting page of New Analysis"
-                          >
-                            <Save className="w-4 h-4" />
-                            <span>Save Analysis & Start New Scan</span>
-                          </button>
-                          <button
                             onClick={() => {
                               setWorkflowStep(6);
                               setAnalysisSubTab('report');
                             }}
-                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl shadow-sm border border-slate-200 transition-colors cursor-pointer"
+                            className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-md shadow-indigo-600/25 transition-all cursor-pointer"
                           >
                             <FileText className="w-4 h-4" />
-                            <span>View Hospital Radiology Report</span>
+                            <span>Proceed to Diagnostic Report & Sign-Off →</span>
                           </button>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={handleSaveAnalysis}
+                              className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-colors cursor-pointer"
+                              title="Save findings to Patient Records archive"
+                            >
+                              <Save className="w-4 h-4" />
+                              <span>Save to Patient Records</span>
+                            </button>
+
+                            <button
+                              onClick={handleResetToNewScan}
+                              className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
+                              title="Upload or load another MRI scan"
+                            >
+                              <RotateCcw className="w-4 h-4" />
+                              <span>Upload New Scan</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -1598,17 +1952,49 @@ if (!isAuthenticated) {
 
               {/* Subtab 3: Case Library */}
               {analysisSubTab === 'gallery' && (
-                <BenchmarkGallery
-                  activeCaseId={customImage ? '' : currentCase.id}
-                  onSelectCase={(caseItem) => {
-                    handleSelectCase(caseItem);
-                    setAnalysisSubTab('workstation');
-                  }}
-                />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900">Clinical Benchmark MRI Library</h2>
+                      <p className="text-xs text-slate-500">Select any benchmark case to load it into the Diagnostic Workstation</p>
+                    </div>
+                    <button
+                      onClick={() => setAnalysisSubTab('workstation')}
+                      className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Workstation</span>
+                    </button>
+                  </div>
+                  <BenchmarkGallery
+                    activeCaseId={customImage ? '' : currentCase.id}
+                    onSelectCase={(caseItem) => {
+                      handleSelectCase(caseItem);
+                      setAnalysisSubTab('workstation');
+                    }}
+                  />
+                </div>
               )}
 
               {/* Subtab 4: Model Diagnostics */}
-              {analysisSubTab === 'model_info' && <ModelDiagnosticsView />}
+              {analysisSubTab === 'model_info' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900">AI Deep Learning Diagnostics & Architecture</h2>
+                      <p className="text-xs text-slate-500">Model hyperparameters, confusion matrix, ROC-AUC, and Grad-CAM specifications</p>
+                    </div>
+                    <button
+                      onClick={() => setAnalysisSubTab('workstation')}
+                      className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Workstation</span>
+                    </button>
+                  </div>
+                  <ModelDiagnosticsView />
+                </div>
+              )}
             </div>
           )}
 
@@ -1618,6 +2004,7 @@ if (!isAuthenticated) {
               records={patientRecords}
               onSelectCase={handleSelectCaseById}
               onOpenReport={handleOpenReportForCase}
+              onNewAnalysis={handleResetToNewScan}
               onDeleteCase={(caseId) => {
                 setPatientRecords(prev => prev.filter(r => r.id !== caseId));
                 showToast('Patient record deleted successfully.');
@@ -1672,57 +2059,21 @@ if (!isAuthenticated) {
             </div>
           )}
 
-          {/* 8. PACS CONNECTION PAGE */}
-          {currentPage === 'doctor_pacs' && (
-            <div className="space-y-6">
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-bold text-slate-900 mb-2">Hospital PACS Connection</h2>
-                <p className="text-sm text-slate-500 mb-6">Secure DICOM server connection (Simulated for Demo)</p>
-                
-                <div className="flex gap-4 mb-6">
-                  <input type="text" placeholder="Search Patient MRN or Name..." className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-slate-200" />
-                  <button className="px-6 py-2 bg-indigo-600 hover:bg-indigo-600 text-white rounded-lg font-semibold text-sm transition-colors cursor-pointer" onClick={() => showToast('Querying secure hospital server...')}>
-                    Query Server
-                  </button>
-                </div>
-
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
-                      <tr>
-                        <th className="p-4 font-semibold">MRN</th>
-                        <th className="p-4 font-semibold">Patient Name</th>
-                        <th className="p-4 font-semibold">Study Date</th>
-                        <th className="p-4 font-semibold">Modality</th>
-                        <th className="p-4 text-right font-semibold">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {[
-                        {mrn: 'RAD-948102', name: 'Eleanor Vance', date: '2026-08-14', type: 'MRI Brain W/WO Contrast', caseId: 'case-gbm-01'},
-                        {mrn: 'RAD-881290', name: 'Arthur Pendelton', date: '2026-07-29', type: 'MRI Brain W/O Contrast', caseId: 'case-men-02'},
-                        {mrn: 'RAD-739104', name: 'Julian Henderson', date: '2026-06-19', type: 'MRI Brain Pituitary Protocol', caseId: 'case-pit-03'}
-                      ].map((p, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
-                          <td className="p-4 font-mono text-slate-500">{p.mrn}</td>
-                          <td className="p-4 font-medium text-slate-900">{p.name}</td>
-                          <td className="p-4 text-slate-600">{p.date}</td>
-                          <td className="p-4 text-slate-600">{p.type}</td>
-                          <td className="p-4 text-right">
-                            <button className="text-slate-900 font-semibold hover:text-slate-800 cursor-pointer" onClick={() => {
-                                showToast(`Imported ${p.mrn} DICOM to PyTorch Workspace`);
-                                handleSelectCaseById(p.caseId);
-                            }}>
-                              Import to Workspace
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+          {/* 8. RECENTLY VIEWED PATIENTS PAGE */}
+          {currentPage === 'recently_viewed' && (
+            <RecentlyViewedView
+              patients={recentlyViewedPatients}
+              onSelectPatient={(patientId, subTab = 'workstation') => {
+                handleSelectCaseById(patientId, subTab);
+              }}
+              onRemovePatient={handleRemoveRecentPatient}
+              onClearAll={() => {
+                setRecentlyViewedPatients([]);
+                localStorage.removeItem('neuroscan_recently_viewed');
+                showToast('Recently viewed history cleared.');
+              }}
+              onNewAnalysis={handleResetToNewScan}
+            />
           )}
 
           {/* 9. CONSULTATIONS PAGE */}
@@ -1837,6 +2188,8 @@ if (!isAuthenticated) {
         }}
         onKeyChanged={(newKey) => setHasApiKey(Boolean(newKey))}
       />
+
+
     </div>
   );
 }
