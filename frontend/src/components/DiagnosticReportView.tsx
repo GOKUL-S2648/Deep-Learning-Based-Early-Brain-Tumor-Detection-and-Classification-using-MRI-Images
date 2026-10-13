@@ -39,6 +39,7 @@ interface DiagnosticReportViewProps {
   onConsultRequest?: () => void;
   onBackToWorkstation?: () => void;
   onSaveAnalysis?: () => void;
+  isSaved?: boolean;
 }
 
 export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
@@ -50,6 +51,7 @@ export const DiagnosticReportView: React.FC<DiagnosticReportViewProps> = ({
   onConsultRequest,
   onBackToWorkstation,
   onSaveAnalysis,
+  isSaved,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isSigned, setIsSigned] = useState(true);
@@ -267,11 +269,13 @@ ${radiologistNotes ? `ATTENDING ADDENDUM: ${radiologistNotes}` : ''}
           {onSaveAnalysis && (
             <button
               onClick={onSaveAnalysis}
-              className="flex items-center gap-1.5 px-3.5 py-2 font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm cursor-pointer"
+              className={`flex items-center gap-1.5 px-3.5 py-2 font-bold text-white rounded-xl transition-colors shadow-sm cursor-pointer ${
+                isSaved ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-emerald-600 hover:bg-emerald-700'
+              }`}
               title="Save patient record to database and view in Patient Records archive"
             >
-              <Save className="w-4 h-4" />
-              <span>Save to Patient Records</span>
+              {isSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+              <span>{isSaved ? 'Saved to Patient Records ✓' : 'Save to Patient Records'}</span>
             </button>
           )}
 

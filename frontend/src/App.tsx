@@ -51,7 +51,6 @@ import {
   Settings,
   Check,
   Save,
-  RotateCcw,
   History,
   Clock,
   ChevronDown
@@ -450,17 +449,34 @@ export default function App() {
       step?: number;
     }
   ) => {
+    const prevPage = currentPage;
     if (page !== currentPage) {
       setPageHistory(prev => [...prev, currentPage]);
       _setCurrentPage(page);
     }
 
+    if (page === 'overview') {
+      // Clear previous scan session when leaving to overview so subsequently opening workstation gives a clean view
+      setHasActiveScan(false);
+      setCustomImage(null);
+      setCustomPatient(null);
+      setCurrentCase(BENCHMARK_CASES[0]);
+      setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
+      setAnalysisSubTab('workstation');
+      setWorkflowStep(2);
+      setIsCurrentStudySaved(false);
+    }
+
     if (page === 'new_analysis') {
-      if (options?.reset) {
+      if (options?.reset || prevPage === 'overview') {
         setHasActiveScan(false);
         setCustomImage(null);
-        setWorkflowStep(2);
+        setCustomPatient(null);
+        setCurrentCase(BENCHMARK_CASES[0]);
+        setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
         setAnalysisSubTab('workstation');
+        setWorkflowStep(2);
+        setIsCurrentStudySaved(false);
       } else if (options?.subTab) {
         setAnalysisSubTab(options.subTab);
         if (options.step) setWorkflowStep(options.step);
@@ -488,14 +504,17 @@ export default function App() {
     setCurrentCase(BENCHMARK_CASES[0]);
     setAnalysis(BENCHMARK_CASES[0].defaultAnalysis);
     setAnalysisSubTab('workstation');
-    handleNavigate('new_analysis');
+    setIsCurrentStudySaved(false);
+    handleNavigate('new_analysis', { reset: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSidebarNavigate = (page: NavigationPage) => {
-    if (page === 'new_analysis' && currentPage === 'new_analysis' && hasActiveScan) {
-      handleResetToNewScan();
-      return;
+    if (page === 'new_analysis') {
+      if (currentPage === 'overview' || currentPage === 'new_analysis' || isCurrentStudySaved) {
+        handleResetToNewScan();
+        return;
+      }
     }
     handleNavigate(page);
   };
@@ -508,6 +527,7 @@ export default function App() {
   const [analysis, setAnalysis] = useState<MRIAnalysisResult>(BENCHMARK_CASES[0].defaultAnalysis);
   const [customImage, setCustomImage] = useState<string | null>(BENCHMARK_CASES[0].imageSrc || null);
   const [hasActiveScan, setHasActiveScan] = useState<boolean>(false);
+  const [isCurrentStudySaved, setIsCurrentStudySaved] = useState<boolean>(false);
   const [workflowStep, setWorkflowStep] = useState<number>(1);
   const [customPatient, setCustomPatient] = useState<{
     name: string;
@@ -725,6 +745,7 @@ export default function App() {
     setCustomImage(caseItem.imageSrc || null);
     setCustomPatient(null);
     setHasActiveScan(true);
+    setIsCurrentStudySaved(false);
     setWorkflowStep(targetSubTab === 'report' ? 6 : 5);
     handleNavigate('new_analysis');
     setAnalysisSubTab(targetSubTab);
@@ -914,8 +935,8 @@ export default function App() {
     };
 
     setPatientRecords((prev) => [newRecord, ...prev]);
+    setIsCurrentStudySaved(true);
     showToast(`Study successfully saved to Patient Records for ${newRecord.name} (${newRecord.mrn})`);
-    handleNavigate('patient_history');
   };
 
   // Handle uploaded scan
@@ -1077,6 +1098,7 @@ export default function App() {
 
       setCustomImage(base64Data);
       setHasActiveScan(true);
+      setIsCurrentStudySaved(false);
       setWorkflowStep(3);
       setCustomPatient({
         name: finalName,
@@ -1881,25 +1903,18 @@ if (!isAuthenticated) {
                             <span>Proceed to Diagnostic Report & Sign-Off →</span>
                           </button>
 
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              onClick={handleSaveAnalysis}
-                              className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-colors cursor-pointer"
-                              title="Save findings to Patient Records archive"
-                            >
-                              <Save className="w-4 h-4" />
-                              <span>Save to Patient Records</span>
-                            </button>
-
-                            <button
-                              onClick={handleResetToNewScan}
-                              className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors cursor-pointer"
-                              title="Upload or load another MRI scan"
-                            >
-                              <RotateCcw className="w-4 h-4" />
-                              <span>Upload New Scan</span>
-                            </button>
-                          </div>
+                          <button
+                            onClick={handleSaveAnalysis}
+                            className={`w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-xl transition-colors cursor-pointer border ${
+                              isCurrentStudySaved
+                                ? 'text-emerald-800 bg-emerald-100 border-emerald-300'
+                                : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border-emerald-200'
+                            }`}
+                            title="Save findings to Patient Records archive"
+                          >
+                            {isCurrentStudySaved ? <Check className="w-4 h-4 text-emerald-600" /> : <Save className="w-4 h-4" />}
+                            <span>{isCurrentStudySaved ? 'Saved to Patient Records ✓' : 'Save to Patient Records'}</span>
+                          </button>
                         </div>
                       </div>
 
@@ -1938,6 +1953,7 @@ if (!isAuthenticated) {
                   onConsultRequest={() => setIsConsultOpen(true)}
                   onBackToWorkstation={() => setAnalysisSubTab('workstation')}
                   onSaveAnalysis={handleSaveAnalysis}
+                  isSaved={isCurrentStudySaved}
                 />
               )}
 

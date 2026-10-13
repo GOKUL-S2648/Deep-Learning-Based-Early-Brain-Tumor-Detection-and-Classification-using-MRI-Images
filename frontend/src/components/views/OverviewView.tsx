@@ -228,13 +228,11 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           const Icon = stat.icon;
 
           const getTargetPage = () => {
-            if (stat.title === 'Total Analyses') return 'new_analysis';
             if (stat.title === 'Malignant Cases') return 'patient_category';
             return 'patient_history';
           };
 
           const getActionText = () => {
-            if (stat.title === 'Total Analyses') return 'Open Workstation →';
             if (stat.title === 'Malignant Cases') return 'View Categories →';
             return 'View Records →';
           };
@@ -261,7 +259,11 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 cursor-pointer
               "
               onClick={() => onNavigate(getTargetPage())}
-              title={`Click to open ${stat.title === 'Total Analyses' ? 'Diagnostic Workstation' : stat.title === 'Malignant Cases' ? 'Patient Category' : 'Patient Records'}`}
+              title={`Click to open ${
+                stat.title === 'Malignant Cases'
+                  ? 'Patient Category'
+                  : 'Patient Records'
+              }`}
             >
 
               {/* Card accent */}

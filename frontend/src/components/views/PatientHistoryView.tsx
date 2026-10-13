@@ -91,24 +91,13 @@ export const PatientHistoryView: React.FC<PatientHistoryViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-1">
-            Patient Records & Study Archive
-          </h1>
-          <p className="text-sm text-slate-500">
-            Review historical brain MRI evaluations, AI classifications, and diagnostic reports.
-          </p>
-        </div>
-        {onNewAnalysis && (
-          <button
-            onClick={onNewAnalysis}
-            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/20 cursor-pointer self-start sm:self-auto"
-          >
-            <ScanLine className="w-4 h-4" />
-            <span>+ Analyze New MRI Scan</span>
-          </button>
-        )}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-1">
+          Patient Records & Study Archive
+        </h1>
+        <p className="text-sm text-slate-500">
+          Review historical brain MRI evaluations, AI classifications, and diagnostic reports.
+        </p>
       </div>
 
       {/* Filter and Search Bar */}
