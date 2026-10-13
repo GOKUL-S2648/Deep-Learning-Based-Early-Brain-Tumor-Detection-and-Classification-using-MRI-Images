@@ -92,7 +92,7 @@ export function LoginView({ onLoginSuccess, onBack }: LoginViewProps) {
     }
 
     setIsSubmitting(true);
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: { data: { name: fullName.trim(), role } },
@@ -105,7 +105,19 @@ export function LoginView({ onLoginSuccess, onBack }: LoginViewProps) {
       return;
     }
 
-    alert("Registration successful! Check your email to confirm your account.");
+    // Supabase returns an empty identities array if the email is already registered
+    if (data?.user?.identities && data.user.identities.length === 0) {
+      setError("An account with this email already exists. Please sign in instead.");
+      return;
+    }
+
+    // If email confirmation is disabled in Supabase, session is returned immediately
+    if (data?.session) {
+      onLoginSuccess();
+      return;
+    }
+
+    alert("Registration successful! Check your email inbox and Spam/Junk folder to confirm your account.");
     setView("login");
     setPassword("");
     setFullName("");
@@ -310,11 +322,25 @@ export function LoginView({ onLoginSuccess, onBack }: LoginViewProps) {
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full h-12 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-[0.85rem] text-[15px] font-semibold transition-all disabled:opacity-70 flex items-center justify-center mb-8"
+                    className="w-full h-12 bg-[#0284c7] hover:bg-[#0369a1] text-white rounded-[0.85rem] text-[15px] font-semibold transition-all disabled:opacity-70 flex items-center justify-center mb-6"
                   >
                     {isSubmitting ? "Creating Account..." : "Create Account"}
                   </button>
                 </form>
+
+                <div className="relative flex items-center justify-center my-6">
+                   <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-200" />
+                   </div>
+                   <span className="relative bg-white px-4 text-xs text-gray-400">Or continue with</span>
+                </div>
+
+                <div className="flex flex-col gap-3 mb-6">
+                   <button type="button" onClick={handleGoogleLogin} className="w-full h-12 flex items-center justify-center gap-3 bg-[#f2f2f2] hover:bg-[#e8e8e8] text-slate-900 rounded-[0.85rem] text-[14px] font-semibold transition-colors">
+                      <GoogleIcon />
+                      Sign up with Google
+                   </button>
+                </div>
 
                 <div className="text-center text-sm text-gray-500">
                    Already have an account? <button type="button" className="text-[#0284c7] font-bold hover:underline" onClick={() => { setView('login'); setError(""); }}>Sign in</button>
